@@ -9,6 +9,7 @@ import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static ru.practicum.Constants.TIME_PATTERN;
 
@@ -20,16 +21,15 @@ public class StatServiceImpl implements StatService {
     private final StatRepository statRepository;
 
     @Override
-    public EndpointHitDto post(EndpointHitDto endpointHitDto) {
-        log.info("Create hit for {} {}", endpointHitDto.getApp(), endpointHitDto.getIp());
-        endpointHitDto = statRepository.save(endpointHitDto);
-        return endpointHitDto;
-    }
-
-    @Override
     public EndpointHitDto post(EndpointHit endpointHit) {
         log.info("Create hit for request {} {}", endpointHit.getApp(), endpointHit.getUri());
         EndpointHitDto endpointHitDto = StatMapper.mapToEndpointHit(endpointHit);
+        return post(endpointHitDto);
+    }
+
+    @Override
+    public EndpointHitDto post(EndpointHitDto endpointHitDto) {
+        log.info("Create hit for {} {}", endpointHitDto.getApp(), endpointHitDto.getIp());
         endpointHitDto = statRepository.save(endpointHitDto);
         return endpointHitDto;
     }
@@ -44,8 +44,15 @@ public class StatServiceImpl implements StatService {
         return StatMapper.mapToViewStats(endpointHits, unique);
     }
 
+
     @Override
-    public Iterable<ViewStats> get(String start, String end, ArrayList<String> uris, Boolean unique) {
+    public Iterable<ViewStats> get(String start, String end, ArrayList<Integer> uris, Boolean unique) {
+        ArrayList<String> urisString = (ArrayList<String>) uris.stream().map(uri -> "/events/" + uri).collect(Collectors.toList());
+        return getByUris(start, end, urisString, unique);
+    }
+
+    @Override
+    public Iterable<ViewStats> getByUris(String start, String end, ArrayList<String> uris, Boolean unique) {
 
         LocalDateTime startTimestamp = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime endtTimestamp = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));

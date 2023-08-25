@@ -10,5 +10,7 @@ public interface StatService {
 
     EndpointHitDto post(EndpointHit endpointHit);
 
-    Iterable<ViewStats> get(String start, String end, ArrayList<String> uris, Boolean unique);
+    Iterable<ViewStats> getByUris(String start, String end, ArrayList<String> uris, Boolean unique);
+
+    Iterable<ViewStats> get(String start, String end, ArrayList<Integer> uris, Boolean unique);
 }
