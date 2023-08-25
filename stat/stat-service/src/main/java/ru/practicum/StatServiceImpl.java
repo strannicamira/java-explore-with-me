@@ -36,8 +36,8 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public Iterable<ViewStats> get(LocalDateTime start, LocalDateTime end, ArrayList<String> uris, Boolean unique) {
-        BooleanExpression byBetween = QEndpointHit.endpointHit.timestamp.between(start, end);
-        BooleanExpression byUris = QEndpointHit.endpointHit.uri.in(uris);//TODO: or use array[string] as param as well?
+        BooleanExpression byBetween = QEndpointHitDto.endpointHitDto.timestamp.between(start, end);
+        BooleanExpression byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);//TODO: or use array[string] as param as well?
 
         Iterable<EndpointHitDto> endpointHits = statRepository.findAll(byBetween.and(byUris));
 
@@ -50,8 +50,8 @@ public class StatServiceImpl implements StatService {
         LocalDateTime startTimestamp = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime endtTimestamp = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
 
-        BooleanExpression byBetween = QEndpointHit.endpointHit.timestamp.between(startTimestamp, endtTimestamp);
-        BooleanExpression byUris = QEndpointHit.endpointHit.uri.in(uris);//TODO: or use array[string] as param as well?
+        BooleanExpression byBetween = QEndpointHitDto.endpointHitDto.timestamp.between(startTimestamp, endtTimestamp);
+        BooleanExpression byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);//TODO: or use array[string] as param as well?
 
         Iterable<EndpointHitDto> endpointHits = statRepository.findAll(byBetween.and(byUris));
 
