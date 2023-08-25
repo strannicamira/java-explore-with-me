@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS PUBLIC.HITS
     APP       CHARACTER VARYING                            NOT NULL,
     URI       CHARACTER VARYING                            NOT NULL,
     IP        CHARACTER VARYING                            NOT NULL,
-    TIMESTAMP CHARACTER VARYING                            NOT NULL
+    TIMESTAMP TIMESTAMP WITHOUT TIME ZONE                  NOT NULL
 );

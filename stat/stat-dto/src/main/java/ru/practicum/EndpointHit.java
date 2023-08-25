@@ -2,21 +2,13 @@ package ru.practicum;
 
 import lombok.*;
 
-import javax.persistence.*;
-
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "hits", schema = "public")
 public class EndpointHit {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String app;
-    String uri;
-    String ip;
-    String timestamp;
+
+    private String app;
+    private String uri;
+    private String ip;
+    private String timestamp;
 }
