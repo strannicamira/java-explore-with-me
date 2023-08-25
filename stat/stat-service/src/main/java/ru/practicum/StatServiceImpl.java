@@ -41,7 +41,7 @@ public class StatServiceImpl implements StatService {
 
         Iterable<EndpointHitDto> endpointHits = statRepository.findAll(byBetween.and(byUris));
 
-        return StatMapper.mapToViewStats(endpointHits);
+        return StatMapper.mapToViewStats(endpointHits, unique);
     }
 
     @Override
@@ -51,11 +51,15 @@ public class StatServiceImpl implements StatService {
         LocalDateTime endtTimestamp = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
 
         BooleanExpression byBetween = QEndpointHitDto.endpointHitDto.timestamp.between(startTimestamp, endtTimestamp);
-        BooleanExpression byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);//TODO: or use array[string] as param as well?
+        //TODO: use array[string] as param for uris?
+        BooleanExpression byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);
+
+        //TODO: use count() or countDistinct?
+//        NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
 
         Iterable<EndpointHitDto> endpointHits = statRepository.findAll(byBetween.and(byUris));
 
-        return StatMapper.mapToViewStats(endpointHits);
+        return StatMapper.mapToViewStats(endpointHits, unique);
     }
 
 }

@@ -7,14 +7,15 @@ import javax.validation.Valid;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static ru.practicum.Constants.TIME_PATTERN;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatMapper {
     @Valid
-    public static EndpointHitDto mapToEndpointHit(EndpointHit endpointHit){
+    public static EndpointHitDto mapToEndpointHit(EndpointHit endpointHit) {
         EndpointHitDto endpointHitDto = new EndpointHitDto();
         endpointHitDto.setApp(endpointHit.getApp());
         endpointHitDto.setUri(endpointHit.getUri());
@@ -36,32 +37,47 @@ public class StatMapper {
         return viewStats;
     }
 
-    public static Iterable<ViewStats> mapToViewStats(Iterable<EndpointHitDto> endpointHits) {
+    public static Iterable<ViewStats> mapToViewStats(Iterable<EndpointHitDto> endpoints, Boolean unique) {
         Iterable<ViewStats> viewStats;
-        Map<ViewStats, Integer> viewStatsMap = new HashMap<>();
-        Map<String, Integer> hitsByIp = new HashMap<>();
+        Map<ViewStats, Map<String, Integer>> viewStatsMap = new HashMap<>();
+//        Map<String, Integer> hitsByIp = new HashMap<>();
 
-        for (EndpointHitDto endpointHitDto : endpointHits) {
+        for (EndpointHitDto endpoint : endpoints) {
 
             ViewStats view = new ViewStats();
-            view.setApp(endpointHitDto.getApp());
-            view.setUri(endpointHitDto.getUri());
+            view.setApp(endpoint.getApp());
+            view.setUri(endpoint.getUri());
 
-            Integer hits = viewStatsMap.get(view);
+            Map<String, Integer> hitsByIp = viewStatsMap.get(view);
 
-            if (hits == null) {
-                viewStatsMap.put(view, 1);
+            if (hitsByIp == null) {
+                hitsByIp = new HashMap<>();
+                hitsByIp.put(endpoint.getIp(), 1);
             } else {
-                viewStatsMap.put(view, hits + 1);
+                Integer hit = hitsByIp.get(endpoint.getIp());
+                if (hit == null) {
+                    hitsByIp.put(endpoint.getIp(), 1);
+                } else {
+                    hitsByIp.put(endpoint.getIp(), hit + 1);
+                }
             }
+            viewStatsMap.put(view, hitsByIp);
         }
 
         //TODO: use iterator
-        for (Map.Entry<ViewStats, Integer> entry : viewStatsMap.entrySet()) {
+        for (Map.Entry<ViewStats, Map<String, Integer>> entry : viewStatsMap.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
-            entry.getKey().setHits(entry.getValue());
-        }
+            Integer sumHitsByIp = 0;
+            if(unique){
+                sumHitsByIp = entry.getValue().size();
+            } else {
+                for (Map.Entry<String, Integer> hitsByIp : entry.getValue().entrySet()) {
+                    sumHitsByIp += hitsByIp.getValue();
+                }
+            }
 
+            entry.getKey().setHits(sumHitsByIp);
+        }
         viewStats = viewStatsMap.keySet();
 
         return viewStats;
