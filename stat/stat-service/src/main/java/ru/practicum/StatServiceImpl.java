@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exceptionhandler.IllegalDataException;
 
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
@@ -36,6 +37,11 @@ public class StatServiceImpl implements StatService {
 
         LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
+
+        if (endtLDT.isBefore(startLDT)) {
+            throw new IllegalDataException("End is before start");
+        }
+
         List<String> urisList = null;
         if (uris != null) {
             urisList = Arrays.stream(uris).map(uri -> URLDecoder.decode(uri)).collect(Collectors.toList());
