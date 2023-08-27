@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.Constants.SORT_BY_ID_ASC;
 import static ru.practicum.Constants.TIME_PATTERN;
 
 @Service
@@ -24,49 +26,33 @@ public class StatServiceImpl implements StatService {
     public EndpointHitDto post(EndpointHit endpointHit) {
         log.info("Create hit for request {} {}", endpointHit.getApp(), endpointHit.getUri());
         EndpointHitDto endpointHitDto = StatMapper.mapToEndpointHit(endpointHit);
-        return post(endpointHitDto);
-    }
-
-    @Override
-    public EndpointHitDto post(EndpointHitDto endpointHitDto) {
-        log.info("Create hit for {} {}", endpointHitDto.getApp(), endpointHitDto.getIp());
         endpointHitDto = statRepository.save(endpointHitDto);
+
         return endpointHitDto;
     }
 
     @Override
-    public Iterable<ViewStats> get(LocalDateTime start, LocalDateTime end, ArrayList<String> uris, Boolean unique) {
-        BooleanExpression byBetween = QEndpointHitDto.endpointHitDto.timestamp.between(start, end);
-        BooleanExpression byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);//TODO: or use array[string] as param as well?
+    public Iterable<ViewStats> get(String start, String end, Boolean unique, String[] uris) {
 
-        Iterable<EndpointHitDto> endpointHits = statRepository.findAll(byBetween.and(byUris));
-
-        return StatMapper.mapToViewStats(endpointHits, unique);
+        LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
+        LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
+        List<String> urisList = null;
+        if (uris != null) {
+            urisList = Arrays.stream(uris).map(uri -> URLDecoder.decode(uri)).collect(Collectors.toList());
+        }
+        return getByUrisList(startLDT, endtLDT, unique, urisList);
     }
 
-
-    @Override
-    public Iterable<ViewStats> get(String start, String end, ArrayList<Integer> uris, Boolean unique) {
-        ArrayList<String> urisString = (ArrayList<String>) uris.stream().map(uri -> "/events/" + uri).collect(Collectors.toList());
-        return getByUris(start, end, urisString, unique);
-    }
-
-    @Override
-    public Iterable<ViewStats> getByUris(String start, String end, ArrayList<String> uris, Boolean unique) {
-
-        LocalDateTime startTimestamp = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
-        LocalDateTime endtTimestamp = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
-
-        BooleanExpression byBetween = QEndpointHitDto.endpointHitDto.timestamp.between(startTimestamp, endtTimestamp);
-        //TODO: use array[string] as param for uris?
-        BooleanExpression byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);
-
+    private Iterable<ViewStats> getByUrisList(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
         //TODO: use count() or countDistinct?
-//        NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
+        //NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
 
-        Iterable<EndpointHitDto> endpointHits = statRepository.findAll(byBetween.and(byUris));
-
-        return StatMapper.mapToViewStats(endpointHits, unique);
+        BooleanExpression byTimestamp = QEndpointHitDto.endpointHitDto.timestamp.between(start, end);
+        BooleanExpression byUris = null;
+        if (uris != null) {
+            byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);
+        }
+        Iterable<EndpointHitDto> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris), SORT_BY_ID_ASC);
+        return StatMapper.mapToViewStats(endpointHitsDtos, unique);
     }
-
 }

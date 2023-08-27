@@ -18,11 +18,12 @@ public class StatController {
     }
 
     @GetMapping(path = "/stats")
-    public Iterable<ViewStats> get(@RequestParam(name = "start", required = true) String start,
-                                   @RequestParam(name = "end", required = true) String end,
-                                   @RequestParam(name = "uris", required = true) ArrayList<Integer> uris,
-                                   @RequestParam(name = "unique", required = true, defaultValue = "false") Boolean unique
+    public Iterable<ViewStats> getByUriArray(@RequestParam(name = "start", required = true) String start,
+                                             @RequestParam(name = "end", required = true) String end,
+                                             @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
+                                             @RequestParam(name = "uris", required = false) String... uris
     ) {
-        return statService.get(start, end, uris, unique);
+        return statService.get(start, end, unique, uris);
     }
+
 }
