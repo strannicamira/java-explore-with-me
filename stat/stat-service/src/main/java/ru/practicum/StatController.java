@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -20,10 +21,10 @@ public class StatController {
     }
 
     @GetMapping(path = "/stats")
-    public Iterable<ViewStats> getByUriArray(@RequestParam(name = "start", required = true) String start,
-                                             @RequestParam(name = "end", required = true) String end,
-                                             @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
-                                             @RequestParam(name = "uris", required = false) String... uris
+    public List<ViewStats> getByUriArray(@RequestParam(name = "start", required = true) String start,
+                                         @RequestParam(name = "end", required = true) String end,
+                                         @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
+                                         @RequestParam(name = "uris", required = false) String... uris
     ) {
         return statService.get(start, end, unique, uris);
     }

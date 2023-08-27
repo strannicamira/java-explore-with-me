@@ -1,7 +1,9 @@
 package ru.practicum;
 
+import java.util.List;
+
 public interface StatService {
     EndpointHitDto post(EndpointHit endpointHit);
 
-    Iterable<ViewStats> get(String start, String end, Boolean unique, String[] uris);
+    List<ViewStats> get(String start, String end, Boolean unique, String[] uris);
 }

@@ -7,7 +7,9 @@ import javax.validation.Valid;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ru.practicum.Constants.TIME_PATTERN;
@@ -37,10 +39,8 @@ public class StatMapper {
         return viewStats;
     }
 
-    public static Iterable<ViewStats> mapToViewStats(Iterable<EndpointHitDto> endpoints, Boolean unique) {
-        Iterable<ViewStats> viewStats;
+    public static List<ViewStats> mapToViewStats(Iterable<EndpointHitDto> endpoints, Boolean unique) {
         Map<ViewStats, Map<String, Integer>> viewStatsMap = new HashMap<>();
-//        Map<String, Integer> hitsByIp = new HashMap<>();
 
         for (EndpointHitDto endpoint : endpoints) {
 
@@ -78,8 +78,7 @@ public class StatMapper {
 
             entry.getKey().setHits(sumHitsByIp);
         }
-        viewStats = viewStatsMap.keySet();
 
-        return viewStats;
+        return new ArrayList<>(viewStatsMap.keySet());
     }
 }

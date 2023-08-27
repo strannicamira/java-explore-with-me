@@ -9,12 +9,10 @@ import ru.practicum.exceptionhandler.IllegalDataException;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.Constants.SORT_BY_ID_ASC;
-import static ru.practicum.Constants.TIME_PATTERN;
+import static ru.practicum.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class StatServiceImpl implements StatService {
     }
 
     @Override
-    public Iterable<ViewStats> get(String start, String end, Boolean unique, String[] uris) {
+    public List<ViewStats> get(String start, String end, Boolean unique, String[] uris) {
 
         LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
@@ -46,19 +44,23 @@ public class StatServiceImpl implements StatService {
         if (uris != null) {
             urisList = Arrays.stream(uris).map(uri -> URLDecoder.decode(uri)).collect(Collectors.toList());
         }
-        return getByUrisList(startLDT, endtLDT, unique, urisList);
+        List<ViewStats> views = getByUrisList(startLDT, endtLDT, unique, urisList);
+        Collections.sort(views, Comparator.comparing(ViewStats::getHits).reversed());
+
+        return views;
     }
 
-    private Iterable<ViewStats> getByUrisList(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
+    private List<ViewStats> getByUrisList(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
         //TODO: use count() or countDistinct?
         //NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
 
         BooleanExpression byTimestamp = QEndpointHitDto.endpointHitDto.timestamp.between(start, end);
         BooleanExpression byUris = null;
-        if (uris != null) {
+        if (uris != null && uris.size() >= 1 && !uris.get(0).equals("/events")) {
             byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);
         }
-        Iterable<EndpointHitDto> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris), SORT_BY_ID_ASC);
+        Iterable<EndpointHitDto> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris));
+
         return StatMapper.mapToViewStats(endpointHitsDtos, unique);
     }
 }
