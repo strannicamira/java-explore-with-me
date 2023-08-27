@@ -47,9 +47,10 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
-    public ErrorResponse handleThrowable(final Throwable e) {
-        return new ErrorResponse("Произошла непредвиденная ошибка." + e.toString() + "\nmessage: " + e.getMessage() + "\ncouse:" + e.getCause());
-    }
+    //TODO: handle MissingServletRequestParameterException in case of /stats requests without start or end
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
+//    public ErrorResponse handleThrowable(final Throwable e) {
+//        return new ErrorResponse("Произошла непредвиденная ошибка." + e.toString() + "\nmessage: " + e.getMessage() + "\ncouse:" + e.getCause());
+//    }
 }
