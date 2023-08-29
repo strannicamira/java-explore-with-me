@@ -1,7 +1,6 @@
 package ru.practicum;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.data.domain.Sort;
 
 @UtilityClass
 public class Constants {

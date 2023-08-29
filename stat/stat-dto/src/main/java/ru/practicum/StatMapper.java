@@ -68,7 +68,7 @@ public class StatMapper {
         for (Map.Entry<ViewStats, Map<String, Integer>> entry : viewStatsMap.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
             Integer sumHitsByIp = 0;
-            if(unique){
+            if (unique) {
                 sumHitsByIp = entry.getValue().size();
             } else {
                 for (Map.Entry<String, Integer> hitsByIp : entry.getValue().entrySet()) {
