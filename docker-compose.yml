@@ -22,7 +22,7 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - STATS_POSTGRES_DB_NAME=ewm_stats_pg_db
-      - POSTGRES_DB_HOST =localhost
+      - POSTGRES_DB_HOST=localhost
       - POSTGRES_USER=kitty
       - POSTGRES_PASSWORD=purrrrrr
 
