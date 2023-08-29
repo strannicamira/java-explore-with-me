@@ -56,7 +56,7 @@ public class StatServiceImpl implements StatService {
 
         BooleanExpression byTimestamp = QEndpointHitDto.endpointHitDto.timestamp.between(start, end);
         BooleanExpression byUris = null;
-        if (uris != null && uris.size() >= 1 && !uris.get(0).equals("/events")) {
+        if (uris != null) { // && uris.size() >= 1 && !uris.get(0).equals("/events") for Postman collection 'Sprint 17 main_svc "Explore with me" API статистика'
             byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);
         }
         Iterable<EndpointHitDto> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris));
