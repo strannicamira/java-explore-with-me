@@ -1,17 +1,19 @@
 version: '3.1'
 services:
   stats-server:
-    build: stat/
+    build: stat/stat-service
     ports:
       - "9090:9090"
     depends_on:
       - stats-db
     #      - ewm-service
     environment:
-      - STATS_SERVER_PORT:9090
-      - STATS_H2_DB_NAME=ewm_stats_h2_db
-      - STATS_H2_USER=test
-      - STATS_H2_PASSWORD=test
+#      - STATS_SERVER_PORT:9090
+#      - STATS_H2_DB_NAME=ewm_stats_h2_db
+#      - STATS_H2_USER=test
+#      - STATS_H2_PASSWORD=test
+      - STATS_POSTGRES_DB_HOST=stats-db
+      - STATS_POSTGRES_DB_PORT:5432
 
 
   stats-db:
@@ -21,8 +23,7 @@ services:
     volumes:
       - /var/lib/postgresql/data/
     environment:
-      - STATS_POSTGRES_DB_NAME=ewm_stats_pg_db
-      - POSTGRES_DB_HOST=localhost
+      - POSTGRES_DB=ewm_stats_pg_db
       - POSTGRES_USER=kitty
       - POSTGRES_PASSWORD=purrrrrr
 
@@ -49,6 +50,6 @@ services:
 #      - /var/lib/postgresql/data/
 #    environment:
 #      - EWM_POSTGRES_DB_NAME=ewm_pg_db
-#      - EWM_POSTGRES_DB_HOST = localhost
+#      - EWM_POSTGRES_DB_HOST=localhost
 #      - EWM_POSTGRES_USER=kitty
 #      - EWM_POSTGRES_PASSWORD=purrrrrr
