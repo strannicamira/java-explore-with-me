@@ -16,6 +16,7 @@
         <module>stat/stat-service</module>
         <module>stat/stat-client</module>
         <module>stat/stat-dto</module>
+        <module>ewm</module>
     </modules>
 
     <groupId>ru.practicum</groupId>
