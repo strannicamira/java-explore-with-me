@@ -22,8 +22,8 @@ public class StatController {
 
     @GetMapping(path = "/stats")
     public ResponseEntity<Object> getByUriArray(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                                @RequestParam(name = "start", required = true) String start,
-                                                @RequestParam(name = "end", required = true) String end,
+                                                @RequestParam(name = "start") String start,
+                                                @RequestParam(name = "end") String end,
                                                 @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
                                                 @RequestParam(name = "uris", required = false) String... uris
     ) {
