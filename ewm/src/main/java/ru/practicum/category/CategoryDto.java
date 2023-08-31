@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto {
     private Integer id;
-    @NotEmpty
+    @NotBlank
     @Length(max = 250, min = 2)
     @Column(name = "name", nullable = false)
     private String name;
