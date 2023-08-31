@@ -1,11 +1,12 @@
 package ru.practicum.user;
 
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface UserService {
     User createUser(NewUserRequest user);
-    List<User> findUsersByIds(Integer... ids);
+
+    List<User> findUsersByIds(Integer from, Integer size, Integer[] ids);
+
     void deleteUserById(Integer userId);
+
 }

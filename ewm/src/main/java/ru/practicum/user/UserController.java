@@ -22,9 +22,11 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findUsersByIds(@RequestParam(name = "ids", required = false) Integer... ids) {
-        //TODO: Add from and size
-        return userService.findUsersByIds(ids);
+    public List<User> findUsersByIds(
+            @RequestParam(name = "from", required = false) Integer from,
+            @RequestParam(name = "size", required = false) Integer size,
+            @RequestParam(name = "ids", required = false) Integer... ids) {
+        return userService.findUsersByIds(from, size, ids);
     }
 
     @DeleteMapping(value = "/{userId}")
