@@ -34,11 +34,14 @@ public class UserServiceImpl implements UserService {
         log.info("Search user by ids {}", ids);
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         BooleanExpression byIds = null;
+        Iterable<User> foundUsers;
         if (ids != null) {
             List<Integer> idsList = Arrays.asList(ids);
             byIds = QUser.user.id.in(idsList);
+            foundUsers = userRepository.findAll(byIds, page);
+        } else {
+            foundUsers = userRepository.findAll(page);
         }
-        Iterable<User> foundUsers = userRepository.findAll(byIds, page);
         return ServiceImplUtils.mapToList(foundUsers);
     }
 
