@@ -17,32 +17,32 @@ import static ru.practicum.Constants.TIME_PATTERN;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatMapper {
     @Valid
-    public static EndpointHitDto mapToEndpointHit(EndpointHit endpointHit) {
-        EndpointHitDto endpointHitDto = new EndpointHitDto();
-        endpointHitDto.setApp(endpointHit.getApp());
-        endpointHitDto.setUri(endpointHit.getUri());
-        endpointHitDto.setIp(endpointHit.getIp());
+    public static EndpointHit mapToEndpointHit(NewEndpointHitRequest newEndpointHitRequest) {
+        EndpointHit endpointHit = new EndpointHit();
+        endpointHit.setApp(newEndpointHitRequest.getApp());
+        endpointHit.setUri(newEndpointHitRequest.getUri());
+        endpointHit.setIp(newEndpointHitRequest.getIp());
 
-        String timestampString = URLDecoder.decode(endpointHit.getTimestamp());
+        String timestampString = URLDecoder.decode(newEndpointHitRequest.getTimestamp());
         LocalDateTime timestamp = LocalDateTime.parse(timestampString, DateTimeFormatter.ofPattern(TIME_PATTERN));
-        endpointHitDto.setTimestamp(timestamp);
+        endpointHit.setTimestamp(timestamp);
 
-        return endpointHitDto;
+        return endpointHit;
     }
 
     @Valid
-    public static ViewStats mapToViewStats(EndpointHitDto endpointHitDto, Integer hits) {
+    public static ViewStats mapToViewStats(EndpointHit endpointHit, Integer hits) {
         ViewStats viewStats = new ViewStats();
-        viewStats.setApp(endpointHitDto.getApp());
-        viewStats.setUri(endpointHitDto.getUri());
+        viewStats.setApp(endpointHit.getApp());
+        viewStats.setUri(endpointHit.getUri());
         viewStats.setHits(hits);
         return viewStats;
     }
 
-    public static List<ViewStats> mapToViewStats(Iterable<EndpointHitDto> endpoints, Boolean unique) {
+    public static List<ViewStats> mapToViewStats(Iterable<EndpointHit> endpoints, Boolean unique) {
         Map<ViewStats, Map<String, Integer>> viewStatsMap = new HashMap<>();
 
-        for (EndpointHitDto endpoint : endpoints) {
+        for (EndpointHit endpoint : endpoints) {
 
             ViewStats view = new ViewStats();
             view.setApp(endpoint.getApp());

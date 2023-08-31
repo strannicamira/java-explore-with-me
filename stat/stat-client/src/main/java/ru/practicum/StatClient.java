@@ -11,8 +11,8 @@ public class StatClient extends BaseClient {
         super(restTemplate);
     }
 
-    public ResponseEntity<Object> post(Integer userId, EndpointHit endpointHit) {
-        return post("/hit", userId, endpointHit);
+    public ResponseEntity<Object> post(Integer userId, NewEndpointHitRequest newEndpointHitRequest) {
+        return post("/hit", userId, newEndpointHitRequest);
 
     }
 

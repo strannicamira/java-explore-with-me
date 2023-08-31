@@ -1,4 +1,4 @@
-package ru.practicum.user;
+package ru.practicum.util;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Sort;

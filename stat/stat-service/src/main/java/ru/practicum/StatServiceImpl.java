@@ -26,12 +26,12 @@ public class StatServiceImpl implements StatService {
 
     @Override
     @Transactional
-    public EndpointHitDto post(EndpointHit endpointHit) {
-        log.info("Create hit for request {} {}", endpointHit.getApp(), endpointHit.getUri());
-        EndpointHitDto endpointHitDto = StatMapper.mapToEndpointHit(endpointHit);
-        endpointHitDto = statRepository.save(endpointHitDto);
+    public EndpointHit post(NewEndpointHitRequest newEndpointHitRequest) {
+        log.info("Create hit for request {} {}", newEndpointHitRequest.getApp(), newEndpointHitRequest.getUri());
+        EndpointHit endpointHit = StatMapper.mapToEndpointHit(newEndpointHitRequest);
+        endpointHit = statRepository.save(endpointHit);
 
-        return endpointHitDto;
+        return endpointHit;
     }
 
     @Override
@@ -58,12 +58,12 @@ public class StatServiceImpl implements StatService {
         //TODO: use count() or countDistinct?
         //NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
 
-        BooleanExpression byTimestamp = QEndpointHitDto.endpointHitDto.timestamp.between(start, end);
+        BooleanExpression byTimestamp = QEndpointHit.endpointHit.timestamp.between(start, end);
         BooleanExpression byUris = null;
         if (uris != null) { // && uris.size() >= 1 && !uris.get(0).equals("/events") for Postman collection 'Sprint 17 main_svc "Explore with me" API статистика'
-            byUris = QEndpointHitDto.endpointHitDto.uri.in(uris);
+            byUris = QEndpointHit.endpointHit.uri.in(uris);
         }
-        Iterable<EndpointHitDto> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris));
+        Iterable<EndpointHit> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris));
 
         return StatMapper.mapToViewStats(endpointHitsDtos, unique);
     }

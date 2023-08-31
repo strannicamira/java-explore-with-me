@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
 
-    public static User mapToUser(NewUserRequest userDto) {
+    public static User mapToUser(NewUserRequest newUserRequest) {
         User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
+        user.setName(newUserRequest.getName());
+        user.setEmail(newUserRequest.getEmail());
         return user;
     }
 

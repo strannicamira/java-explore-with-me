@@ -16,8 +16,8 @@ public class StatController {
     @PostMapping(path = "/hit")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> post(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                       @Valid @RequestBody EndpointHit endpointHit) {
-        return statClient.post(userId, endpointHit);
+                                       @Valid @RequestBody NewEndpointHitRequest newEndpointHitRequest) {
+        return statClient.post(userId, newEndpointHitRequest);
     }
 
     @GetMapping(path = "/stats")
