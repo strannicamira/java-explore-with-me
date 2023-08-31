@@ -15,18 +15,20 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@Valid @RequestBody NewUserRequest user) {
         return userService.createUser(user);
     }
 
+    @GetMapping
+    public List<User> findUsersByIds(@RequestParam(name = "ids", required = false) Integer... ids) {
+        //TODO: Add from and size
+        return userService.findUsersByIds(ids);
+    }
+
     @DeleteMapping(value = "/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable(name = "userId") Integer userId) {
         userService.deleteUserById(userId);
     }

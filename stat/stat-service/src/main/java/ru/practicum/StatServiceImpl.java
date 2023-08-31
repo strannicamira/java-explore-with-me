@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exceptionhandler.IllegalDataException;
 
 import java.net.URLDecoder;
@@ -20,11 +21,11 @@ import static ru.practicum.Constants.TIME_PATTERN;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-//@Transactional(readOnly = true)
 public class StatServiceImpl implements StatService {
     private final StatRepository statRepository;
 
     @Override
+    @Transactional
     public EndpointHitDto post(EndpointHit endpointHit) {
         log.info("Create hit for request {} {}", endpointHit.getApp(), endpointHit.getUri());
         EndpointHitDto endpointHitDto = StatMapper.mapToEndpointHit(endpointHit);
