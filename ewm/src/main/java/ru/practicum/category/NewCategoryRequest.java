@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class NewCategoryRequest {
     @NotBlank
-    @Length(max = 250, min = 2)
+    @Length(max = 50, min = 1)
     @Column(name = "name", nullable = false)
     private String name;
 }
