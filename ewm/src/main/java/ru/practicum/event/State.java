@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum State {
 
-    PENDING(0, "PENDING"),
-    PUBLISHED(1, "PUBLISHED"),
-    CANCELED(2, "CANCELED");
+    PENDING(1, "PENDING"),
+    PUBLISHED(2, "PUBLISHED"),
+    CANCELED(3, "CANCELED");
 
     private final Integer id;
     private final String name;
