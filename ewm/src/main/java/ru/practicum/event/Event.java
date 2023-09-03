@@ -3,6 +3,8 @@ package ru.practicum.event;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.practicum.category.Category;
+import ru.practicum.location.Location;
 
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
@@ -31,8 +33,11 @@ public class Event {
 
     //id категории к которой относится событие
     @NotNull
-    @Column(name = "CATEGORY_ID")
-    private Integer category;
+//    @Column(name = "CATEGORY_ID")
+//    private Integer category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY_ID")
+    private Category category;
 
     //Полное описание события
     @NotBlank

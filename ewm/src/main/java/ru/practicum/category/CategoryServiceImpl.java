@@ -38,10 +38,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDto findCategoryById(Integer id) {
+    public Category findCategoryById(Integer id) {
         log.info("Search category by id {}", id);
         Category foundCategory = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
-        return CategoryMapper.mapToCategoryDto(foundCategory);
+        return foundCategory;
     }
 
     @Override

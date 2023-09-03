@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.category.CategoryDto;
+import ru.practicum.location.LocationDto;
 import ru.practicum.user.UserShortDto;
 
 import javax.validation.constraints.NotBlank;

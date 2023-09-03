@@ -2,7 +2,10 @@ package ru.practicum.event;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.category.Category;
 import ru.practicum.category.CategoryDto;
+import ru.practicum.location.Location;
+import ru.practicum.location.LocationMapper;
 import ru.practicum.user.UserShortDto;
 
 import java.net.URLDecoder;
@@ -13,10 +16,10 @@ import static ru.practicum.util.Constants.TIME_PATTERN;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventMapper {
-    public static Event mapToEvent(NewEventRequest newEventRequest, Location location) {
+    public static Event mapToEvent(NewEventRequest newEventRequest, Category category, Location location) {
         Event event = new Event();
         event.setAnnotation(newEventRequest.getAnnotation());
-        event.setCategory(newEventRequest.getCategory());
+        event.setCategory(category);
         event.setDescription(newEventRequest.getDescription());
         LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(newEventRequest.getEventDate()), DateTimeFormatter.ofPattern(TIME_PATTERN));
         event.setEventDate(eventDate);
