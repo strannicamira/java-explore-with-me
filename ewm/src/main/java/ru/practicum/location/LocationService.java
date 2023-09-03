@@ -1,4 +1,4 @@
-package ru.practicum.event;
+package ru.practicum.location;
 
 import org.springframework.transaction.annotation.Transactional;
 
