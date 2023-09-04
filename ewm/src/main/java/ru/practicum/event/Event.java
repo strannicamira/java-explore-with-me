@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.category.Category;
 import ru.practicum.location.Location;
 import ru.practicum.user.User;
-import ru.practicum.user.UserShortDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
@@ -28,12 +27,12 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //Краткое описание события
+    //Краткое описание события*
     @NotBlank
     @Length(max = 2000, min = 20)
     private String annotation;
 
-    //id категории к которой относится событие
+    //id категории к которой относится событие*
     @NotNull
 //    @Column(name = "CATEGORY_ID")
 //    private Integer category;
@@ -46,33 +45,36 @@ public class Event {
     private Integer confirmedRequests;
 
     //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
-//    @NotNull
+    @NotNull
+    @FutureOrPresent
+    //    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
 
-    //Полное описание события
+    //Полное описание события*
     @NotBlank
     @Length(max = 7000, min = 20)
     private String description;
 
-    // Дата и время на которые намечено событие.
+    // Дата и время на которые намечено событие.*
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
     @NotNull
     @FutureOrPresent
-    @DateTimeFormat(pattern = TIME_PATTERN)
+//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "EVENT_DATE")
     private LocalDateTime eventDate;
 
     //Пользователь (краткая информация)
-//    @NotNull
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INITIATOR_ID")
     private User initiator;
 
 
-    //Широта и долгота места проведения события
+    //Широта и долгота места проведения события*
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
@@ -84,7 +86,8 @@ public class Event {
 //    @Column(name = "LOCATION_LON")
 //    private Float lon;
 
-    //    Нужно ли оплачивать участие в событии
+    //    Нужно ли оплачивать участие в событии *(EventFullDto)
+    @NotNull
     private Boolean paid = false;
 
     //Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
@@ -94,7 +97,7 @@ public class Event {
 
     //Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
     @FutureOrPresent
-    @DateTimeFormat(pattern = TIME_PATTERN)
+//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "PUBLISHED_ON")
     private LocalDateTime publishedOn;
 
@@ -105,10 +108,11 @@ public class Event {
     private Boolean requestModeration = true;
 
     //Список состояний жизненного цикла события
+    @NotNull
     @Enumerated(EnumType.ORDINAL)
     private State state;
 
-    //Заголовок события
+    //Заголовок события*
     @NotBlank
     @Length(max = 120, min = 3)
     private String title;

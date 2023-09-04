@@ -33,24 +33,28 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto createEvent(NewEventRequest newEventRequest, Integer userId) {
         log.info("Create event");
-        Integer category = newEventRequest.getCategory();
-//        CategoryDto categoryById = categoryService.findCategoryById(category);
-        Category categoryById = categoryService.findCategoryById(category);
-        CategoryDto categoryDto = CategoryMapper.mapToCategoryDto(categoryById);
 
+        //category
+        Integer categoryId = newEventRequest.getCategory();
+        Category category = categoryService.findCategoryById(categoryId);
 
+        //createdOn
+        LocalDateTime createdOn = LocalDateTime.now();
+
+        //initiator
+        List<User> initiatorUsers = userService.findUsersByIds(null, null, new Integer[]{userId});
+        User initiator = initiatorUsers != null && !initiatorUsers.isEmpty() && initiatorUsers.size() >= 1 ? initiatorUsers.get(0) : null;
+
+        //location
         LocationDto locationDto = newEventRequest.getLocation();
         Location location = locationService.createLocation(locationDto);
 
-        Event event = eventRepository.save(EventMapper.mapToEvent(newEventRequest, categoryById, location));
-        LocalDateTime createdOn = LocalDateTime.now();
-        List<User> initiatorUsers = userService.findUsersByIds(null, null, new Integer[]{userId});
-        List<UserShortDto> initiators = UserMapper.mapToUserShortDto(initiatorUsers);
-        UserShortDto initiator = initiators != null && !initiators.isEmpty() && initiators.size() >= 1 ? initiators.get(0) : null;
+        //save to DB as Event
+        Event entity = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location);
+        Event event = eventRepository.save(entity);
 
-
-        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event, categoryDto,
-                null, createdOn, initiator, null, State.PENDING, null);
+        //return for controller as EventFullDto
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
     }
 

@@ -13,21 +13,21 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewEventRequest {
-    //Краткое описание события
+    //Краткое описание события*
     @NotBlank
     @Length(max = 2000, min = 20)
     private String annotation;
 
-    //id категории к которой относится событие
+    //id категории к которой относится событие*
     @NotNull
     private Integer category;
 
-    //Полное описание события
+    //Полное описание события*
     @NotBlank
     @Length(max = 7000, min = 20)
     private String description;
 
-    // Дата и время на которые намечено событие.
+    // Дата и время на которые намечено событие.*
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
@@ -36,7 +36,7 @@ public class NewEventRequest {
 //    @DateTimeFormat(pattern = TIME_PATTERN)
     private String eventDate;
 
-    //Широта и долгота места проведения события
+    //Широта и долгота места проведения события*
     @NotNull
     private LocationDto location;
 
@@ -51,7 +51,7 @@ public class NewEventRequest {
     // Если false - то будут подтверждаться автоматически.
     private Boolean requestModeration = true;
 
-    //Заголовок события
+    //Заголовок события*
     @NotBlank
     @Length(max = 120, min = 3)
     private String title;
