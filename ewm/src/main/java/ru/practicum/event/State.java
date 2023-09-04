@@ -1,13 +1,14 @@
 package ru.practicum.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum State {
 
     PENDING(0, "PENDING"),
-    PUBLISHED(1, "PUBLISHED"),
-    CANCELED(2, "CANCELED");
+    SEND_TO_REVIEW(1, "SEND_TO_REVIEW"),
+    CANCEL_REVIEW(2, "CANCEL_REVIEW "),
+    PUBLISHED(3, "PUBLISHED"),
+    CANCELED(4, "CANCELED");
 
     private final Integer id;
     private final String name;
@@ -32,7 +33,7 @@ public enum State {
         return getName();
     }
 
-//    @JsonCreator
+    //    @JsonCreator
     public static State forValues(//@JsonProperty("id")
                                   Integer id) {
         for (State state : State.values()) {

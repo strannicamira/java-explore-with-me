@@ -53,10 +53,10 @@ public class EventServiceImpl implements EventService {
 
         //save to DB as Event
         Event entity = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location);
-        Event event = eventRepository.save(entity);
+        Event savedEvent = eventRepository.save(entity);
 
         //return for controller as EventFullDto
-        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
     }
 
@@ -73,9 +73,25 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto findEventFullDtoById(Integer userId, Integer eventId) {
-        userService.findUserById(userId);
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+        Event event = findEventById(userId, eventId);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
     }
+
+    private Event findEventById(Integer userId, Integer eventId) {
+        userService.findUserById(userId);
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+        return event;
+    }
+
+    @Override
+    public EventFullDto updateEvent(UpdateEventUserRequest request, Integer userId, Integer eventId) {
+        Event event = findEventById(userId, eventId);
+        Event updatedEvent = EventMapper.mapToEvent(event, request);
+        Event savedEvent = eventRepository.save(updatedEvent);
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
+        return eventFullDto;
+    }
+
+
 }

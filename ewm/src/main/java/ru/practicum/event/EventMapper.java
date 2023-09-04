@@ -8,7 +8,6 @@ import ru.practicum.location.Location;
 import ru.practicum.location.LocationMapper;
 import ru.practicum.user.User;
 import ru.practicum.user.UserMapper;
-import ru.practicum.user.UserShortDto;
 
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
@@ -84,5 +83,25 @@ public class EventMapper {
             dtos.add(mapToEventShortDto(event));
         }
         return dtos;
+    }
+
+
+    public static Event mapToEvent(Event event, UpdateEventUserRequest request) {
+        Event newEvent = event;
+        newEvent.setAnnotation(getNewValue(event.getAnnotation(), request.getAnnotation()));
+        newEvent.setCategory((Category) getNewValue(event.getCategory(), request.getCategory()));
+        newEvent.setDescription(getNewValue(event.getDescription(), request.getDescription()));
+        newEvent.setEventDate((LocalDateTime) getNewValue(event.getEventDate(), request.getEventDate()));
+        newEvent.setLocation((Location) getNewValue(event.getLocation(), request.getLocation()));
+        newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
+        newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
+        newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
+        newEvent.setState(getNewValue(event.getState(), request.getStateAction()));
+        newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
+        return newEvent;
+    }
+
+    private static <T> T getNewValue(T oldValue, T newValue) {
+        return newValue != null ? newValue : oldValue;
     }
 }

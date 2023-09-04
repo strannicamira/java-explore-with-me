@@ -3,6 +3,7 @@ package ru.practicum.event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.category.CategoryDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -35,5 +36,12 @@ public class EventPrivateController {
             @PathVariable(name = "userId") Integer userId,
             @PathVariable(name = "eventId") Integer eventId) {
         return eventService.findEventFullDtoById(userId, eventId);
+    }
+
+    @PatchMapping(value = "/{eventId}")
+    public EventFullDto updateEvent(@Valid @RequestBody UpdateEventUserRequest event,
+                                      @PathVariable(name = "userId") Integer userId,
+                                      @PathVariable(name = "eventId") Integer eventId) {
+        return eventService.updateEvent(event, userId, eventId);
     }
 }
