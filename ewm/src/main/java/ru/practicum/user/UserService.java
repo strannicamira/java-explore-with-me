@@ -9,4 +9,5 @@ public interface UserService {
 
     void deleteUserById(Integer userId);
 
+    User findUserById(Integer userId);
 }

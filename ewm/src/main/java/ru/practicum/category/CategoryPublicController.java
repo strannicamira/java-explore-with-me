@@ -14,7 +14,7 @@ public class CategoryPublicController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto> findCategoryDtos(
+    public List<CategoryDto> findCategory(
             @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         List<CategoryDto> categories = categoryService.findCategoryDtos(from, size);
@@ -22,7 +22,7 @@ public class CategoryPublicController {
     }
 
     @GetMapping(value = "/{catId}")
-    public CategoryDto findCategoryDtoById(@PathVariable(name = "catId") Integer id) {
+    public CategoryDto findCategoryById(@PathVariable(name = "catId") Integer id) {
         //TODO: handle case for 400, try to use String instead Integer
         CategoryDto categoryDto = categoryService.findCategoryDtoById(id);
         return categoryDto;

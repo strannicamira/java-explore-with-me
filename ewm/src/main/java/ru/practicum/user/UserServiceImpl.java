@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.exceptionhandler.NotFoundException;
 import ru.practicum.util.ServiceImplUtils;
 
 import java.util.Arrays;
@@ -43,6 +44,14 @@ public class UserServiceImpl implements UserService {
             foundUsers = userRepository.findAll(page);
         }
         return ServiceImplUtils.mapToList(foundUsers);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findUserById(Integer id) {
+        log.info("Search user by id {}", id);
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        return foundUser;
     }
 
     @Override

@@ -3,7 +3,6 @@ package ru.practicum.event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.user.User;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,7 +22,6 @@ public class EventPrivateController {
         return eventService.createEvent(event, userId);
     }
 
-
     @GetMapping
     public List<EventShortDto> findEvents(
             @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
@@ -32,4 +30,10 @@ public class EventPrivateController {
         return eventService.findEventShortDtos(from, size, userId);
     }
 
+    @GetMapping(value = "/{eventId}")
+    public EventFullDto findEventById(
+            @PathVariable(name = "userId") Integer userId,
+            @PathVariable(name = "eventId") Integer eventId) {
+        return eventService.findEventFullDtoById(userId, eventId);
+    }
 }

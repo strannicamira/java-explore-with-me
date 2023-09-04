@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
+import ru.practicum.exceptionhandler.NotFoundException;
 import ru.practicum.location.Location;
 import ru.practicum.location.LocationDto;
 import ru.practicum.location.LocationService;
@@ -62,6 +63,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> findEventShortDtos(Integer from, Integer size, Integer userId) {
         log.info("Search events by user with id {}", userId);
+        userService.findUserById(userId);
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         Page<Event> foundEvents = eventRepository.findAll(page);
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
@@ -69,4 +71,11 @@ public class EventServiceImpl implements EventService {
         return eventsDtoList;
     }
 
+    @Override
+    public EventFullDto findEventFullDtoById(Integer userId, Integer eventId) {
+        userService.findUserById(userId);
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
+        return eventFullDto;
+    }
 }
