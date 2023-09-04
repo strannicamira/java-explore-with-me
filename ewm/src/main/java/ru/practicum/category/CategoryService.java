@@ -5,9 +5,10 @@ import java.util.List;
 public interface CategoryService {
     CategoryDto createCategory(NewCategoryRequest category);
 
-    List<CategoryDto> findCategories(Integer from, Integer size);
+    List<CategoryDto> findCategoryDtos(Integer from, Integer size);
 
     Category findCategoryById(Integer id);
+    CategoryDto findCategoryDtoById(Integer id);
 
     CategoryDto updateCategory(CategoryDto categoryDto, Integer id);
 

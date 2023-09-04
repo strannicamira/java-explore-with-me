@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoryDto> findCategories(Integer from, Integer size) {
+    public List<CategoryDto> findCategoryDtos(Integer from, Integer size) {
         log.info("Search categories");
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         Iterable<Category> foundCategories = categoryRepository.findAll(page);
@@ -42,6 +42,15 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Search category by id {}", id);
         Category foundCategory = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
         return foundCategory;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CategoryDto findCategoryDtoById(Integer id) {
+        log.info("Search category dto by id {}", id);
+        Category categoryById = findCategoryById(id);
+        CategoryDto categoryDto = CategoryMapper.mapToCategoryDto(categoryById);
+        return categoryDto;
     }
 
     @Override

@@ -2,22 +2,23 @@ package ru.practicum.event;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
-import ru.practicum.category.CategoryDto;
-import ru.practicum.category.CategoryMapper;
 import ru.practicum.category.CategoryService;
 import ru.practicum.location.Location;
 import ru.practicum.location.LocationDto;
 import ru.practicum.location.LocationService;
 import ru.practicum.user.User;
-import ru.practicum.user.UserMapper;
 import ru.practicum.user.UserService;
-import ru.practicum.user.UserShortDto;
+import ru.practicum.util.ServiceImplUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static ru.practicum.util.Constants.SORT_BY_ID_ASC;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +57,16 @@ public class EventServiceImpl implements EventService {
         //return for controller as EventFullDto
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
+    }
+
+    @Override
+    public List<EventShortDto> findEventShortDtos(Integer from, Integer size, Integer userId) {
+        log.info("Search events by user with id {}", userId);
+        Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
+        Page<Event> foundEvents = eventRepository.findAll(page);
+        List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
+        List<EventShortDto> eventsDtoList = EventMapper.mapToEventShortDto(eventsList);
+        return eventsDtoList;
     }
 
 }

@@ -14,18 +14,17 @@ public class CategoryPublicController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto> findCategories(
-            @RequestParam(name = "from", required = false) Integer from,
-            @RequestParam(name = "size", required = false) Integer size) {
-        List<CategoryDto> categories = categoryService.findCategories(from, size);
+    public List<CategoryDto> findCategoryDtos(
+            @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+        List<CategoryDto> categories = categoryService.findCategoryDtos(from, size);
         return categories;
     }
 
     @GetMapping(value = "/{catId}")
-    public CategoryDto findCategoryByIds(@PathVariable(name = "catId") Integer id) {
+    public CategoryDto findCategoryDtoById(@PathVariable(name = "catId") Integer id) {
         //TODO: handle case for 400, try to use String instead Integer
-        Category categoryById = categoryService.findCategoryById(id);
-        CategoryDto categoryDto = CategoryMapper.mapToCategoryDto(categoryById);
+        CategoryDto categoryDto = categoryService.findCategoryDtoById(id);
         return categoryDto;
     }
 

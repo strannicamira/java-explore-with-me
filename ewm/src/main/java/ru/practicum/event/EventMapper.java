@@ -8,10 +8,13 @@ import ru.practicum.location.Location;
 import ru.practicum.location.LocationMapper;
 import ru.practicum.user.User;
 import ru.practicum.user.UserMapper;
+import ru.practicum.user.UserShortDto;
 
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ru.practicum.util.Constants.TIME_PATTERN;
 
@@ -58,5 +61,28 @@ public class EventMapper {
         dto.setTitle(event.getTitle());
         dto.setViews(event.getViews());
         return dto;
+    }
+
+
+    public static EventShortDto mapToEventShortDto(Event event) {
+        EventShortDto dto = new EventShortDto();
+        dto.setAnnotation(event.getAnnotation());
+        dto.setCategory(CategoryMapper.mapToCategoryDto(event.getCategory()));
+        dto.setConfirmedRequests(event.getConfirmedRequests());
+        dto.setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+        dto.setId(event.getId());
+        dto.setInitiator(UserMapper.mapToUserShortDto(event.getInitiator()));
+        dto.setPaid(event.getPaid());
+        dto.setTitle(event.getTitle());
+        dto.setViews(event.getViews());
+        return dto;
+    }
+
+    public static List<EventShortDto> mapToEventShortDto(List<Event> events) {
+        List<EventShortDto> dtos = new ArrayList<>();
+        for (Event event : events) {
+            dtos.add(mapToEventShortDto(event));
+        }
+        return dtos;
     }
 }
