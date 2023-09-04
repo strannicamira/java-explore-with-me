@@ -2,7 +2,6 @@ package ru.practicum.event;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.category.Category;
 import ru.practicum.location.Location;
 import ru.practicum.user.User;
@@ -12,8 +11,6 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
-import static ru.practicum.util.Constants.TIME_PATTERN;
 
 @Getter
 @Setter
@@ -46,7 +43,7 @@ public class Event {
 
     //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull
-    @FutureOrPresent
+//    @FutureOrPresent
     //    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
