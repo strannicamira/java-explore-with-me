@@ -45,8 +45,11 @@ public class EventFullDto {
     private String eventDate;
 
     //Идентификатор
+    @NotNull
     private Integer id;
 
+    //Пользователь (краткая информация)
+    @NotNull
     private UserShortDto initiator;
 
     //Широта и долгота места проведения события

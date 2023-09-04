@@ -5,6 +5,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.category.Category;
 import ru.practicum.location.Location;
+import ru.practicum.user.User;
+import ru.practicum.user.UserShortDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
@@ -39,6 +41,15 @@ public class Event {
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
 
+    //Количество одобренных заявок на участие в данном событии
+    @Column(name = "CONFIRMED_REQUESTS")
+    private Integer confirmedRequests;
+
+    //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
+//    @NotNull
+    @Column(name = "CREATED_ON")
+    private LocalDateTime createdOn;
+
     //Полное описание события
     @NotBlank
     @Length(max = 7000, min = 20)
@@ -53,6 +64,13 @@ public class Event {
     @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "EVENT_DATE")
     private LocalDateTime eventDate;
+
+    //Пользователь (краткая информация)
+//    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "INITIATOR_ID")
+    private User initiator;
+
 
     //Широта и долгота места проведения события
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,14 +91,28 @@ public class Event {
     @Column(name = "PARTICIPANT_LIMIT")
     private Integer participantLimit = 0;
 
+
+    //Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
+    @FutureOrPresent
+    @DateTimeFormat(pattern = TIME_PATTERN)
+    @Column(name = "PUBLISHED_ON")
+    private LocalDateTime publishedOn;
+
     //Нужна ли пре-модерация заявок на участие.
     // Если true, то все заявки будут ожидать подтверждения инициатором события.
     // Если false - то будут подтверждаться автоматически.
     @Column(name = "REQUEST_MODERATION")
     private Boolean requestModeration = true;
 
+    //Список состояний жизненного цикла события
+    @Enumerated(EnumType.ORDINAL)
+    private State state;
+
     //Заголовок события
     @NotBlank
     @Length(max = 120, min = 3)
     private String title;
+
+    //Количество просмотрев события
+    private Integer views;
 }
