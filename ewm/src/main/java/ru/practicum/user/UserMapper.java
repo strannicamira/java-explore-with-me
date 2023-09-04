@@ -18,6 +18,7 @@ public class UserMapper {
 
     public static UserShortDto mapToUserShortDto(User user) {
         UserShortDto dto = new UserShortDto();
+        dto.setId(user.getId());
         dto.setName(user.getName());
         return dto;
     }
