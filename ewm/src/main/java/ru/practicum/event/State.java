@@ -12,9 +12,9 @@ public enum State {
     PUBLISHED(1, "PUBLISHED"),
     CANCELED(2, "CANCELED"),
     SEND_TO_REVIEW(3, "SEND_TO_REVIEW"),
-    CANCEL_REVIEW(4, "CANCEL_REVIEW "),
+    CANCEL_REVIEW(4, "CANCEL_REVIEW"),
     PUBLISH_EVENT(5, "PUBLISH_EVENT"),
-    REJECT_EVENT(6, "REJECT_EVENT  ");
+    REJECT_EVENT(6, "REJECT_EVENT");
     private final Integer id;
     private final String name;
 
