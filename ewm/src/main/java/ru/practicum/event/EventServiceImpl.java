@@ -102,12 +102,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> findEventFullDtos(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
 
+//        List<Integer> userIdsList = Arrays.stream(userIds).map(i -> i + 1).collect(Collectors.toList());
         BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
 
         List<State> states = Arrays.stream(stateNames).map(State::forValues).collect(Collectors.toList());
         //    List<State> states = State.forValues(stateNames);
         BooleanExpression byStates = QEvent.event.state.in(states);
 
+//        List<Integer> categoryIdsList = Arrays.stream(categoryIds).map(i -> i + 1).collect(Collectors.toList());
         BooleanExpression byCategory = QEvent.event.category.id.in(categoryIds);
 
         LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
