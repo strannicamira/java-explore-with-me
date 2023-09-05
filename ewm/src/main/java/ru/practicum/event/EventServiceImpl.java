@@ -103,10 +103,6 @@ public class EventServiceImpl implements EventService {
         //category
 
         Integer categoryId = request.getCategory();
-//        Category category = null;
-//        if (categoryId!=null) {
-//            category = categoryService.findCategoryById(categoryId);
-//        }
         Category category = categoryId != null ? categoryService.findCategoryById(categoryId) : null;
 
         //eventDate
@@ -116,10 +112,9 @@ public class EventServiceImpl implements EventService {
 
         //location
         LocationDto locationDto = request.getLocation();
-        Location location = locationService.updateLocation(locationDto);
 
         Event event = findEventById(userId, eventId);
-        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, location);
+        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto);
         Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
@@ -129,14 +124,11 @@ public class EventServiceImpl implements EventService {
     public List<EventFullDto> findEventByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
         log.info("[CustomLog][Info] Find event by Admin");
 
-//        List<Integer> userIdsList = Arrays.stream(userIds).map(i -> i + 1).collect(Collectors.toList());
         BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
 
         List<State> states = Arrays.stream(stateNames).map(State::forValues).collect(Collectors.toList());
-        //    List<State> states = State.forValues(stateNames);
         BooleanExpression byStates = QEvent.event.state.in(states);
 
-//        List<Integer> categoryIdsList = Arrays.stream(categoryIds).map(i -> i + 1).collect(Collectors.toList());
         BooleanExpression byCategory = QEvent.event.category.id.in(categoryIds);
 
         LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
@@ -159,7 +151,6 @@ public class EventServiceImpl implements EventService {
 
         //category
         Integer categoryId = request.getCategory();
-//        Category category = categoryService.findCategoryById(categoryId);
         Category category = categoryId != null ? categoryService.findCategoryById(categoryId) : null;
 
         //eventDate
@@ -168,8 +159,6 @@ public class EventServiceImpl implements EventService {
 
         //location
         LocationDto locationDto = request.getLocation();
-//        Location location = locationService.updateLocation(locationDto);
-//        Location location = locationDto != null ? locationService.createLocation(locationDto) : null;
 
         Event event = findEventById(eventId);
         Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto);

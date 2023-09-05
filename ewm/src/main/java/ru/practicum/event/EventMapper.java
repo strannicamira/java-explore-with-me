@@ -87,14 +87,16 @@ public class EventMapper {
     }
 
 
-    public static Event mapToEvent(Event event, UpdateEventUserRequest request, Category category, LocalDateTime eventDate, Location location) {
+    public static Event mapToEvent(Event event, UpdateEventUserRequest request, Category category, LocalDateTime eventDate, LocationDto locationDto) {
         Event newEvent = event;
         newEvent.setAnnotation(getNewValue(event.getAnnotation(), request.getAnnotation()));
         newEvent.setCategory(getNewValue(event.getCategory(), category));
         newEvent.setDescription(getNewValue(event.getDescription(), request.getDescription()));
         newEvent.setEventDate(getNewValue(event.getEventDate(), eventDate));
-        newEvent.setLocation(getNewValue(event.getLocation(), location));
-        newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
+        if (locationDto != null) {
+            newEvent.getLocation().setLat(locationDto.getLat());
+            newEvent.getLocation().setLon(locationDto.getLon());
+        }        newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
         newEvent.setState(getNewValue(event.getState(), request.getStateAction()));
@@ -109,20 +111,10 @@ public class EventMapper {
         newEvent.setCategory(getNewValue(event.getCategory(), category));
         newEvent.setDescription(getNewValue(event.getDescription(), request.getDescription()));
         newEvent.setEventDate(getNewValue(event.getEventDate(), eventDate));
-//        newEvent.setLocation(getNewValue(event.getLocation(), location));
-//        if(event.getLocation()!=null && locationDto!= null){
-//            newEvent.getLocation().setLat(getNewValue(event.getLocation().getLat(), locationDto.getLat()));
-//            newEvent.getLocation().setLon(getNewValue(event.getLocation().getLon(), locationDto.getLon()));
-//        } else if(event.getLocation()==null ){
-//            newEvent.getLocation().setLat(locationDto.getLat());
-//            newEvent.getLocation().setLon( locationDto.getLon());
-//        }
-
-        if(locationDto!= null){
+        if (locationDto != null) {
             newEvent.getLocation().setLat(locationDto.getLat());
-            newEvent.getLocation().setLon( locationDto.getLon());
+            newEvent.getLocation().setLon(locationDto.getLon());
         }
-
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
