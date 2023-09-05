@@ -14,12 +14,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
-@SequenceGenerator(name="user_id_seq", initialValue=0, allocationSize=1)
 public class User {
     @Id
-//    @GeneratedValue
-//    (strategy = GenerationType.IDENTITY)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotBlank
     @Length(max = 250, min = 2)
