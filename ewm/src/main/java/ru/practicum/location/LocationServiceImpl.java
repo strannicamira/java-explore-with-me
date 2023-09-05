@@ -18,4 +18,22 @@ public class LocationServiceImpl implements LocationService {
         Location savedLocation = locationRepository.save(LocationMapper.mapToLocation(locationDto));
         return savedLocation;
     }
+
+    @Override
+    @Transactional
+    public Location updateLocation(LocationDto locationDto) {
+        log.info("Update location");
+        Location foundLocation = locationRepository.findByLatAndLon(locationDto.getLat(), locationDto.getLon());
+        foundLocation.setLat(locationDto.getLat() != null ? locationDto.getLat() : foundLocation.getLat());
+        foundLocation.setLon(locationDto.getLon() != null ? locationDto.getLon() : foundLocation.getLon());
+        Location savedLocation = locationRepository.save(LocationMapper.mapToLocation(locationDto));
+        return savedLocation;
+    }
+
+    @Override
+    @Transactional
+    public void deleteLocation(Integer id) {
+        log.info("Create location");
+        locationRepository.deleteById(id);
+    }
 }

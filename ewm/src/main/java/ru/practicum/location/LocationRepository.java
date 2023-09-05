@@ -6,4 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface LocationRepository extends JpaRepository<Location, Integer>,
         QuerydslPredicateExecutor<Location>, PagingAndSortingRepository<Location, Integer> {
+    Location findByLatAndLon(Float lat, Float lon);
 }

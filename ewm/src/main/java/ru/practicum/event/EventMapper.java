@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryMapper;
 import ru.practicum.location.Location;
+import ru.practicum.location.LocationDto;
 import ru.practicum.location.LocationMapper;
 import ru.practicum.user.User;
 import ru.practicum.user.UserMapper;
@@ -86,13 +87,13 @@ public class EventMapper {
     }
 
 
-    public static Event mapToEvent(Event event, UpdateEventUserRequest request) {
+    public static Event mapToEvent(Event event, UpdateEventUserRequest request, Category category, LocalDateTime eventDate, Location location) {
         Event newEvent = event;
         newEvent.setAnnotation(getNewValue(event.getAnnotation(), request.getAnnotation()));
-        newEvent.setCategory((Category) getNewValue(event.getCategory(), request.getCategory()));
+        newEvent.setCategory(getNewValue(event.getCategory(), category));
         newEvent.setDescription(getNewValue(event.getDescription(), request.getDescription()));
-        newEvent.setEventDate((LocalDateTime) getNewValue(event.getEventDate(), request.getEventDate()));
-        newEvent.setLocation((Location) getNewValue(event.getLocation(), request.getLocation()));
+        newEvent.setEventDate(getNewValue(event.getEventDate(), eventDate));
+        newEvent.setLocation(getNewValue(event.getLocation(), location));
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
@@ -100,6 +101,36 @@ public class EventMapper {
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
     }
+
+
+    public static Event mapToEvent(Event event, UpdateEventAdminRequest request, Category category, LocalDateTime eventDate, LocationDto locationDto) {
+        Event newEvent = event;
+        newEvent.setAnnotation(getNewValue(event.getAnnotation(), request.getAnnotation()));
+        newEvent.setCategory(getNewValue(event.getCategory(), category));
+        newEvent.setDescription(getNewValue(event.getDescription(), request.getDescription()));
+        newEvent.setEventDate(getNewValue(event.getEventDate(), eventDate));
+//        newEvent.setLocation(getNewValue(event.getLocation(), location));
+//        if(event.getLocation()!=null && locationDto!= null){
+//            newEvent.getLocation().setLat(getNewValue(event.getLocation().getLat(), locationDto.getLat()));
+//            newEvent.getLocation().setLon(getNewValue(event.getLocation().getLon(), locationDto.getLon()));
+//        } else if(event.getLocation()==null ){
+//            newEvent.getLocation().setLat(locationDto.getLat());
+//            newEvent.getLocation().setLon( locationDto.getLon());
+//        }
+
+        if(locationDto!= null){
+            newEvent.getLocation().setLat(locationDto.getLat());
+            newEvent.getLocation().setLon( locationDto.getLon());
+        }
+
+        newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
+        newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
+        newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
+        newEvent.setState(getNewValue(event.getState(), request.getStateAction()));
+        newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
+        return newEvent;
+    }
+
 
     private static <T> T getNewValue(T oldValue, T newValue) {
         return newValue != null ? newValue : oldValue;
@@ -112,4 +143,6 @@ public class EventMapper {
         }
         return dtos;
     }
+
+
 }

@@ -8,11 +8,13 @@ import java.util.List;
 public enum State {
 
     PENDING(0, "PENDING"),
-    SEND_TO_REVIEW(1, "SEND_TO_REVIEW"),
-    CANCEL_REVIEW(2, "CANCEL_REVIEW "),
-    PUBLISHED(3, "PUBLISHED"),
-    CANCELED(4, "CANCELED");
 
+    PUBLISHED(1, "PUBLISHED"),
+    CANCELED(2, "CANCELED"),
+    SEND_TO_REVIEW(3, "SEND_TO_REVIEW"),
+    CANCEL_REVIEW(4, "CANCEL_REVIEW "),
+    PUBLISH_EVENT(5, "PUBLISH_EVENT"),
+    REJECT_EVENT(6, "REJECT_EVENT  ");
     private final Integer id;
     private final String name;
 
@@ -59,10 +61,10 @@ public enum State {
 
 
     public static List<State> forValues(//@JsonProperty("name")
-                                        String[]  names) {
+                                        String[] names) {
         List<State> states = new ArrayList<>();
         for (String name : names) {
-                states.add(forValues(name));
+            states.add(forValues(name));
         }
         return states;
     }

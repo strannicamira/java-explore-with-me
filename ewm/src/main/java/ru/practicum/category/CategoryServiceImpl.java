@@ -1,5 +1,6 @@
 package ru.practicum.category;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Category findCategoryById(Integer id) {
         log.info("Search category by id {}", id);
         Category foundCategory = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
+
+//        BooleanExpression categoryById = QCategory.category.id.eq(id);
+//        categoryRepository.findAll(categoryById);
+
         return foundCategory;
     }
 

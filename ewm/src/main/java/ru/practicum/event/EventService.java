@@ -12,5 +12,7 @@ public interface EventService {
 
     EventFullDto updateEvent(UpdateEventUserRequest event, Integer userId, Integer eventId);
 
-    List<EventFullDto> findEventFullDtos(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size);
+    List<EventFullDto> findEventByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size);
+
+    EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId);
 }

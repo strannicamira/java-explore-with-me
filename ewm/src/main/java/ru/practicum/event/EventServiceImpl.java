@@ -40,7 +40,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto createEvent(NewEventRequest newEventRequest, Integer userId) {
-        log.info("Create event");
+        log.info("[CustomLog][Info] Create event");
 
         //category
         Integer categoryId = newEventRequest.getCategory();
@@ -68,7 +68,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> findEventShortDtos(Integer from, Integer size, Integer userId) {
-        log.info("Search events by user with id {}", userId);
+        log.info("[CustomLog][Info] Search events by user with id {}", userId);
         userService.findUserById(userId);
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         Page<Event> foundEvents = eventRepository.findAll(page);
@@ -79,9 +79,15 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto findEventFullDtoById(Integer userId, Integer eventId) {
+        log.info("[CustomLog][Info] Search events by user with id {}", userId);
         Event event = findEventById(userId, eventId);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
+    }
+
+    private Event findEventById(Integer eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+        return event;
     }
 
     private Event findEventById(Integer userId, Integer eventId) {
@@ -91,16 +97,37 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateEvent(UpdateEventUserRequest request, Integer userId, Integer eventId) {
+        log.info("[CustomLog][Info] Update event with id {} by user with id {}", eventId, userId);
+        //category
+
+        Integer categoryId = request.getCategory();
+//        Category category = null;
+//        if (categoryId!=null) {
+//            category = categoryService.findCategoryById(categoryId);
+//        }
+        Category category = categoryId != null ? categoryService.findCategoryById(categoryId) : null;
+
+        //eventDate
+        String sEventDate = request.getEventDate();
+        //TODO: test not null?
+        LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
+
+        //location
+        LocationDto locationDto = request.getLocation();
+        Location location = locationService.updateLocation(locationDto);
+
         Event event = findEventById(userId, eventId);
-        Event updatedEvent = EventMapper.mapToEvent(event, request);
+        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, location);
         Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
     }
 
     @Override
-    public List<EventFullDto> findEventFullDtos(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
+    public List<EventFullDto> findEventByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
+        log.info("[CustomLog][Info] Find event by Admin");
 
 //        List<Integer> userIdsList = Arrays.stream(userIds).map(i -> i + 1).collect(Collectors.toList());
         BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
@@ -124,4 +151,32 @@ public class EventServiceImpl implements EventService {
         List<EventFullDto> eventFullDtos = EventMapper.mapToEventFullDto(eventsList);
         return eventFullDtos;
     }
+
+    @Override
+    @Transactional
+    public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
+        log.info("[CustomLog][Info] Update event by Admin");
+
+        //category
+        Integer categoryId = request.getCategory();
+//        Category category = categoryService.findCategoryById(categoryId);
+        Category category = categoryId != null ? categoryService.findCategoryById(categoryId) : null;
+
+        //eventDate
+        String sEventDate = request.getEventDate();
+        LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
+
+        //location
+        LocationDto locationDto = request.getLocation();
+//        Location location = locationService.updateLocation(locationDto);
+//        Location location = locationDto != null ? locationService.createLocation(locationDto) : null;
+
+        Event event = findEventById(eventId);
+        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto);
+        Event savedEvent = eventRepository.save(updatedEvent);
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
+        return eventFullDto;
+    }
+
+
 }

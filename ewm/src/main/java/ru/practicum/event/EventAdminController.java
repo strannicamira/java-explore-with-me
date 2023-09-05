@@ -2,7 +2,6 @@ package ru.practicum.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.category.Category;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.List;
 public class EventAdminController {
 
     private final EventService eventService;
+
     @GetMapping
     public List<EventFullDto> findEvents(
             @RequestParam(name = "users") Integer[] userIds, //список id пользователей, чьи события нужно найти
@@ -24,6 +24,12 @@ public class EventAdminController {
             @RequestParam(name = "from", required = false, defaultValue = "0") Integer from, //количество событий, которые нужно пропустить для формирования текущего набора
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size //количество событий в наборе
     ) {
-        return eventService.findEventFullDtos(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
+        return eventService.findEventByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
+    }
+
+    @PatchMapping(value = "/{eventId}")
+    public EventFullDto updateEventByAdmin(@Valid @RequestBody UpdateEventAdminRequest request,
+                                          @PathVariable(name = "eventId") Integer eventId) {
+        return eventService.updateEventByAdmin(request, eventId);
     }
 }
