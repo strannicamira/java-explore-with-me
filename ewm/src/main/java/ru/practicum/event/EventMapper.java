@@ -104,4 +104,12 @@ public class EventMapper {
     private static <T> T getNewValue(T oldValue, T newValue) {
         return newValue != null ? newValue : oldValue;
     }
+
+    public static List<EventFullDto> mapToEventFullDto(List<Event> events) {
+        List<EventFullDto> dtos = new ArrayList<>();
+        for (Event event : events) {
+            dtos.add(mapToEventFullDto(event));
+        }
+        return dtos;
+    }
 }

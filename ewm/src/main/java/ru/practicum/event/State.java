@@ -2,6 +2,9 @@ package ru.practicum.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum State {
 
     PENDING(0, "PENDING"),
@@ -47,10 +50,20 @@ public enum State {
     public static State forValues(//@JsonProperty("name")
                                   String name) {
         for (State state : State.values()) {
-            if (state.name == name) {
+            if (name.equals(state.name)) {
                 return state;
             }
         }
         return null;
+    }
+
+
+    public static List<State> forValues(//@JsonProperty("name")
+                                        String[]  names) {
+        List<State> states = new ArrayList<>();
+        for (String name : names) {
+                states.add(forValues(name));
+        }
+        return states;
     }
 }

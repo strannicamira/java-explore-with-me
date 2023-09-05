@@ -1,7 +1,5 @@
 package ru.practicum.event;
 
-import ru.practicum.category.CategoryDto;
-
 import java.util.List;
 
 public interface EventService {
@@ -13,4 +11,6 @@ public interface EventService {
     EventFullDto findEventFullDtoById(Integer userId, Integer eventId);
 
     EventFullDto updateEvent(UpdateEventUserRequest event, Integer userId, Integer eventId);
+
+    List<EventFullDto> findEventFullDtos(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size);
 }

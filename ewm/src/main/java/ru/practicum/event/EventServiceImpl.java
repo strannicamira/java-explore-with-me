@@ -1,5 +1,6 @@
 package ru.practicum.event;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,15 @@ import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 import ru.practicum.util.ServiceImplUtils;
 
+import java.net.URLDecoder;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.practicum.util.Constants.SORT_BY_ID_ASC;
+import static ru.practicum.util.Constants.TIME_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +99,27 @@ public class EventServiceImpl implements EventService {
         return eventFullDto;
     }
 
+    @Override
+    public List<EventFullDto> findEventFullDtos(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
 
+        BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
+
+        List<State> states = Arrays.stream(stateNames).map(State::forValues).collect(Collectors.toList());
+        //    List<State> states = State.forValues(stateNames);
+        BooleanExpression byStates = QEvent.event.state.in(states);
+
+        BooleanExpression byCategory = QEvent.event.category.id.in(categoryIds);
+
+        LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
+        LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(rangeEnd), DateTimeFormatter.ofPattern(TIME_PATTERN));
+        BooleanExpression byStart = QEvent.event.eventDate.after(startLDT);
+        BooleanExpression byEnd = QEvent.event.eventDate.before(endtLDT);
+
+        Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
+
+        Iterable<Event> foundEvents = eventRepository.findAll(byUserIds.and(byStates).and(byCategory).and(byStart).and(byEnd), page);
+        List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
+        List<EventFullDto> eventFullDtos = EventMapper.mapToEventFullDto(eventsList);
+        return eventFullDtos;
+    }
 }
