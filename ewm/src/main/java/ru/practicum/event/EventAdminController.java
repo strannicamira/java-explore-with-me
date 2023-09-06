@@ -15,7 +15,7 @@ public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> findEvents(
+    public List<EventFullDto> findEventsByAdmin(
             @RequestParam(name = "users") Integer[] userIds, //список id пользователей, чьи события нужно найти
             @RequestParam(name = "states") String[] stateNames, //список состояний в которых находятся искомые события
             @RequestParam(name = "categories") Integer[] categoryIds, //список id категорий в которых будет вестись поиск
@@ -24,7 +24,7 @@ public class EventAdminController {
             @RequestParam(name = "from", required = false, defaultValue = "0") Integer from, //количество событий, которые нужно пропустить для формирования текущего набора
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size //количество событий в наборе
     ) {
-        return eventService.findEventByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
+        return eventService.findEventsByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping(value = "/{eventId}")
