@@ -40,4 +40,10 @@ public class EventPublicController {
     ) {
         return eventService.findEventsByPublic(text, categoryIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
+
+    @GetMapping(value = "/{id}")
+    public EventFullDto findEventByIdByPublic(
+            @PathVariable(name = "id") Integer eventId) {
+        return eventService.findEventByIdByPublic(eventId);
+    }
 }

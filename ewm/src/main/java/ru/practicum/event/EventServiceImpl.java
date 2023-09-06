@@ -40,7 +40,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto createEvent(NewEventRequest newEventRequest, Integer userId) {
-        log.info("[CustomLog][Info] Create event");
+        log.info("[Log][Info] Create event");
 
         //category
         Integer categoryId = newEventRequest.getCategory();
@@ -68,7 +68,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> findEventShortDtos(Integer from, Integer size, Integer userId) {
-        log.info("[CustomLog][Info] Search events by user with id {}", userId);
+        log.info("[Log][Info] Search events by user with id {}", userId);
         userService.findUserById(userId);
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         Page<Event> foundEvents = eventRepository.findAll(page);
@@ -79,7 +79,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto findEventFullDtoById(Integer userId, Integer eventId) {
-        log.info("[CustomLog][Info] Search events by user with id {}", userId);
+        log.info("[Log][Info] Search events by user with id {}", userId);
         Event event = findEventById(userId, eventId);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
@@ -99,7 +99,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto updateEvent(UpdateEventUserRequest request, Integer userId, Integer eventId) {
-        log.info("[CustomLog][Info] Update event with id {} by user with id {}", eventId, userId);
+        log.info("[Log][Info] Update event with id {} by user with id {}", eventId, userId);
 
         //Event data to convert
         //---------------------------------------------
@@ -132,7 +132,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
-        log.info("[CustomLog][Info] Find events by Admin");
+        log.info("[Log][Info] Find events by Admin");
 
         BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
 
@@ -157,7 +157,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
-        log.info("[CustomLog][Info] Update event by Admin");
+        log.info("[Log][Info] Update event by Admin");
 
         //Event data to convert
         //---------------------------------------------
@@ -193,7 +193,7 @@ public class EventServiceImpl implements EventService {
                                                   String rangeStart, String rangeEnd,
                                                   Boolean onlyAvailable,
                                                   String sort, Integer from, Integer size) {
-        log.info("[CustomLog][Info] Find events by public");
+        log.info("[Log][Info] Find events by public");
 
         BooleanExpression published = QEvent.event.publishedOn.isNotNull();
 
@@ -243,5 +243,12 @@ public class EventServiceImpl implements EventService {
         return eventFullDtos;
     }
 
-
+    @Override
+    public EventFullDto findEventByIdByPublic(Integer eventId) {
+        log.info("[Log][Info] Search events by  id {}", eventId);
+        //TODO: add statistic
+        Event event = findEventById(eventId);
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
+        return eventFullDto;
+    }
 }
