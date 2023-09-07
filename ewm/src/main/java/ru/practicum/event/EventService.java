@@ -10,6 +10,8 @@ public interface EventService {
 
     EventFullDto findEventByIdByPrivate(Integer userId, Integer eventId);
 
+    Event findEventById(Integer userId, Integer eventId);
+
     EventFullDto updateEventByPrivate(UpdateEventUserRequest event, Integer userId, Integer eventId);
 
     List<Event> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size);

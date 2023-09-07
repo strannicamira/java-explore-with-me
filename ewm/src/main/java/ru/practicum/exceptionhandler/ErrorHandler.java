@@ -88,6 +88,18 @@ public class ErrorHandler {
 //        return new ErrorResponse(e.getMessage());
 //    }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT) // 409
+    public ErrorResponse handleRequestExceptionHelper(final RequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT) // 409
+    public ErrorResponse handleEventPublishedExceptionHelper(final EventPublishedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
 //    @ExceptionHandler
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
 //    public ErrorResponse handleThrowable(final Throwable e) {

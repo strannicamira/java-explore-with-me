@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
+import ru.practicum.exceptionhandler.EventPublishedException;
 import ru.practicum.exceptionhandler.NotFoundException;
 import ru.practicum.location.Location;
 import ru.practicum.location.LocationDto;
@@ -90,7 +91,8 @@ public class EventServiceImpl implements EventService {
         return event;
     }
 
-    private Event findEventById(Integer userId, Integer eventId) {
+    @Override
+    public Event findEventById(Integer userId, Integer eventId) {
         userService.findUserById(userId);
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
         return event;
@@ -186,6 +188,12 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
         log.info("[Log][Info] Update event by Admin");
 
+        Event event = findEventById(eventId);
+
+        if (event.getState() == State.PUBLISHED && request.getStateAction() == State.PUBLISH_EVENT) {
+            throw new EventPublishedException("Event already published");
+        }
+
         //Event data to convert
         //---------------------------------------------
         //category
@@ -208,7 +216,6 @@ public class EventServiceImpl implements EventService {
         LocationDto locationDto = request.getLocation();
         //---------------------------------------------
 
-        Event event = findEventById(eventId);
         Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto);
         Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);

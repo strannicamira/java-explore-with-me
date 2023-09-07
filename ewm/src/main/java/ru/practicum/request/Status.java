@@ -1,0 +1,65 @@
+package ru.practicum.request;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public enum Status {
+    PENDING(0, "PENDING"),
+    APPROVED(1, "APPROVED"),
+    CANCELED(2, "CANCELED");
+    private final Integer id;
+    private final String name;
+
+    Status(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @JsonCreator
+    public String getName() {
+        return name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    @JsonCreator
+    public String toString() {
+        return getName();
+    }
+
+    //    @JsonCreator
+    public static Status forValues(//@JsonProperty("id")
+                                   Integer id) {
+        for (Status status : Status.values()) {
+            if (status.id == id) {
+                return status;
+            }
+        }
+        return null;
+    }
+
+    public static Status forValues(//@JsonProperty("name")
+                                   String name) {
+        for (Status status : Status.values()) {
+            if (name.equals(status.name)) {
+                return status;
+            }
+        }
+        return null;
+    }
+
+
+    public static List<Status> forValues(//@JsonProperty("name")
+                                         String[] names) {
+        List<Status> statuses = new ArrayList<>();
+        for (String name : names) {
+            statuses.add(forValues(name));
+        }
+        return statuses;
+    }
+}
