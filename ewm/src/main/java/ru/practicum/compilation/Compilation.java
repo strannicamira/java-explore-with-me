@@ -1,6 +1,7 @@
 package ru.practicum.compilation;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -25,5 +26,6 @@ public class Compilation {
 
     //Заголовок подборки*
     @NotBlank
+    @Length(max = 50, min = 1)
     private String title;
 }

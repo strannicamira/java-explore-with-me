@@ -8,6 +8,7 @@ import ru.practicum.event.EventService;
 import ru.practicum.event.EventShortDto;
 import ru.practicum.exceptionhandler.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,21 +25,26 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
         log.info("Create compilation");
         Compilation compilation = compilationRepository.save(CompilationMapper.mapToCompilation(newCompilationDto));
-        Integer compilationId = compilation.getId();
+        List<EventShortDto> events = new ArrayList<>();
 
+        Integer compilationId = compilation.getId();
         List<Integer> eventIds = newCompilationDto.getEvents();
 
-        for (Integer eventId : eventIds) {
-            EventCompilation eventCompilation = new EventCompilation();
-            eventCompilation.setCompilationId(compilationId);
-            eventCompilation.setEventId(eventId);
-            eventCompilationRepository.save(eventCompilation);
+        if (eventIds != null) {
+
+
+            for (Integer eventId : eventIds) {
+                EventCompilation eventCompilation = new EventCompilation();
+                eventCompilation.setCompilationId(compilationId);
+                eventCompilation.setEventId(eventId);
+                eventCompilationRepository.save(eventCompilation);
+            }
+            //eventCompilationService.create(Integer compilationId, List<Event> events);
+            //List<Event> events = eventCompilationService.findByCompilationId(compilationId);
+
+
+            events = eventService.findEventShortDtosByAdmin(eventIds);
         }
-        //eventCompilationService.create(Integer compilationId, List<Event> events);
-        //List<Event> events = eventCompilationService.findByCompilationId(compilationId);
-
-
-        List<EventShortDto> events = eventService.findEventShortDtosByAdmin(eventIds);
         return CompilationMapper.mapToCompilationDto(compilation, events);
     }
 

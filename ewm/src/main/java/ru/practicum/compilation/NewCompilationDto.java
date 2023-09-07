@@ -3,6 +3,7 @@ package ru.practicum.compilation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import ru.practicum.event.Event;
 
 import javax.validation.constraints.NotBlank;
@@ -20,5 +21,6 @@ public class NewCompilationDto {
 
     //Заголовок подборки*
     @NotBlank
+    @Length(max = 50, min = 1)
     private String title;
 }
