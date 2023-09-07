@@ -39,7 +39,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventFullDto createEvent(NewEventRequest newEventRequest, Integer userId) {
+    public EventFullDto createEventByPrivate(NewEventRequest newEventRequest, Integer userId) {
         log.info("[Log][Info] Create event");
 
         //category
@@ -67,7 +67,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> findEventShortDtos(Integer from, Integer size, Integer userId) {
+    public List<EventShortDto> findEventsByPrivate(Integer from, Integer size, Integer userId) {
         log.info("[Log][Info] Search events by user with id {}", userId);
         userService.findUserById(userId);
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
@@ -78,7 +78,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto findEventFullDtoById(Integer userId, Integer eventId) {
+    public EventFullDto findEventByIdByPrivate(Integer userId, Integer eventId) {
         log.info("[Log][Info] Search events by user with id {}", userId);
         Event event = findEventById(userId, eventId);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
@@ -98,7 +98,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventFullDto updateEvent(UpdateEventUserRequest request, Integer userId, Integer eventId) {
+    public EventFullDto updateEventByPrivate(UpdateEventUserRequest request, Integer userId, Integer eventId) {
         log.info("[Log][Info] Update event with id {} by user with id {}", eventId, userId);
 
         //Event data to convert
@@ -131,7 +131,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size) {
+    public List<Event> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
+                                         String rangeStart, String rangeEnd, Integer from, Integer size) {
         log.info("[Log][Info] Find events by Admin");
 
         BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
@@ -151,7 +152,33 @@ public class EventServiceImpl implements EventService {
         Iterable<Event> foundEvents = eventRepository.findAll(byUserIds.and(byStates).and(byCategory).and(byStart).and(byEnd), page);
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
         List<EventFullDto> eventFullDtos = EventMapper.mapToEventFullDto(eventsList);
+        return eventsList;
+    }
+
+    @Override
+    public List<EventFullDto> findEventFullDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
+                                                       String rangeStart, String rangeEnd, Integer from, Integer size) {
+        log.info("[Log][Info] Find event full dtos by Admin");
+        List<Event> eventsList = findEventsByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
+        List<EventFullDto> eventFullDtos = EventMapper.mapToEventFullDto(eventsList);
         return eventFullDtos;
+    }
+
+//    @Override
+//    public List<EventShortDto> findEventShortDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
+//                                                         String rangeStart, String rangeEnd, Integer from, Integer size) {
+//        log.info("[Log][Info] Find event short dtos by Admin");
+//        List<Event> eventsList = findEventsByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
+//        List<EventShortDto> eventShortDtos = EventMapper.mapToEventShortDto(eventsList);
+//        return eventShortDtos;
+//    }
+
+    @Override
+    public List<EventShortDto> findEventShortDtosByAdmin(List<Integer> eventIds) {
+        log.info("[Log][Info] Find event short dtos by Admin");
+        List<Event> eventsList = eventRepository.findAllById(eventIds);
+        List<EventShortDto> eventShortDtos = EventMapper.mapToEventShortDto(eventsList);
+        return eventShortDtos;
     }
 
     @Override

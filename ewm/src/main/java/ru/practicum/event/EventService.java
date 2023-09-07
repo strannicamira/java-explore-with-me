@@ -4,15 +4,23 @@ import java.util.List;
 
 public interface EventService {
 
-    EventFullDto createEvent(NewEventRequest newEventRequest, Integer userId);
+    EventFullDto createEventByPrivate(NewEventRequest newEventRequest, Integer userId);
 
-    List<EventShortDto> findEventShortDtos(Integer from, Integer size, Integer userId);
+    List<EventShortDto> findEventsByPrivate(Integer from, Integer size, Integer userId);
 
-    EventFullDto findEventFullDtoById(Integer userId, Integer eventId);
+    EventFullDto findEventByIdByPrivate(Integer userId, Integer eventId);
 
-    EventFullDto updateEvent(UpdateEventUserRequest event, Integer userId, Integer eventId);
+    EventFullDto updateEventByPrivate(UpdateEventUserRequest event, Integer userId, Integer eventId);
 
-    List<EventFullDto> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size);
+    List<Event> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds, String rangeStart, String rangeEnd, Integer from, Integer size);
+
+    List<EventFullDto> findEventFullDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
+                                                String rangeStart, String rangeEnd, Integer from, Integer size);
+//
+//    List<EventShortDto> findEventShortDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
+//                                                  String rangeStart, String rangeEnd, Integer from, Integer size);
+
+    List<EventShortDto> findEventShortDtosByAdmin(List<Integer> eventIds);
 
     EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId);
 

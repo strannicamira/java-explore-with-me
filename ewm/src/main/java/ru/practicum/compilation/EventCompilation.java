@@ -2,10 +2,7 @@ package ru.practicum.compilation;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -16,12 +13,16 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "EVENT_COMPILATION", schema = "public")
 public class EventCompilation {
-    @NotNull
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @NotNull
+//    @Id
     @Column(name = "EVENT_ID")
     private Integer eventId;
     @NotNull
-    @Id
+//    @Id
     @Column(name = "COMPILATION_ID")
     private Integer compilationId;
 }

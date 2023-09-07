@@ -16,7 +16,7 @@ import java.util.List;
 public class UpdateCompilationRequest {
 
     //Список id событий подборки для полной замены текущего списка
-    private List<Event> events;
+    private List<Integer> events;
 
     //Закреплена ли подборка на главной странице сайта
     @NotNull

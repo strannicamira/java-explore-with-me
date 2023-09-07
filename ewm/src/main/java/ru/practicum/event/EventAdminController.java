@@ -24,7 +24,7 @@ public class EventAdminController {
             @RequestParam(name = "from", required = false, defaultValue = "0") Integer from, //количество событий, которые нужно пропустить для формирования текущего набора
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size //количество событий в наборе
     ) {
-        return eventService.findEventsByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
+        return eventService.findEventFullDtosByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping(value = "/{eventId}")

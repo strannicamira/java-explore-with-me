@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class NewCompilationDto {
 
-    private List<Event> events;
+    private List<Integer> events;
 
     //Закреплена ли подборка на главной странице сайта*
     private Boolean pinned;

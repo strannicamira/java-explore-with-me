@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface EventCompilationRepository extends JpaRepository<EventCompilation, Integer>,
         QuerydslPredicateExecutor<EventCompilation>, PagingAndSortingRepository<EventCompilation, Integer> {
-    List<Event> findByCompilationId(Integer id);
+    List<Integer> findByCompilationId(Integer compilationId);
 }

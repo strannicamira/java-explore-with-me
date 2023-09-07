@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.event.Event;
+import ru.practicum.event.EventService;
+import ru.practicum.event.EventShortDto;
 import ru.practicum.exceptionhandler.NotFoundException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +17,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationRepository compilationRepository;
     private final EventCompilationRepository eventCompilationRepository;
+    private final EventService eventService;
 
     @Override
     @Transactional
@@ -26,17 +26,19 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = compilationRepository.save(CompilationMapper.mapToCompilation(newCompilationDto));
         Integer compilationId = compilation.getId();
 
-        List<Event> events = newCompilationDto.getEvents();
+        List<Integer> eventIds = newCompilationDto.getEvents();
 
-        for (Event event : events){
+        for (Integer eventId : eventIds) {
             EventCompilation eventCompilation = new EventCompilation();
             eventCompilation.setCompilationId(compilationId);
-            eventCompilation.setEventId(event.getId());
+            eventCompilation.setEventId(eventId);
             eventCompilationRepository.save(eventCompilation);
         }
         //eventCompilationService.create(Integer compilationId, List<Event> events);
         //List<Event> events = eventCompilationService.findByCompilationId(compilationId);
 
+
+        List<EventShortDto> events = eventService.findEventShortDtosByAdmin(eventIds);
         return CompilationMapper.mapToCompilationDto(compilation, events);
     }
 
@@ -46,37 +48,38 @@ public class CompilationServiceImpl implements CompilationService {
         log.info("Update compilation by id {}", compId);
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException("Compilation not found"));
 
-        if(request.getPinned()!=null){
+        if (request.getPinned() != null) {
             compilation.setPinned(request.getPinned());
         }
-        if(request.getTitle()!=null){
+        if (request.getTitle() != null) {
             compilation.setTitle(request.getTitle());
         }
 
         Compilation savedCompilation = compilationRepository.save(compilation);
 
         Integer compilationId = compilation.getId();
-        List<Event> events = eventCompilationRepository.findByCompilationId(compilationId);
-        if(request.getEvents()!=null) {// && !request.getEvents().isEmpty()
+        List<Integer> eventIds = eventCompilationRepository.findByCompilationId(compilationId);
+        if (request.getEvents() != null) {// && !request.getEvents().isEmpty()
 
-            for (Event event : events){
+            for (Integer eventId : eventIds) {
                 EventCompilation eventCompilation = new EventCompilation();
                 eventCompilation.setCompilationId(compilationId);
-                eventCompilation.setEventId(event.getId());
+                eventCompilation.setEventId(eventId);
                 eventCompilationRepository.delete(eventCompilation);
             }
 
-            events=request.getEvents();
+            eventIds = request.getEvents();
 
-            for (Event event : events){
+            for (Integer eventId : eventIds) {
                 EventCompilation eventCompilation = new EventCompilation();
                 eventCompilation.setCompilationId(compilationId);
-                eventCompilation.setEventId(event.getId());
+                eventCompilation.setEventId(eventId);
                 eventCompilationRepository.save(eventCompilation);
             }
 
         }
-        return CompilationMapper.mapToCompilationDto(savedCompilation, events);
+        List<EventShortDto> eventShortDtoss = eventService.findEventShortDtosByAdmin(eventIds);
+        return CompilationMapper.mapToCompilationDto(savedCompilation, eventShortDtoss);
     }
 
     @Override

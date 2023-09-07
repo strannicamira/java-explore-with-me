@@ -19,8 +19,9 @@ public class Compilation {
     private Integer id;
 
     //Закреплена ли подборка на главной странице сайта
+    //default: false
     @NotNull
-    private Boolean pinned;
+    private Boolean pinned = false;
 
     //Заголовок подборки*
     @NotBlank

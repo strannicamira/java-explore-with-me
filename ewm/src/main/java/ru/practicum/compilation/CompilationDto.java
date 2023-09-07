@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.event.Event;
+import ru.practicum.event.EventShortDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CompilationDto {
 
-    private List<Event> events;
+    private List<EventShortDto> events;
 
     @NotNull
     private Integer id;
