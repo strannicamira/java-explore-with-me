@@ -17,19 +17,19 @@ public class CompilationAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto createCompilation(@Valid @RequestBody NewCompilationDto dto) {
+    public CompilationDto createCompilationByAdmin(@Valid @RequestBody NewCompilationDto dto) {
         return compilationService.createCompilation(dto);
     }
 
     @PatchMapping(value = "/{compId}")
-    public CompilationDto updateCompilation(@Valid @RequestBody UpdateCompilationRequest dto,
+    public CompilationDto updateCompilationByAdmin(@Valid @RequestBody UpdateCompilationRequest dto,
                                       @PathVariable(name = "compId") Integer compId) {
         return compilationService.updateCompilation(dto, compId);
     }
 
-    @DeleteMapping(value = "/{catId}")
+    @DeleteMapping(value = "/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilationById(@PathVariable(name = "catId") Integer compId) {
+    public void deleteCompilationByIdByAdmin(@PathVariable(name = "compId") Integer compId) {
         compilationService.deleteCompilationById(compId);
     }
 

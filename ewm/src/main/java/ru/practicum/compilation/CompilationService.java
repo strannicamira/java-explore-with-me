@@ -2,6 +2,8 @@ package ru.practicum.compilation;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface CompilationService {
     CompilationDto createCompilation(NewCompilationDto dto);
 
@@ -10,4 +12,8 @@ public interface CompilationService {
 
     @Transactional
     void deleteCompilationById(Integer compId);
+
+    List<CompilationDto> findCompilationDtos(Boolean pinned, Integer from, Integer size);
+
+    CompilationDto findCompilationDtoById(Integer compId);
 }

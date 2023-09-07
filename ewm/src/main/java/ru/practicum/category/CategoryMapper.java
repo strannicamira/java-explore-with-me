@@ -24,7 +24,7 @@ public class CategoryMapper {
 
     public static List<CategoryDto> mapToCategoryDto(List<Category> categories) {
         List<CategoryDto> categoryDtos = new ArrayList<>();
-        for (Category category:categories){
+        for (Category category : categories) {
             categoryDtos.add(mapToCategoryDto(category));
         }
         return categoryDtos;
