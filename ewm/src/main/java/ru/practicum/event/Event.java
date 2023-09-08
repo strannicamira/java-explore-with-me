@@ -39,7 +39,7 @@ public class Event {
 
     //Количество одобренных заявок на участие в данном событии
     @Column(name = "CONFIRMED_REQUESTS")
-    private Integer confirmedRequests;
+    private Integer confirmedRequests=0;
 
     //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull

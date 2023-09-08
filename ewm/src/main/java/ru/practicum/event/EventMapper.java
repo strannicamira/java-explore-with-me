@@ -107,7 +107,7 @@ public class EventMapper {
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
-        newEvent.setPublishedOn(publishedOn);
+        newEvent.setPublishedOn(getNewValue(event.getPublishedOn(), publishedOn));
         newEvent.setState(getNewValue(event.getState(), state));
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
@@ -137,6 +137,36 @@ public class EventMapper {
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
     }
+
+    public static UpdateEventUserRequest mapToUpdateEventUserRequest(Event event) {
+        UpdateEventUserRequest dto = new UpdateEventUserRequest();
+        dto.setAnnotation(event.getAnnotation());
+        dto.setCategory(event.getCategory().getId());
+        dto.setDescription(event.getDescription());
+        dto.setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+        dto.setLocation(LocationMapper.mapToLocationDto(event.getLocation()));
+        dto.setPaid(event.getPaid());
+        dto.setParticipantLimit(event.getParticipantLimit());
+        dto.setRequestModeration(event.getRequestModeration());
+        dto.setStateAction(null);
+        dto.setTitle(event.getTitle());
+        return dto;
+    }
+
+//    public static UpdateEventAdminRequest mapToUpdateEventAdminRequest(Event event) {
+//        UpdateEventAdminRequest dto = new UpdateEventAdminRequest();
+//        dto.setAnnotation(event.getAnnotation());
+//        dto.setCategory(event.getCategory().getId());
+//        dto.setDescription(event.getDescription());
+//        dto.setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+//        dto.setLocation(LocationMapper.mapToLocationDto(event.getLocation()));
+//        dto.setPaid(event.getPaid());
+//        dto.setParticipantLimit(event.getParticipantLimit());
+//        dto.setRequestModeration(event.getRequestModeration());
+//        dto.setStateAction(null);
+//        dto.setTitle(event.getTitle());
+//        return dto;
+//    }
 
     private static <T> T getNewValue(T oldValue, T newValue) {
         return newValue != null ? newValue : oldValue;
