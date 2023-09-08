@@ -272,7 +272,10 @@ public class EventServiceImpl implements EventService {
             updatedEvent = event;
             updatedEvent.setState(state);
             savedEvent = eventRepository.save(updatedEvent);
-        } else if (stateAction == StateAction.PUBLISH_EVENT) {
+        } else
+            //TODO: re-test
+//            if (stateAction == StateAction.PUBLISH_EVENT)
+        {
             if (event.getState() == State.PUBLISHED) {
                 throw new EventPublishedException("Event already published");
             }
