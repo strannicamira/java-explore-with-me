@@ -232,7 +232,11 @@ public class EventServiceImpl implements EventService {
         LocationDto locationDto = request.getLocation();
 
         StateAction stateAction = request.getStateAction();
-        State state = EventMapper.getStateByStateAction(stateAction);
+        State state = null;
+        if(stateAction!=null){
+             state = EventMapper.getStateByStateAction(stateAction);
+
+        }
 
         LocalDateTime publishedOn = null;
         if (state == State.PUBLISHED) {

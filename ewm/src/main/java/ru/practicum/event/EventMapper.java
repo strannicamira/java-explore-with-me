@@ -132,7 +132,7 @@ public class EventMapper {
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
-        newEvent.setPublishedOn(publishedOn);
+        newEvent.setPublishedOn(getNewValue(event.getPublishedOn(), publishedOn));
         newEvent.setState(getNewValue(event.getState(), state));
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
