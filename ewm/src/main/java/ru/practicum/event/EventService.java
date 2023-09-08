@@ -10,6 +10,8 @@ public interface EventService {
 
     EventFullDto findEventByIdByPrivate(Integer userId, Integer eventId);
 
+    Event findEventById(Integer eventId);
+
     Event findEventById(Integer userId, Integer eventId);
 
     EventFullDto updateEventByPrivate(UpdateEventUserRequest event, Integer userId, Integer eventId);

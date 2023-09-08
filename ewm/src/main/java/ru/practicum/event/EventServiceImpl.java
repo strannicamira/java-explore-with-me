@@ -86,7 +86,8 @@ public class EventServiceImpl implements EventService {
         return eventFullDto;
     }
 
-    private Event findEventById(Integer eventId) {
+    @Override
+    public  Event findEventById(Integer eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
         return event;
     }

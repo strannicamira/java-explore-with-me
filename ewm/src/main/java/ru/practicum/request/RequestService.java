@@ -8,4 +8,8 @@ public interface RequestService {
     List<ParticipationRequestDto> findRequestById(Integer userId);
 
     ParticipationRequestDto updateRequest(Integer userId, Integer requestId);
+
+    List<ParticipationRequestDto> findEventRequests(Integer userId, Integer eventId);
+
+    EventRequestStatusUpdateResult updateEventRequest(EventRequestStatusUpdateRequest request, Integer userId, Integer eventId);
 }

@@ -27,7 +27,7 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
         log.info("[Log][Info] Create request for event with id {} by user with id {}", eventId, userId);
-        if(userId==null || eventId == null){
+        if (userId == null || eventId == null) {
             throw new IllegalStateException("BAD REQUEST");
         }
         Request request = new Request();
@@ -38,7 +38,7 @@ public class RequestServiceImpl implements RequestService {
         request.setRequester(userById);
         if (eventById.getRequestModeration() == false) {
             //TODO: find and check status to approve
-            request.setStatus(Status.APPROVED);
+            request.setStatus(Status.CONFIRMED);
         } else {
             request.setStatus(Status.PENDING);
         }
@@ -86,5 +86,70 @@ public class RequestServiceImpl implements RequestService {
         request.setStatus(Status.CANCELED);
         Request savedRequest = requestRepository.save(request);
         return RequestMapper.mapToParticipationRequestDto(savedRequest);
+    }
+
+    @Override
+    public List<ParticipationRequestDto> findEventRequests(Integer userId, Integer eventId) {
+        log.info("Search requests for event with id {} by user with id {}", eventId, userId);
+        User user = userService.findUserById(userId);
+        Event event = eventService.findEventById(eventId);
+
+        List<Request> requests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
+        return RequestMapper.mapToParticipationRequestDto(requests);
+    }
+
+    @Override
+    public EventRequestStatusUpdateResult updateEventRequest(EventRequestStatusUpdateRequest updateRequest,
+                                                             Integer userId, Integer eventId) {
+        log.info("Update request to status {} by user with id {} for event with id", updateRequest.getStatus(), userId, eventId);
+        EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
+        Status status = Status.valueOf(updateRequest.getStatus());
+
+        User userById = userService.findUserById(userId);
+        Event event = eventService.findEventById(eventId);
+
+        List<Integer> requestIds = updateRequest.getRequestIds();
+//        BooleanExpression byId = QRequest.request.id.in(request.getRequestIds());
+        List<Request> requests = requestRepository.findAllById(requestIds);
+
+        for (Request request : requests) {
+            if (request.getRequester().getId() != userId) {
+                throw new RequestException("User is not requester");
+            }
+            if (request.getEvent().getId() != eventId) {
+                throw new RequestException("Event is not event requested");
+            }
+            if ((request.getEvent().getParticipantLimit()==0 || request.getEvent().getRequestModeration()==false)
+                    && status == Status.CONFIRMED) {
+                throw new RequestException("Confirmation is not required");
+            }
+            if (request.getEvent().getParticipantLimit() == request.getEvent().getConfirmedRequests()
+                    && status == Status.CONFIRMED) {
+                throw new RequestException("Participant Limit is equal Confirmed Requests for event ");
+            }
+            if (request.getStatus() != Status.PENDING) {
+                throw new RequestException("Request is not in status PENDING");
+            }
+
+            request.setStatus(status);
+            Request savedRequest = requestRepository.save(request);
+            ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
+
+            if (status == Status.CONFIRMED) {
+                result.getConfirmedRequests().add(dto);
+                //TODO:если при подтверждении данной заявки, лимит заявок для события исчерпан,
+                // то все неподтверждённые заявки необходимо отклонить
+                List<Request> unconfirmedRequests = requestRepository.findAllByStatus(Status.PENDING);
+                for (Request unconfirmedRequest : unconfirmedRequests) {
+                    unconfirmedRequest.setStatus(Status.REJECTED);
+                    requestRepository.save(request);
+                }
+            }
+            if (status == Status.REJECTED) {
+                result.getRejectedRequests().add(dto);
+            }
+        }
+
+        return result;
     }
 }
