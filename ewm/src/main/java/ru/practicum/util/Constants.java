@@ -11,7 +11,7 @@ public class Constants {
     public static final Sort SORT_BY_START_DESC = Sort.by(Sort.Direction.DESC, "start");
     public static final Sort SORT_BY_REQUEST_CREATED_DESC = Sort.by(Sort.Direction.DESC, "created");
 
-    public static final Sort SORT_BY_EVENT_DATE_ASC = Sort.by(Sort.Direction.ASC, "event_date");
+    public static final Sort SORT_BY_EVENT_DATE_ASC = Sort.by(Sort.Direction.ASC, "eventDate");
     public static final Sort SORT_BY_VIEWS_ASC = Sort.by(Sort.Direction.ASC, "views");
 
     public static final Integer PAGE_SIZE = 10;

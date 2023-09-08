@@ -336,7 +336,6 @@ public class EventServiceImpl implements EventService {
         BooleanExpression byCategory = null;
         if (categoryIds != null) {
             byCategory = QEvent.event.category.id.in(categoryIds);
-
         }
 
         BooleanExpression byPaid = null;
@@ -361,13 +360,13 @@ public class EventServiceImpl implements EventService {
         }
 
         BooleanExpression byLimit = null;
-        if (onlyAvailable) {
+        if (onlyAvailable != null && onlyAvailable == true) {
             byLimit = QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests);
         }
 
         EventSort eventSort = EventSort.forValues(sort);
         //TODO: Default value:SORT_BY_EVENT_DATE_ASC ???
-        Sort pageSort = SORT_BY_ID_ASC;
+        Sort pageSort = SORT_BY_EVENT_DATE_ASC;
         if (eventSort == EventSort.EVENT_DATE) {
             pageSort = SORT_BY_EVENT_DATE_ASC;
         } else if (eventSort == EventSort.VIEWS) {
@@ -377,8 +376,21 @@ public class EventServiceImpl implements EventService {
 
         Pageable page = ServiceImplUtils.getPage(from, size, pageSort);
 
-        BooleanExpression findExpression = byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
-        Iterable<Event> foundEvents = eventRepository.findAll(findExpression, page);
+////        BooleanExpression findExpression = byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
+//        BooleanExpression findExpression = byState.and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
+//        Iterable<Event> foundEvents = eventRepository.findAll(findExpression, page);
+
+
+        Iterable<Event> foundEvents = null;
+        if (byPublished != null || byState != null || byText != null || byCategory != null || byRange != null || byLimit != null) {
+            foundEvents = eventRepository.findAll(byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit), page);
+//            foundEvents = eventRepository.findAll(byState.and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit), page);
+
+        } else {
+            foundEvents = eventRepository.findAll(page);
+        }
+
+
         //TODO: add to statistic
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
         List<EventShortDto> eventFullDtos = EventMapper.mapToEventShortDto(eventsList);
