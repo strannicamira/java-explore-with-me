@@ -24,7 +24,8 @@ public class EventMapper {
                                    Category category,
                                    LocalDateTime createdOn,
                                    User initiator,
-                                   Location location) {
+                                   Location location,
+                                   State state) {
         Event event = new Event();
         event.setAnnotation(newEventRequest.getAnnotation());
         event.setCategory(category);
@@ -37,7 +38,7 @@ public class EventMapper {
         event.setPaid(newEventRequest.getPaid());
         event.setParticipantLimit(newEventRequest.getParticipantLimit());
         event.setRequestModeration(newEventRequest.getRequestModeration());
-        event.setState(State.PENDING);
+        event.setState(state);
         event.setTitle(newEventRequest.getTitle());
         return event;
     }
@@ -87,7 +88,13 @@ public class EventMapper {
     }
 
 
-    public static Event mapToEvent(Event event, UpdateEventUserRequest request, Category category, LocalDateTime eventDate, LocationDto locationDto) {
+    public static Event mapToEvent(Event event,
+                                   UpdateEventUserRequest request,
+                                   Category category,
+                                   LocalDateTime eventDate,
+                                   LocationDto locationDto,
+                                   State state,
+                                   LocalDateTime publishedOn) {
         Event newEvent = event;
         newEvent.setAnnotation(getNewValue(event.getAnnotation(), request.getAnnotation()));
         newEvent.setCategory(getNewValue(event.getCategory(), category));
@@ -100,14 +107,19 @@ public class EventMapper {
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
-        StateAction stateAction = request.getStateAction();
-        State state = getStateByStateAction(stateAction);
+        newEvent.setPublishedOn(publishedOn);
         newEvent.setState(getNewValue(event.getState(), state));
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
     }
 
-    public static Event mapToEvent(Event event, UpdateEventAdminRequest request, Category category, LocalDateTime eventDate, LocationDto locationDto) {
+    public static Event mapToEvent(Event event,
+                                   UpdateEventAdminRequest request,
+                                   Category category,
+                                   LocalDateTime eventDate,
+                                   LocationDto locationDto,
+                                   State state,
+                                   LocalDateTime publishedOn) {
         Event newEvent = event;
         newEvent.setAnnotation(getNewValue(event.getAnnotation(), request.getAnnotation()));
         newEvent.setCategory(getNewValue(event.getCategory(), category));
@@ -120,8 +132,7 @@ public class EventMapper {
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
-        StateAction stateAction = request.getStateAction();
-        State state = getStateByStateAction(stateAction);
+        newEvent.setPublishedOn(publishedOn);
         newEvent.setState(getNewValue(event.getState(), state));
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
@@ -139,7 +150,7 @@ public class EventMapper {
         return dtos;
     }
 
-    private static State getStateByStateAction(StateAction stateAction) {
+    public static State getStateByStateAction(StateAction stateAction) {
         State state = null;
         switch (stateAction) {
             case REJECT_EVENT:

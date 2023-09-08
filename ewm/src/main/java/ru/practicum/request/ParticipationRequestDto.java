@@ -27,11 +27,11 @@ public class ParticipationRequestDto {
 
     //Идентификатор события
 //    @NotNull
-    private Integer eventId;
+    private Integer event;
 
     //Идентификатор пользователя, отправившего заявку
 //    @NotNull
-    private Integer requesterId;
+    private Integer requester;
 
     //Статус заявки
     //example: PENDING

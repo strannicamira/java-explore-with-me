@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventService;
+import ru.practicum.event.State;
 import ru.practicum.exceptionhandler.NotFoundException;
 import ru.practicum.exceptionhandler.RequestException;
 import ru.practicum.user.User;
@@ -36,7 +37,7 @@ public class RequestServiceImpl implements RequestService {
         request.setEvent(eventById);
         User userById = userService.findUserById(userId);
         request.setRequester(userById);
-        if (eventById.getRequestModeration() == false) {
+        if (eventById.getRequestModeration() == false || eventById.getParticipantLimit() == 0) {
             //TODO: find and check status to approve
             request.setStatus(Status.CONFIRMED);
         } else {
@@ -52,7 +53,8 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestException("Requester is initiator of event");
         }
 
-        if (eventById.getPublishedOn() == null) {
+        //TODO: || or &&
+        if (eventById.getPublishedOn() == null && eventById.getState() != State.PUBLISHED) {
             throw new RequestException("Event is not published");
         }
 
@@ -61,7 +63,8 @@ public class RequestServiceImpl implements RequestService {
         }
 
         Request savedRequest = requestRepository.save(request);
-        return RequestMapper.mapToParticipationRequestDto(savedRequest);
+        ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
+        return dto;
     }
 
     @Override
@@ -119,7 +122,7 @@ public class RequestServiceImpl implements RequestService {
             if (request.getEvent().getId() != eventId) {
                 throw new RequestException("Event is not event requested");
             }
-            if ((request.getEvent().getParticipantLimit()==0 || request.getEvent().getRequestModeration()==false)
+            if ((request.getEvent().getParticipantLimit() == 0 || request.getEvent().getRequestModeration() == false)
                     && status == Status.CONFIRMED) {
                 throw new RequestException("Confirmation is not required");
             }

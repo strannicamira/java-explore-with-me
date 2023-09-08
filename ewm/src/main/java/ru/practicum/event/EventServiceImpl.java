@@ -60,8 +60,11 @@ public class EventServiceImpl implements EventService {
         LocationDto locationDto = newEventRequest.getLocation();
         Location location = locationService.createLocation(locationDto);
 
+        //initial state
+        State state = State.PENDING;
         //save to DB as Event
-        Event entity = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location);
+
+        Event entity = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location, state);
         Event savedEvent = eventRepository.save(entity);
 
         //return for controller as EventFullDto
@@ -89,7 +92,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public  Event findEventById(Integer eventId) {
+    public Event findEventById(Integer eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
         return event;
     }
@@ -126,10 +129,20 @@ public class EventServiceImpl implements EventService {
 
         //location
         LocationDto locationDto = request.getLocation();
+
+
+        StateAction stateAction = request.getStateAction();
+        State state = EventMapper.getStateByStateAction(stateAction);
+
+        LocalDateTime publishedOn = null;
+        if (state == State.PUBLISHED) {
+            publishedOn = LocalDateTime.now();
+        }
+
         //---------------------------------------------
 
         Event event = findEventById(userId, eventId);
-        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto);
+        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
         Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
@@ -217,9 +230,18 @@ public class EventServiceImpl implements EventService {
 
         //location
         LocationDto locationDto = request.getLocation();
+
+        StateAction stateAction = request.getStateAction();
+        State state = EventMapper.getStateByStateAction(stateAction);
+
+        LocalDateTime publishedOn = null;
+        if (state == State.PUBLISHED) {
+            //TODO: how to pass @FutureOrPresent
+            publishedOn = LocalDateTime.now().plusMinutes(1);
+        }
         //---------------------------------------------
 
-        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto);
+        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
         Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
@@ -254,8 +276,8 @@ public class EventServiceImpl implements EventService {
             LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
             LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(rangeEnd), DateTimeFormatter.ofPattern(TIME_PATTERN));
 
-            if (startLDT.isAfter(endtLDT)){
-                throw  new EventBadRequestException("Start is before End for event");
+            if (startLDT.isAfter(endtLDT)) {
+                throw new EventBadRequestException("Start is before End for event");
             }
 
             BooleanExpression byStart = QEvent.event.eventDate.after(startLDT);
@@ -292,7 +314,7 @@ public class EventServiceImpl implements EventService {
         log.info("[Log][Info] Search events by  id {}", eventId);
         //TODO: add statistic
         Event event = findEventById(eventId);
-        if (event.getState()!=State.PUBLISHED){
+        if (event.getState() != State.PUBLISHED) {
             throw new EventNotPublishedException("Event Not Published");
         }
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
