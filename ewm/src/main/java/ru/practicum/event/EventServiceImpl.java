@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.exceptionhandler.EventBadRequestException;
+import ru.practicum.exceptionhandler.EventConflictException;
 import ru.practicum.exceptionhandler.EventNotPublishedException;
-import ru.practicum.exceptionhandler.EventPublishedException;
 import ru.practicum.exceptionhandler.NotFoundException;
 import ru.practicum.location.Location;
 import ru.practicum.location.LocationDto;
@@ -149,7 +149,7 @@ public class EventServiceImpl implements EventService {
         Event updatedEvent;
         Event savedEvent = null;
         if (event.getState() == State.PUBLISHED) {
-            throw new EventPublishedException("Event already published");
+            throw new EventConflictException("Event already published");
         }
         //TODO: test
         // Отклонение публикации события
@@ -272,13 +272,13 @@ public class EventServiceImpl implements EventService {
         LocationDto locationDto = request.getLocation();
 
         StateAction stateAction = request.getStateAction();
-        State state = null;
+        State newEventState = null;
         if (stateAction != null) {
-            state = EventMapper.getStateByStateAction(stateAction);
+            newEventState = EventMapper.getStateByStateAction(stateAction);
         }
 
         LocalDateTime publishedOn = null;
-        if (state == State.PUBLISHED) {
+        if (newEventState == State.PUBLISHED) {
             //TODO: how to pass @FutureOrPresent
             publishedOn = LocalDateTime.now().plusMinutes(1);
         }
@@ -291,16 +291,19 @@ public class EventServiceImpl implements EventService {
 
         if (stateAction == StateAction.REJECT_EVENT) {
             updatedEvent = event;
-            updatedEvent.setState(state);
+            updatedEvent.setState(newEventState);
             savedEvent = eventRepository.save(updatedEvent);
+        }
+        if (stateAction == StateAction.PUBLISH_EVENT && event.getState() == State.CANCELED) {
+            throw new EventConflictException("Event already canceled");
         } else
         //TODO: re-test
 //            if (stateAction == StateAction.PUBLISH_EVENT)
         {
             if (event.getState() == State.PUBLISHED) {
-                throw new EventPublishedException("Event already published");
+                throw new EventConflictException("Event already published");
             }
-            updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
+            updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, newEventState, publishedOn);
             savedEvent = eventRepository.save(updatedEvent);
         }
 
