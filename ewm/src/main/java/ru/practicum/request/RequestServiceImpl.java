@@ -9,7 +9,7 @@ import ru.practicum.event.EventRepository;
 import ru.practicum.event.EventService;
 import ru.practicum.event.State;
 import ru.practicum.exceptionhandler.NotFoundException;
-import ru.practicum.exceptionhandler.RequestException;
+import ru.practicum.exceptionhandler.RequestConflictException;
 import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 
@@ -34,7 +34,8 @@ public class RequestServiceImpl implements RequestService {
             throw new IllegalStateException("BAD REQUEST");
         }
         Request request = new Request();
-        request.setCreated(LocalDateTime.now());
+        //TODO: not now
+        request.setCreated(LocalDateTime.now().plusDays(1));
         Event event = eventService.findEventById(userId, eventId);
         request.setEvent(event);
         User user = userService.findUserById(userId);
@@ -48,7 +49,7 @@ public class RequestServiceImpl implements RequestService {
             } else {
                 event.setConfirmedRequests(confirmedRequests + 1);
             }
-            event.setConfirmedRequests(confirmedRequests + 1);
+//            event.setConfirmedRequests(confirmedRequests + 1);
             //            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
             eventRepository.save(event);
         } else {
@@ -57,20 +58,24 @@ public class RequestServiceImpl implements RequestService {
 
         List<Request> existedRequests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
         if (existedRequests != null && !existedRequests.isEmpty()) {
-            throw new RequestException("Request already exists");
+            throw new RequestConflictException("Request already exists");
         }
 
         if (event.getInitiator().getId() == userId) {
-            throw new RequestException("Requester is initiator of event");
+            throw new RequestConflictException("Requester is initiator of event");
         }
 
         //TODO: || or &&
         if (event.getPublishedOn() == null && event.getState() != State.PUBLISHED) {
-            throw new RequestException("Event is not published");
+            throw new RequestConflictException("Event is not published");
         }
 
-        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
-            throw new RequestException("Participant Limit for event is equal Confirmed Requests");
+        List<Request> sentRequests = requestRepository.findAllByEventId(eventId);
+
+        //TODO: Strange logic
+//        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
+        if (event.getParticipantLimit() == sentRequests.size()) {
+            throw new RequestConflictException("Participant Limit for event is equal Confirmed Requests");
         }
 
         Request savedRequest = requestRepository.save(request);
@@ -96,7 +101,7 @@ public class RequestServiceImpl implements RequestService {
 
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Request not found"));
         if (request.getRequester().getId() != userId) {
-            throw new RequestException("User is not requester");
+            throw new RequestConflictException("User is not requester");
         }
         request.setStatus(Status.CANCELED);
         Request savedRequest = requestRepository.save(request);
@@ -135,10 +140,10 @@ public class RequestServiceImpl implements RequestService {
 
         for (Request request : requests) {
             if (request.getEvent().getInitiator().getId() != userId) {
-                throw new RequestException("User is not initiator");
+                throw new RequestConflictException("User is not initiator");
             }
             if (request.getEvent().getId() != eventId) {
-                throw new RequestException("Event is not event requested");
+                throw new RequestConflictException("Event is not event requested");
             }
 //            if ((request.getEvent().getParticipantLimit() == 0 || request.getEvent().getRequestModeration() == false)
 //                    && status == Status.CONFIRMED) {
@@ -146,10 +151,10 @@ public class RequestServiceImpl implements RequestService {
 //            }
             if (request.getEvent().getParticipantLimit() == request.getEvent().getConfirmedRequests()
                     && status == Status.CONFIRMED) {
-                throw new RequestException("Participant Limit is equal Confirmed Requests for event ");
+                throw new RequestConflictException("Participant Limit is equal Confirmed Requests for event ");
             }
             if (request.getStatus() != Status.PENDING) {
-                throw new RequestException("Request is not in status PENDING");
+                throw new RequestConflictException("Request is not in status PENDING");
             }
 
             request.setStatus(status);

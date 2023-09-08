@@ -102,7 +102,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT) // 409
-    public ErrorResponse handleRequestExceptionHelper(final RequestException e) {
+    public ErrorResponse handleRequestExceptionHelper(final RequestConflictException e) {
         return new ErrorResponse(e.getMessage());
     }
 
