@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
+import ru.practicum.exceptionhandler.EventNotPublishedException;
 import ru.practicum.exceptionhandler.EventPublishedException;
 import ru.practicum.exceptionhandler.NotFoundException;
 import ru.practicum.location.Location;
@@ -283,6 +284,9 @@ public class EventServiceImpl implements EventService {
         log.info("[Log][Info] Search events by  id {}", eventId);
         //TODO: add statistic
         Event event = findEventById(eventId);
+        if (event.getState()!=State.PUBLISHED){
+            throw new EventNotPublishedException("Event Not Published");
+        }
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
     }

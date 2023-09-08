@@ -65,6 +65,12 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND) // 404
+    public ErrorResponse handleEventNotPublishedExceptionHelper(final EventNotPublishedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
 //    @ExceptionHandler
 //    @ResponseStatus(HttpStatus.CONFLICT) // 409
 //    public ErrorResponse handleDuplicateEmailFoundException(final DuplicateEmailFoundException e) {
