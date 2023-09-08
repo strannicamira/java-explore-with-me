@@ -67,7 +67,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> findRequestById(Integer userId) {
-        log.info("Search requests");
+        log.info("[Log][Info] Search requests");
         User userById = userService.findUserById(userId);
         List<Request> requests = requestRepository.findAllByRequesterId(userId);
         return RequestMapper.mapToParticipationRequestDto(requests);
@@ -76,7 +76,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto updateRequest(Integer userId, Integer requestId) {
-        log.info("Cancel request by user with id {} for request with id", userId, requestId);
+        log.info("[Log][Info] Cancel request by user with id {} for request with id", userId, requestId);
         User userById = userService.findUserById(userId);
 
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Request not found"));
@@ -90,7 +90,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> findEventRequests(Integer userId, Integer eventId) {
-        log.info("Search requests for event with id {} by user with id {}", eventId, userId);
+        log.info("[Log][Info] Search requests for event with id {} by user with id {}", eventId, userId);
         User user = userService.findUserById(userId);
         Event event = eventService.findEventById(eventId);
 
@@ -101,7 +101,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public EventRequestStatusUpdateResult updateEventRequest(EventRequestStatusUpdateRequest updateRequest,
                                                              Integer userId, Integer eventId) {
-        log.info("Update request to status {} by user with id {} for event with id", updateRequest.getStatus(), userId, eventId);
+        log.info("[Log][Info] Update request to status {} by user with id {} for event with id", updateRequest.getStatus(), userId, eventId);
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
         Status status = Status.valueOf(updateRequest.getStatus());
 

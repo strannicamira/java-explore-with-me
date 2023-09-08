@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User createUser(NewUserRequest userDto) {
-        log.info("Create user");
+        log.info("[Log][Info] Create user");
         User user = userRepository.save(UserMapper.mapToUser(userDto));
         return user;
     }
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> findUsersByIds(Integer from, Integer size, Integer... ids) {
-        log.info("Search user by ids {}", ids);
+        log.info("[Log][Info] Search user by ids {}", ids);
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         BooleanExpression byIds = null;
         Iterable<User> foundUsers;
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findUserById(Integer id) {
-        log.info("Search user by id {}", id);
+        log.info("[Log][Info] Search user by id {}", id);
         User foundUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
         return foundUser;
     }
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUserById(Integer userId) {
-        log.info("Delete user by id {}", userId);
+        log.info("[Log][Info] Delete user by id {}", userId);
         userRepository.deleteById(userId);
     }
 }

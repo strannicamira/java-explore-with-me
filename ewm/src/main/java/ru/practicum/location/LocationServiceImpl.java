@@ -14,7 +14,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     @Transactional
     public Location createLocation(LocationDto locationDto) {
-        log.info("Create location");
+        log.info("[Log][Info] Create location");
         Location savedLocation = locationRepository.save(LocationMapper.mapToLocation(locationDto));
         return savedLocation;
     }

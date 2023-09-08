@@ -27,7 +27,7 @@ public class StatServiceImpl implements StatService {
     @Override
     @Transactional
     public EndpointHit post(NewEndpointHitRequest newEndpointHitRequest) {
-        log.info("Create hit for request {} {}", newEndpointHitRequest.getApp(), newEndpointHitRequest.getUri());
+        log.info("[Log][Info] Create hit for request {} {}", newEndpointHitRequest.getApp(), newEndpointHitRequest.getUri());
         EndpointHit endpointHit = StatMapper.mapToEndpointHit(newEndpointHitRequest);
         endpointHit = statRepository.save(endpointHit);
 
@@ -36,6 +36,7 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public List<ViewStats> get(String start, String end, Boolean unique, String[] uris) {
+        log.info("[Log][Info] Get hit for range from {} to {}", start, end);
 
         LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(start), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(end), DateTimeFormatter.ofPattern(TIME_PATTERN));
@@ -57,6 +58,7 @@ public class StatServiceImpl implements StatService {
     private List<ViewStats> getByUrisList(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
         //TODO: use count() or countDistinct?
         //NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
+        log.info("[Log][Info] Get list of hits for range from {} to {}", start, end);
 
         BooleanExpression byTimestamp = QEndpointHit.endpointHit.timestamp.between(start, end);
         BooleanExpression byUris = null;

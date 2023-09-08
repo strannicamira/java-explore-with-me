@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto createCategory(NewCategoryRequest categoryDto) {
-        log.info("Create category");
+        log.info("[Log][Info] Create category");
         Category category = categoryRepository.save(CategoryMapper.mapToCategory(categoryDto));
         return CategoryMapper.mapToCategoryDto(category);
     }
@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<CategoryDto> findCategoryDtos(Integer from, Integer size) {
-        log.info("Search categories");
+        log.info("[Log][Info] Search categories");
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         Iterable<Category> foundCategories = categoryRepository.findAll(page);
         return CategoryMapper.mapToCategoryDto(ServiceImplUtils.mapToList(foundCategories));
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public Category findCategoryById(Integer id) {
-        log.info("Search category by id {}", id);
+        log.info("[Log][Info] Search category by id {}", id);
         Category foundCategory = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
         return foundCategory;
     }
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public CategoryDto findCategoryDtoById(Integer id) {
-        log.info("Search category dto by id {}", id);
+        log.info("[Log][Info] Search category dto by id {}", id);
         Category categoryById = findCategoryById(id);
         CategoryDto categoryDto = CategoryMapper.mapToCategoryDto(categoryById);
         return categoryDto;
@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto updateCategory(CategoryDto categoryDto, Integer id) {
-        log.info("Update category by id {}", id);
+        log.info("[Log][Info] Update category by id {}", id);
         Category category = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
         category.setName(categoryDto.getName() == null || categoryDto.getName().isBlank() ?
                 category.getName() : categoryDto.getName());
@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategoryById(Integer id) {
-        log.info("Delete category by id {}", id);
+        log.info("[Log][Info] Delete category by id {}", id);
         Category category = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
         //TODO: 409 Существуют события, связанные с категорией
 //        List<Event> events = eventRepository.findAllByCategory(category);
@@ -76,6 +76,5 @@ public class CategoryServiceImpl implements CategoryService {
 //        }
         categoryRepository.deleteById(id);
     }
-
 
 }
