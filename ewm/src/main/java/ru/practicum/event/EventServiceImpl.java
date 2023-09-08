@@ -133,7 +133,7 @@ public class EventServiceImpl implements EventService {
 
         StateAction stateAction = request.getStateAction();
         State state = null;
-        if(stateAction!=null){
+        if (stateAction != null) {
             state = EventMapper.getStateByStateAction(stateAction);
         }
 
@@ -142,11 +142,29 @@ public class EventServiceImpl implements EventService {
             publishedOn = LocalDateTime.now();
         }
 
+
         //---------------------------------------------
 
         Event event = findEventById(userId, eventId);
-        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
-        Event savedEvent = eventRepository.save(updatedEvent);
+        Event updatedEvent;
+        Event savedEvent = null;
+        if (event.getState() == State.PUBLISHED) {
+            throw new EventPublishedException("Event already published");
+        }
+        //TODO: test
+        // Отклонение публикации события
+        //Стоимость отменённого события должна соответствовать стоимости события до отмены
+        if (stateAction == StateAction.CANCEL_REVIEW || stateAction == StateAction.SEND_TO_REVIEW) {
+            updatedEvent = event;
+            updatedEvent.setState(state);
+            savedEvent = eventRepository.save(updatedEvent);
+        } else
+//            if (stateAction == StateAction.CANCEL_REVIEW || stateAction == StateAction.SEND_TO_REVIEW)
+            {
+            updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
+            savedEvent = eventRepository.save(updatedEvent);
+        }
+
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
     }
@@ -207,11 +225,6 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
         log.info("[Log][Info] Update event by Admin");
 
-        Event event = findEventById(eventId);
-
-        if (event.getState() == State.PUBLISHED && request.getStateAction() == StateAction.PUBLISH_EVENT) {
-            throw new EventPublishedException("Event already published");
-        }
 
         //Event data to convert
         //---------------------------------------------
@@ -236,8 +249,8 @@ public class EventServiceImpl implements EventService {
 
         StateAction stateAction = request.getStateAction();
         State state = null;
-        if(stateAction!=null){
-             state = EventMapper.getStateByStateAction(stateAction);
+        if (stateAction != null) {
+            state = EventMapper.getStateByStateAction(stateAction);
         }
 
         LocalDateTime publishedOn = null;
@@ -247,8 +260,25 @@ public class EventServiceImpl implements EventService {
         }
         //---------------------------------------------
 
-        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
-        Event savedEvent = eventRepository.save(updatedEvent);
+
+        Event event = findEventById(eventId);
+        Event updatedEvent = null;
+        Event savedEvent = null;
+
+        if (stateAction == StateAction.REJECT_EVENT) {
+            updatedEvent = event;
+            updatedEvent.setState(state);
+            savedEvent = eventRepository.save(updatedEvent);
+        } else if (stateAction == StateAction.PUBLISH_EVENT) {
+            if (event.getState() == State.PUBLISHED) {
+                throw new EventPublishedException("Event already published");
+            }
+            updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
+            savedEvent = eventRepository.save(updatedEvent);
+        }
+
+//        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
+//        Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
     }

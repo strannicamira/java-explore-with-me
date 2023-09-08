@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum StateAction {
-    SEND_TO_REVIEW(1, "SEND_TO_REVIEW"),
-    CANCEL_REVIEW(2, "CANCEL_REVIEW"),
-    PUBLISH_EVENT(3, "PUBLISH_EVENT"),
-    REJECT_EVENT(4, "REJECT_EVENT");
+    SEND_TO_REVIEW(1, "SEND_TO_REVIEW"),//send by private user to request admin to PUBLISHED or CANCELED event
+    CANCEL_REVIEW(2, "CANCEL_REVIEW"),//send by private user to set status CANCELED event
+    PUBLISH_EVENT(3, "PUBLISH_EVENT"),//send by admin to set status PUBLISHED event
+    REJECT_EVENT(4, "REJECT_EVENT");//send by admin to set status CANCELED event
     private final Integer id;
     private final String name;
 

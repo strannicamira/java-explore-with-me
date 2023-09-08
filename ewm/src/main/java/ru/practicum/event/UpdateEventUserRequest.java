@@ -44,7 +44,7 @@ public class UpdateEventUserRequest {
     //Нужна ли пре-модерация заявок на участие
     private Boolean requestModeration = true;
 
-    StateAction stateAction;
+    private StateAction stateAction;
 
     //Новый заголовок
 //    @NotBlank
