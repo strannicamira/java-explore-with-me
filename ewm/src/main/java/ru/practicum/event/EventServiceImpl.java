@@ -205,7 +205,7 @@ public class EventServiceImpl implements EventService {
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
 
         Iterable<Event> foundEvents = null;
-        if (byUserIds != null || byStates != null || byCategory != null || byStart != null || byEnd != null){
+        if (byUserIds != null || byStates != null || byCategory != null || byStart != null || byEnd != null) {
             foundEvents = eventRepository.findAll(byUserIds.and(byStates).and(byCategory).and(byStart).and(byEnd), page);
         } else {
             foundEvents = eventRepository.findAll(page);
@@ -317,44 +317,51 @@ public class EventServiceImpl implements EventService {
                                                   String sort, Integer from, Integer size) {
         log.info("[Log][Info] Find events by public");
 
-        BooleanExpression published = QEvent.event.publishedOn.isNotNull();
+        BooleanExpression byPublished = QEvent.event.publishedOn.isNotNull();
+        BooleanExpression byState = QEvent.event.state.eq(State.PUBLISHED);
 
-        String decodedText = URLDecoder.decode(text);
-        BooleanExpression byAnnotation = QEvent.event.annotation.containsIgnoreCase(decodedText);
-        BooleanExpression byDescription = QEvent.event.description.containsIgnoreCase(decodedText);
-        BooleanExpression byText = byAnnotation.or(byDescription);
+        BooleanExpression byText = null;
+        if (text != null) {
+            String decodedText = URLDecoder.decode(text);
+            BooleanExpression byAnnotation = QEvent.event.annotation.containsIgnoreCase(decodedText);
+            BooleanExpression byDescription = QEvent.event.description.containsIgnoreCase(decodedText);
+            byText = byAnnotation.or(byDescription);
+        }
 
-        BooleanExpression byCategory = QEvent.event.category.id.in(categoryIds);
+        BooleanExpression byCategory = null;
+        if (categoryIds != null) {
+            byCategory = QEvent.event.category.id.in(categoryIds);
 
-        BooleanExpression byPaid = QEvent.event.paid.eq(paid);
+        }
 
+        BooleanExpression byPaid = null;
+        if (paid != null) {
+            byPaid = QEvent.event.paid.eq(paid);
+        }
+
+        BooleanExpression byRange = null;
         LocalDateTime now = LocalDateTime.now();
-        BooleanExpression byRange;
-
         if (rangeStart == null && rangeEnd == null) {
             BooleanExpression byNow = QEvent.event.eventDate.after(now);
             byRange = byNow;
         } else {
-
             LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
             LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(rangeEnd), DateTimeFormatter.ofPattern(TIME_PATTERN));
-
             if (startLDT.isAfter(endtLDT)) {
                 throw new EventBadRequestException("Start is before End for event");
             }
-
             BooleanExpression byStart = QEvent.event.eventDate.after(startLDT);
             BooleanExpression byEnd = QEvent.event.eventDate.before(endtLDT);
             byRange = byStart.and(byEnd);
         }
+
         BooleanExpression byLimit = null;
         if (onlyAvailable) {
             byLimit = QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests);
         }
 
-
         EventSort eventSort = EventSort.forValues(sort);
-        //TODO: Default value???
+        //TODO: Default value:SORT_BY_EVENT_DATE_ASC ???
         Sort pageSort = SORT_BY_ID_ASC;
         if (eventSort == EventSort.EVENT_DATE) {
             pageSort = SORT_BY_EVENT_DATE_ASC;
@@ -362,11 +369,12 @@ public class EventServiceImpl implements EventService {
             pageSort = SORT_BY_VIEWS_ASC;
 
         }
+
         Pageable page = ServiceImplUtils.getPage(from, size, pageSort);
 
-        BooleanExpression findExpression = published.and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
+        BooleanExpression findExpression = byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
         Iterable<Event> foundEvents = eventRepository.findAll(findExpression, page);
-        //TODO: add statistic
+        //TODO: add to statistic
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
         List<EventShortDto> eventFullDtos = EventMapper.mapToEventShortDto(eventsList);
         return eventFullDtos;

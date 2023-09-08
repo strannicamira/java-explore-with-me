@@ -24,9 +24,9 @@ public class EventPublicController {
     //информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
     @GetMapping
     public List<EventShortDto> findEventsByPublic(
-            @RequestParam(name = "text") String text, //текст для поиска в содержимом аннотации и подробном описании события
-            @RequestParam(name = "categories") Integer[] categoryIds, //список id категорий в которых будет вестись поиск
-            @RequestParam(name = "paid") Boolean paid, //поиск только платных/бесплатных событий
+            @RequestParam(name = "text", required = false) String text, //текст для поиска в содержимом аннотации и подробном описании события
+            @RequestParam(name = "categories", required = false) Integer[] categoryIds, //список id категорий в которых будет вестись поиск
+            @RequestParam(name = "paid", required = false) Boolean paid, //поиск только платных/бесплатных событий
             @RequestParam(name = "rangeStart", required = false) String rangeStart, //дата и время не раньше которых должно произойти событие
             @RequestParam(name = "rangeEnd", required = false) String rangeEnd, //дата и время не позже которых должно произойти событие
             @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") Boolean onlyAvailable, //только события у которых не исчерпан лимит запросов на участие
