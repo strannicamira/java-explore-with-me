@@ -132,7 +132,10 @@ public class EventServiceImpl implements EventService {
 
 
         StateAction stateAction = request.getStateAction();
-        State state = EventMapper.getStateByStateAction(stateAction);
+        State state = null;
+        if(stateAction!=null){
+            state = EventMapper.getStateByStateAction(stateAction);
+        }
 
         LocalDateTime publishedOn = null;
         if (state == State.PUBLISHED) {
@@ -235,7 +238,6 @@ public class EventServiceImpl implements EventService {
         State state = null;
         if(stateAction!=null){
              state = EventMapper.getStateByStateAction(stateAction);
-
         }
 
         LocalDateTime publishedOn = null;
