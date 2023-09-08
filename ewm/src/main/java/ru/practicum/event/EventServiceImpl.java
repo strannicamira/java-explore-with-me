@@ -289,19 +289,21 @@ public class EventServiceImpl implements EventService {
         Event updatedEvent = null;
         Event savedEvent = null;
 
-        if (stateAction == StateAction.REJECT_EVENT) {
+        //TODO: refactor
+        if (stateAction == StateAction.REJECT_EVENT && event.getState() == State.PUBLISHED) {
+            throw new EventConflictException("Event already published. Cannot be canceled.");
+        } else if (stateAction == StateAction.REJECT_EVENT) {
             updatedEvent = event;
             updatedEvent.setState(newEventState);
             savedEvent = eventRepository.save(updatedEvent);
-        }
-        if (stateAction == StateAction.PUBLISH_EVENT && event.getState() == State.CANCELED) {
-            throw new EventConflictException("Event already canceled");
+        } else if (stateAction == StateAction.PUBLISH_EVENT && event.getState() == State.CANCELED) {
+            throw new EventConflictException("Event already canceled. Cannot be published.");
         } else
         //TODO: re-test
 //            if (stateAction == StateAction.PUBLISH_EVENT)
         {
             if (event.getState() == State.PUBLISHED) {
-                throw new EventConflictException("Event already published");
+                throw new EventConflictException("Event already published. Cannot be double published.");
             }
             updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, newEventState, publishedOn);
             savedEvent = eventRepository.save(updatedEvent);
