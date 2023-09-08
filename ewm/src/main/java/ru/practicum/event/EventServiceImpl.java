@@ -173,24 +173,45 @@ public class EventServiceImpl implements EventService {
     public List<Event> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
                                          String rangeStart, String rangeEnd, Integer from, Integer size) {
         log.info("[Log][Info] Find events by Admin");
+        BooleanExpression byUserIds = null;
+        if (userIds != null) {
+            byUserIds = QEvent.event.initiator.id.in(userIds);
+        }
 
-        BooleanExpression byUserIds = QEvent.event.initiator.id.in(userIds);
+        BooleanExpression byStates = null;
+        if (stateNames != null) {
+            List<State> states = Arrays.stream(stateNames).map(State::forValues).collect(Collectors.toList());
+            byStates = QEvent.event.state.in(states);
+        }
 
-        List<State> states = Arrays.stream(stateNames).map(State::forValues).collect(Collectors.toList());
-        BooleanExpression byStates = QEvent.event.state.in(states);
+        BooleanExpression byCategory = null;
+        if (categoryIds != null) {
+            byCategory = QEvent.event.category.id.in(categoryIds);
 
-        BooleanExpression byCategory = QEvent.event.category.id.in(categoryIds);
+        }
 
-        LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
-        LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(rangeEnd), DateTimeFormatter.ofPattern(TIME_PATTERN));
-        BooleanExpression byStart = QEvent.event.eventDate.after(startLDT);
-        BooleanExpression byEnd = QEvent.event.eventDate.before(endtLDT);
+        BooleanExpression byStart = null;
+        if (rangeStart != null) {
+            LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
+            byStart = QEvent.event.eventDate.after(startLDT);
+        }
+
+        BooleanExpression byEnd = null;
+        if (rangeEnd != null) {
+            LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(rangeEnd), DateTimeFormatter.ofPattern(TIME_PATTERN));
+            byEnd = QEvent.event.eventDate.before(endtLDT);
+        }
 
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
 
-        Iterable<Event> foundEvents = eventRepository.findAll(byUserIds.and(byStates).and(byCategory).and(byStart).and(byEnd), page);
+        Iterable<Event> foundEvents = null;
+        if (byUserIds != null || byStates != null || byCategory != null || byStart != null || byEnd != null){
+            foundEvents = eventRepository.findAll(byUserIds.and(byStates).and(byCategory).and(byStart).and(byEnd), page);
+        } else {
+            foundEvents = eventRepository.findAll(page);
+        }
+
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
-        List<EventFullDto> eventFullDtos = EventMapper.mapToEventFullDto(eventsList);
         return eventsList;
     }
 
@@ -273,7 +294,7 @@ public class EventServiceImpl implements EventService {
             updatedEvent.setState(state);
             savedEvent = eventRepository.save(updatedEvent);
         } else
-            //TODO: re-test
+        //TODO: re-test
 //            if (stateAction == StateAction.PUBLISH_EVENT)
         {
             if (event.getState() == State.PUBLISHED) {
