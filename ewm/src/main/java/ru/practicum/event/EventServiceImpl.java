@@ -160,7 +160,7 @@ public class EventServiceImpl implements EventService {
             savedEvent = eventRepository.save(updatedEvent);
         } else
 //            if (stateAction == StateAction.CANCEL_REVIEW || stateAction == StateAction.SEND_TO_REVIEW)
-            {
+        {
             updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
             savedEvent = eventRepository.save(updatedEvent);
         }
@@ -242,6 +242,9 @@ public class EventServiceImpl implements EventService {
         LocalDateTime eventDate = null;
         if (sEventDate != null) {
             eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
+            if (eventDate.isBefore(LocalDateTime.now())) {
+                throw new EventBadRequestException("Event Date is in the past");
+            }
         }
 
         //location
