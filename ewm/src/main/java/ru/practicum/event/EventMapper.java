@@ -96,14 +96,16 @@ public class EventMapper {
         if (locationDto != null) {
             newEvent.getLocation().setLat(locationDto.getLat());
             newEvent.getLocation().setLon(locationDto.getLon());
-        }        newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
+        }
+        newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
-        newEvent.setState(getNewValue(event.getState(), request.getStateAction()));
+        StateAction stateAction = request.getStateAction();
+        State state = getStateByStateAction(stateAction);
+        newEvent.setState(getNewValue(event.getState(), state));
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
     }
-
 
     public static Event mapToEvent(Event event, UpdateEventAdminRequest request, Category category, LocalDateTime eventDate, LocationDto locationDto) {
         Event newEvent = event;
@@ -118,11 +120,12 @@ public class EventMapper {
         newEvent.setPaid(getNewValue(event.getPaid(), request.getPaid()));
         newEvent.setParticipantLimit(getNewValue(event.getParticipantLimit(), request.getParticipantLimit()));
         newEvent.setRequestModeration(getNewValue(event.getRequestModeration(), request.getRequestModeration()));
-        newEvent.setState(getNewValue(event.getState(), request.getStateAction()));
+        StateAction stateAction = request.getStateAction();
+        State state = getStateByStateAction(stateAction);
+        newEvent.setState(getNewValue(event.getState(), state));
         newEvent.setTitle(getNewValue(event.getTitle(), request.getTitle()));
         return newEvent;
     }
-
 
     private static <T> T getNewValue(T oldValue, T newValue) {
         return newValue != null ? newValue : oldValue;
@@ -136,5 +139,22 @@ public class EventMapper {
         return dtos;
     }
 
+    private static State getStateByStateAction(StateAction stateAction) {
+        State state = null;
+        switch (stateAction) {
+            case REJECT_EVENT:
+                state = State.CANCELED;
+                break;
+            case SEND_TO_REVIEW:
+                state = State.PENDING;
+                break;
+            case PUBLISH_EVENT:
+                state = State.PUBLISHED;
+                break;
+            case CANCEL_REVIEW:
+                state = State.CANCELED;
+        }
+        return state;
+    }
 
 }

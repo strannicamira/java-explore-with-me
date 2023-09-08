@@ -2,8 +2,10 @@ INSERT INTO PUBLIC.STATES
 (ID, NAME)
 VALUES (0, 'PENDING'),
        (1, 'PUBLISHED'),
-       (2, 'CANCELED'),
-       (3, 'SEND_TO_REVIEW'),
-       (4, 'CANCEL_REVIEW'),
-       (5, 'PUBLISH_EVENT'),
-       (6, 'REJECT_EVENT');
+       (2, 'CANCELED');
+INSERT INTO PUBLIC.STATUSES
+(ID, NAME)
+VALUES (0, 'PENDING'),
+       (1, 'REJECTED'),
+       (2, 'CONFIRMED'),
+       (3, 'CANCELED');

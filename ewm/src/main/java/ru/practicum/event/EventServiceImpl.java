@@ -191,7 +191,7 @@ public class EventServiceImpl implements EventService {
 
         Event event = findEventById(eventId);
 
-        if (event.getState() == State.PUBLISHED && request.getStateAction() == State.PUBLISH_EVENT) {
+        if (event.getState() == State.PUBLISHED && request.getStateAction() == StateAction.PUBLISH_EVENT) {
             throw new EventPublishedException("Event already published");
         }
 
