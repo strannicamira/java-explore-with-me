@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
+import ru.practicum.exceptionhandler.EventBadRequestException;
 import ru.practicum.exceptionhandler.EventNotPublishedException;
 import ru.practicum.exceptionhandler.EventPublishedException;
 import ru.practicum.exceptionhandler.NotFoundException;
@@ -244,12 +245,19 @@ public class EventServiceImpl implements EventService {
 
         LocalDateTime now = LocalDateTime.now();
         BooleanExpression byRange;
+
         if (rangeStart == null && rangeEnd == null) {
             BooleanExpression byNow = QEvent.event.eventDate.after(now);
             byRange = byNow;
         } else {
+
             LocalDateTime startLDT = LocalDateTime.parse(URLDecoder.decode(rangeStart), DateTimeFormatter.ofPattern(TIME_PATTERN));
             LocalDateTime endtLDT = LocalDateTime.parse(URLDecoder.decode(rangeEnd), DateTimeFormatter.ofPattern(TIME_PATTERN));
+
+            if (startLDT.isAfter(endtLDT)){
+                throw  new EventBadRequestException("Start is before End for event");
+            }
+
             BooleanExpression byStart = QEvent.event.eventDate.after(startLDT);
             BooleanExpression byEnd = QEvent.event.eventDate.before(endtLDT);
             byRange = byStart.and(byEnd);
