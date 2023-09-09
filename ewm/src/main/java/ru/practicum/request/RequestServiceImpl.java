@@ -78,9 +78,11 @@ public class RequestServiceImpl implements RequestService {
         if (event.getParticipantLimit() != 0 && event.getParticipantLimit() == event.getConfirmedRequests()
 //                && event.getParticipantLimit() == sentRequests.size()
         ) {
-            throw new RequestConflictException("Participant Limit for event is equal Confirmed Requests");
+            throw new RequestConflictException("Participant limit for event is equal confirmed requests");
         }
-
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() == sentRequests.size()) {
+            throw new RequestConflictException("Participant limit for event is equal sent requests");
+        }
         Request savedRequest = requestRepository.save(request);
 
         ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
