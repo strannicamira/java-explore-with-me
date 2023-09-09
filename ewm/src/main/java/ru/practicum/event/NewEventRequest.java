@@ -44,12 +44,12 @@ public class NewEventRequest {
     private Boolean paid = false;
 
     //Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
-    private Integer participantLimit = 0;
+    private Integer participantLimit;
 
     //Нужна ли пре-модерация заявок на участие.
     // Если true, то все заявки будут ожидать подтверждения инициатором события.
     // Если false - то будут подтверждаться автоматически.
-    private Boolean requestModeration = true;
+    private Boolean requestModeration;
 
     //Заголовок события*
     @NotBlank

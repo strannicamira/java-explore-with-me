@@ -279,8 +279,8 @@ public class EventServiceImpl implements EventService {
 
         LocalDateTime publishedOn = null;
         if (newEventState == State.PUBLISHED) {
-            //TODO: how to pass @FutureOrPresent
-            publishedOn = LocalDateTime.now().plusMinutes(1);
+            //TODO: @FutureOrPresent  - plusDays(1) just for test
+            publishedOn = LocalDateTime.now().plusDays(1);
         }
         //---------------------------------------------
 

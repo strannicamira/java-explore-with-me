@@ -30,28 +30,41 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
         log.info("[Log][Info] Create request for event with id {} by user with id {}", eventId, userId);
-        if (userId == null || eventId == null) {
-            throw new IllegalStateException("BAD REQUEST");
-        }
+
+
+//        if (userId == null || eventId == null) {
+//            throw new IllegalStateException("BAD REQUEST");
+//        }
         Request request = new Request();
-        //TODO: not now
+        //TODO: @FutureOrPresent  - plusDays(1) just for test
         request.setCreated(LocalDateTime.now().plusDays(1));
-        Event event = eventService.findEventById(userId, eventId);
-        request.setEvent(event);
+
         User user = userService.findUserById(userId);
         request.setRequester(user);
-        if (event.getRequestModeration() == false || event.getParticipantLimit() == 0) {
+
+        Event event = eventService.findEventById(userId, eventId);
+        request.setEvent(event);
+
+        Boolean requestModeration = event.getRequestModeration();
+        Integer participantLimit = event.getParticipantLimit();
+
+        if (requestModeration == false || participantLimit == 0) {
             request.setStatus(Status.CONFIRMED);
-            //TODO:
-            Integer confirmedRequests = event.getConfirmedRequests();
-            if (confirmedRequests == null) {
-                event.setConfirmedRequests(1);
-            } else {
-                event.setConfirmedRequests(confirmedRequests + 1);
-            }
-//            event.setConfirmedRequests(confirmedRequests + 1);
-            //            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
-            eventRepository.save(event);
+
+
+
+//            Event updatedEvent = event;
+//            Integer confirmedRequests = updatedEvent.getConfirmedRequests();
+//            if (confirmedRequests == null) {
+//                updatedEvent.setConfirmedRequests(1);
+//            } else {
+//                updatedEvent.setConfirmedRequests(confirmedRequests + 1);
+//            }
+////            event.setConfirmedRequests(confirmedRequests + 1);
+//            //            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
+//            eventRepository.save(updatedEvent);
+
+
         } else {
             request.setStatus(Status.PENDING);
         }
@@ -70,23 +83,41 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestConflictException("Event is not published");
         }
 
-        List<Request> sentRequests = requestRepository.findAllByEventId(eventId);
-
-        //TODO: Strange logic
-        //TODO: Refactor
-//        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
-        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() == event.getConfirmedRequests()
-//                && event.getParticipantLimit() == sentRequests.size()
-        ) {
+        if (participantLimit != 0 && participantLimit == event.getConfirmedRequests()) {
             throw new RequestConflictException("Participant limit for event is equal confirmed requests");
         }
-        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() == sentRequests.size()) {
-            throw new RequestConflictException("Participant limit for event is equal sent requests");
-        }
-        Request savedRequest = requestRepository.save(request);
 
+//        List<Request> sentRequests = requestRepository.findAllByEventId(eventId);
+//        if (participantLimit != 0 && participantLimit == sentRequests.size()) {
+//            throw new RequestConflictException("Participant limit for event is equal sent requests");
+//        }
+
+//        if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() == event.getConfirmedRequests()
+//                || event.getParticipantLimit() == sentRequests.size())
+//        ) {
+//            throw new RequestConflictException("Participant limit for event is equal confirmed or sent requests");
+//        }
+
+        Request savedRequest = requestRepository.save(request);
         ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
-        return dto;
+
+        if (requestModeration == false || participantLimit == 0) {
+
+
+//            Event updatedEvent = event;
+            Integer confirmedRequests = event.getConfirmedRequests();
+            if (confirmedRequests == null) {
+                event.setConfirmedRequests(1);
+            } else {
+                event.setConfirmedRequests(confirmedRequests + 1);
+            }
+//            event.setConfirmedRequests(confirmedRequests + 1);
+            //            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
+            eventRepository.save(event);
+        }
+
+
+            return dto;
     }
 
     @Override
