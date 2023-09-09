@@ -115,7 +115,12 @@ public class RequestServiceImpl implements RequestService {
         User user = userService.findUserById(userId);
         Event event = eventService.findEventById(eventId);
 
-        List<Request> requests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
+        if (event.getInitiator().getId() != userId) {
+            //TODO: no need?
+            throw new RequestConflictException("User is not initiator of event gets requests");
+        }
+        List<Request> requests = requestRepository.findAllByEventId(eventId);
+
         return RequestMapper.mapToParticipationRequestDto(requests);
     }
 
