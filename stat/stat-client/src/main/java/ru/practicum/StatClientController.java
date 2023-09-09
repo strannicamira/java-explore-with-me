@@ -10,7 +10,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class StatController {
+public class StatClientController {
     private final StatClient statClient;
 
     @PostMapping(path = "/hit")

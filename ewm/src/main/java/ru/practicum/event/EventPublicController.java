@@ -1,10 +1,13 @@
 package ru.practicum.event;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Slf4j
 @CrossOrigin(origins = "https://editor-next.swagger.io")
 @RestController
 @RequiredArgsConstructor
@@ -41,9 +44,22 @@ public class EventPublicController {
         return eventService.findEventsByPublic(text, categoryIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
+    //GET
+    ///events/{id}
+    //Получение подробной информации об опубликованном событии по его идентификатору
+    //
+    //Jump to path
+    //Обратите внимание:
+    //
+    //событие должно быть опубликовано
+    //информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов
+    //информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
+    //В случае, если события с заданным id не найдено, возвращает статус код 404
     @GetMapping(value = "/{id}")
-    public EventFullDto findEventByIdByPublic(
-            @PathVariable(name = "id") Integer eventId) {
-        return eventService.findEventByIdByPublic(eventId);
+    public EventFullDto findEventByIdByPublic(HttpServletRequest request,
+                                              @PathVariable(name = "id") Integer eventId) {
+        log.info("client ip: {}", request.getRemoteAddr());
+        log.info("endpoint path: {}", request.getRequestURI());
+        return eventService.findEventByIdByPublic(request, eventId);
     }
 }

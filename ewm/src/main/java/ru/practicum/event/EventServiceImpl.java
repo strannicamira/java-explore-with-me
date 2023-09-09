@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.NewEndpointHitRequest;
+import ru.practicum.StatClient;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.exceptionhandler.EventBadRequestException;
@@ -21,6 +23,7 @@ import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 import ru.practicum.util.ServiceImplUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +42,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryService categoryService;
     private final UserService userService;
     private final LocationService locationService;
+    private final StatClient statClient;
 
     @Override
     @Transactional
@@ -398,13 +402,24 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto findEventByIdByPublic(Integer eventId) {
+    public EventFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId) {
         log.info("[Log][Info] Search events by  id {}", eventId);
         //TODO: add statistic
         Event event = findEventById(eventId);
+
         if (event.getState() != State.PUBLISHED) {
             throw new EventNotPublishedException("Event Not Published");
         }
+
+        //--------------------------------------
+        log.info("client ip: {}", request.getRemoteAddr());
+        log.info("endpoint path: {}", request.getRequestURI());
+
+//        statClient.post(Integer userId, NewEndpointHitRequest newEndpointHitRequest);
+
+
+
+        //------------------------------------------------------------
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
     }

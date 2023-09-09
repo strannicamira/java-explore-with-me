@@ -1,5 +1,6 @@
 package ru.practicum.event;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
@@ -30,5 +31,5 @@ public interface EventService {
 
     List<EventShortDto> findEventsByPublic(String text, Integer[] categoryIds, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
 
-    EventFullDto findEventByIdByPublic(Integer eventId);
+    EventFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId);
 }

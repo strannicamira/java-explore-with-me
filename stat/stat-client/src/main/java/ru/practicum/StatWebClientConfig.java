@@ -1,5 +1,7 @@
 package ru.practicum;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +10,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @Configuration
+//@AllArgsConstructor
+//@RequiredArgsConstructor
 public class StatWebClientConfig {
 
     @Value("${stat-server.url}")
