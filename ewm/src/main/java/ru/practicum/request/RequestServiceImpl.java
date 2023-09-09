@@ -73,8 +73,9 @@ public class RequestServiceImpl implements RequestService {
         List<Request> sentRequests = requestRepository.findAllByEventId(eventId);
 
         //TODO: Strange logic
+        //TODO: Refactor
 //        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
-        if (event.getParticipantLimit() == sentRequests.size()) {
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() == sentRequests.size()) {
             throw new RequestConflictException("Participant Limit for event is equal Confirmed Requests");
         }
 
