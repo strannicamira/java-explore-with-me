@@ -29,7 +29,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
-        log.info("[Log][Info] Create compilation");
+        log.info("Create compilation");
         Compilation compilation = compilationRepository.save(CompilationMapper.mapToCompilation(newCompilationDto));
         List<EventShortDto> events = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto updateCompilation(UpdateCompilationRequest request, Integer compId) {
-        log.info("[Log][Info] Update compilation by id {}", compId);
+        log.info("Update compilation by id {}", compId);
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException("Compilation not found"));
 
         if (request.getPinned() != null) {
@@ -95,14 +95,14 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void deleteCompilationById(Integer compId) {
-        log.info("[Log][Info] Delete compilation by id {}", compId);
+        log.info("Delete compilation by id {}", compId);
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException("Compilation not found"));
         compilationRepository.deleteById(compId);
     }
 
     @Override
     public List<CompilationDto> findCompilationDtos(Boolean pinned, Integer from, Integer size) {
-        log.info("[Log][Info] Search categories");
+        log.info("Search categories");
         List<CompilationDto> compilationDtos = new ArrayList<>();
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         List<Compilation> foundCompilations = new ArrayList<>();
@@ -127,7 +127,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto findCompilationDtoById(Integer compId) {
-        log.info("[Log][Info] Search compilation dto by id {}", compId);
+        log.info("Search compilation dto by id {}", compId);
         Compilation compilationById = compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException("Compilation not found"));
         List<EventShortDto> eventShortDtos = new ArrayList<>();
         List<EventCompilation> eventCompilationIds = eventCompilationRepository.findAllByCompilationId(compilationById.getId());
