@@ -193,7 +193,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> findEventsByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
                                          String rangeStart, String rangeEnd, Integer from, Integer size) {
-        log.info("Find events by Admin");
+        log.info("Find events by Admin in range from {} to {}", rangeStart, rangeEnd);
         BooleanExpression byUserIds = null;
         if (userIds != null) {
             byUserIds = QEvent.event.initiator.id.in(userIds);
@@ -239,7 +239,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> findEventFullDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
                                                        String rangeStart, String rangeEnd, Integer from, Integer size) {
-        log.info("Find event full dtos by Admin");
+        log.info("Find event full dtos by Admin in range from {} to {}", rangeStart, rangeEnd);
         List<Event> eventsList = findEventsByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
         List<EventFullDto> eventFullDtos = EventMapper.mapToEventFullDto(eventsList);
         return eventFullDtos;
@@ -256,7 +256,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
-        log.info("Update event by Admin");
+        log.info("Update event by Admin by event wit id {} ", eventId);
 
         Integer categoryId = request.getCategory();
         Category category = null;
@@ -315,7 +315,7 @@ public class EventServiceImpl implements EventService {
                                                   String rangeStart, String rangeEnd,
                                                   Boolean onlyAvailable,
                                                   String sort, Integer from, Integer size) {
-        log.info("Find events by public");
+        log.info("Find events by public in range from {} to {} paid {} only available {}", rangeStart, rangeEnd, paid, onlyAvailable);
 
         BooleanExpression byPublished = QEvent.event.publishedOn.isNotNull();
         BooleanExpression byState = QEvent.event.state.eq(State.PUBLISHED);

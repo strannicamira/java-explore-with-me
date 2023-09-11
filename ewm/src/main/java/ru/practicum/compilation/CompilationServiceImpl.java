@@ -102,7 +102,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> findCompilationDtos(Boolean pinned, Integer from, Integer size) {
-        log.info("Search categories");
+        log.info("Search categories by pinned {}", pinned);
         List<CompilationDto> compilationDtos = new ArrayList<>();
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
         List<Compilation> foundCompilations = new ArrayList<>();
