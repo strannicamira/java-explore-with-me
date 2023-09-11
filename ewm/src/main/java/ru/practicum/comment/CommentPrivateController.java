@@ -9,15 +9,15 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "https://editor-next.swagger.io")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/users/{userId}/events/{eventId}/comments")
+@RequestMapping(path = "/users/{userId}/comments")
 public class CommentPrivateController {
 
     private final CommentService commentService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseDto createComment(@PathVariable Integer userId,
-                                            @PathVariable Integer eventId,
+    public CommentResponseDto createComment(@PathVariable(name = "userId") Integer userId,
+                                            @RequestParam(name = "eventId") Integer eventId,
                                             @Valid @RequestBody CommentRequestDto commentRequestDto) {
         return commentService.createComment(userId, eventId, commentRequestDto);
     }

@@ -3,8 +3,11 @@ package ru.practicum.comment;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ru.practicum.util.Constants.TIME_PATTERN;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
@@ -14,7 +17,8 @@ public class CommentMapper {
                 comment.getId(),
                 comment.getText(),
                 comment.getAuthor().getName(),
-                comment.getCreated());
+                comment.getCreated().format(DateTimeFormatter.ofPattern(TIME_PATTERN))
+        );
     }
 
     public static List<CommentResponseDto> mapToCommentResponseDto(Iterable<Comment> comments) {
