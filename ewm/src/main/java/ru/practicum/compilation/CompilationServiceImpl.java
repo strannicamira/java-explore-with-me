@@ -45,9 +45,9 @@ public class CompilationServiceImpl implements CompilationService {
                 eventCompilation.setEventId(eventId);
                 eventCompilationRepository.save(eventCompilation);
             }
+            //TODO: use eventCompilationService
             //eventCompilationService.create(Integer compilationId, List<Event> events);
             //List<Event> events = eventCompilationService.findByCompilationId(compilationId);
-
 
             events = eventService.findEventShortDtosByAdmin(eventIds);
         }
@@ -72,7 +72,7 @@ public class CompilationServiceImpl implements CompilationService {
         Integer compilationId = compilation.getId();
         List<EventCompilation> eventCompilationIds = eventCompilationRepository.findAllByCompilationId(compilationId);
         List<Integer> eventIds = eventCompilationIds.stream().map(EventCompilation::getEventId).collect(Collectors.toList());
-        if (request.getEvents() != null) {// && !request.getEvents().isEmpty()
+        if (request.getEvents() != null) {//TODO: add && !request.getEvents().isEmpty()
 
             for (Integer eventId : eventIds) {
                 EventCompilation eventCompilation = new EventCompilation();

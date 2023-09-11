@@ -29,8 +29,8 @@ public class EventRequestPrivateController {
     //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
     @PatchMapping
     public EventRequestStatusUpdateResult updateEventRequest(@Valid @RequestBody EventRequestStatusUpdateRequest request,
-                                                      @PathVariable(name = "userId") Integer userId,
-                                                      @PathVariable(name = "eventId") Integer eventId) {
+                                                             @PathVariable(name = "userId") Integer userId,
+                                                             @PathVariable(name = "eventId") Integer eventId) {
         return requestService.updateEventRequest(request, userId, eventId);
     }
 }

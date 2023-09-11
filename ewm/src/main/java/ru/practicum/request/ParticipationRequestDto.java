@@ -15,26 +15,22 @@ import static ru.practicum.util.Constants.TIME_PATTERN;
 
 public class ParticipationRequestDto {
     //Идентификатор заявки
-//    @NotNull
     private Integer id;
 
     //Дата и время создания заявки
     //example: 2022-09-06T21:10:05.432
-//    @NotNull
+    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @FutureOrPresent
     @DateTimeFormat(pattern = TIME_PATTERN)
     private String created;
 
     //Идентификатор события
-//    @NotNull
     private Integer event;
 
     //Идентификатор пользователя, отправившего заявку
-//    @NotNull
     private Integer requester;
 
     //Статус заявки
     //example: PENDING
-//    @NotNull
     private String status;
 }

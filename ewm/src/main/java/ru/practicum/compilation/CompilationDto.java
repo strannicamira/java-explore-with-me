@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import ru.practicum.event.Event;
 import ru.practicum.event.EventShortDto;
 
 import javax.validation.constraints.NotBlank;

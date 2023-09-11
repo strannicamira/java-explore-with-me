@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.category.CategoryDto;
-import ru.practicum.location.LocationDto;
 import ru.practicum.user.UserShortDto;
 
 import javax.validation.constraints.FutureOrPresent;
@@ -35,6 +34,7 @@ public class EventShortDto {
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
+    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @NotNull
     @FutureOrPresent
     @DateTimeFormat(pattern = TIME_PATTERN)
@@ -48,7 +48,7 @@ public class EventShortDto {
     @NotNull
     private UserShortDto initiator;
 
-    //    Нужно ли оплачивать участие в событии*
+    //Нужно ли оплачивать участие в событии*
     private Boolean paid = false;
 
     //Заголовок события*

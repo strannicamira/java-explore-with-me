@@ -108,7 +108,6 @@ public class EventServiceImpl implements EventService {
         event.setTitle(title);
 
         //save to DB as Event
-//        Event event = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location, state);
         Event savedEvent = eventRepository.save(event);
 
         //return for controller as EventFullDto
@@ -157,7 +156,6 @@ public class EventServiceImpl implements EventService {
         //---------------------------------------------
         //category
         Integer categoryId = request.getCategory();
-        //        Category category = categoryId != null ? categoryService.findCategoryById(categoryId) : null;
         Category category = null;
         if (categoryId != null) {
             category = categoryService.findCategoryById(categoryId);
@@ -165,7 +163,6 @@ public class EventServiceImpl implements EventService {
 
         //eventDate
         String sEventDate = request.getEventDate();
-//        LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime eventDate = null;
         if (sEventDate != null) {
             eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
@@ -173,7 +170,6 @@ public class EventServiceImpl implements EventService {
 
         //location
         LocationDto locationDto = request.getLocation();
-
 
         StateAction stateAction = request.getStateAction();
         State state = null;
@@ -186,7 +182,6 @@ public class EventServiceImpl implements EventService {
             publishedOn = LocalDateTime.now();
         }
 
-
         //---------------------------------------------
 
         Event event = findEventById(userId, eventId);
@@ -195,16 +190,13 @@ public class EventServiceImpl implements EventService {
         if (event.getState() == State.PUBLISHED) {
             throw new EventConflictException("Event already published");
         }
-        //TODO: test
-        // Отклонение публикации события
+
         //Стоимость отменённого события должна соответствовать стоимости события до отмены
         if (stateAction == StateAction.CANCEL_REVIEW || stateAction == StateAction.SEND_TO_REVIEW) {
             updatedEvent = event;
             updatedEvent.setState(state);
             savedEvent = eventRepository.save(updatedEvent);
-        } else
-//            if (stateAction == StateAction.CANCEL_REVIEW || stateAction == StateAction.SEND_TO_REVIEW)
-        {
+        } else {
             updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
             savedEvent = eventRepository.save(updatedEvent);
         }
@@ -268,15 +260,6 @@ public class EventServiceImpl implements EventService {
         return eventFullDtos;
     }
 
-//    @Override
-//    public List<EventShortDto> findEventShortDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
-//                                                         String rangeStart, String rangeEnd, Integer from, Integer size) {
-//        log.info("[Log][Info] Find event short dtos by Admin");
-//        List<Event> eventsList = findEventsByAdmin(userIds, stateNames, categoryIds, rangeStart, rangeEnd, from, size);
-//        List<EventShortDto> eventShortDtos = EventMapper.mapToEventShortDto(eventsList);
-//        return eventShortDtos;
-//    }
-
     @Override
     public List<EventShortDto> findEventShortDtosByAdmin(List<Integer> eventIds) {
         log.info("[Log][Info] Find event short dtos by Admin");
@@ -290,12 +273,10 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
         log.info("[Log][Info] Update event by Admin");
 
-
         //Event data to convert
         //---------------------------------------------
         //category
         Integer categoryId = request.getCategory();
-        //        Category category = categoryId != null ? categoryService.findCategoryById(categoryId) : null;
         Category category = null;
         if (categoryId != null) {
             category = categoryService.findCategoryById(categoryId);
@@ -303,7 +284,6 @@ public class EventServiceImpl implements EventService {
 
         //eventDate
         String sEventDate = request.getEventDate();
-//        LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
         LocalDateTime eventDate = null;
         if (sEventDate != null) {
             eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
@@ -353,8 +333,6 @@ public class EventServiceImpl implements EventService {
             savedEvent = eventRepository.save(updatedEvent);
         }
 
-//        Event updatedEvent = EventMapper.mapToEvent(event, request, category, eventDate, locationDto, state, publishedOn);
-//        Event savedEvent = eventRepository.save(updatedEvent);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
     }
@@ -420,20 +398,12 @@ public class EventServiceImpl implements EventService {
 
         Pageable page = ServiceImplUtils.getPage(from, size, pageSort);
 
-////        BooleanExpression findExpression = byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
-//        BooleanExpression findExpression = byState.and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit);
-//        Iterable<Event> foundEvents = eventRepository.findAll(findExpression, page);
-
-
         Iterable<Event> foundEvents = null;
         if (byPublished != null || byState != null || byText != null || byCategory != null || byRange != null || byLimit != null) {
             foundEvents = eventRepository.findAll(byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit), page);
-//            foundEvents = eventRepository.findAll(byState.and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit), page);
-
         } else {
             foundEvents = eventRepository.findAll(page);
         }
-
 
         //TODO: add to statistic
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
@@ -444,7 +414,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId) {
         log.info("[Log][Info] Search events by  id {}", eventId);
-        //TODO: add statistic
+
         Event event = findEventById(eventId);
 
         if (event.getState() != State.PUBLISHED) {
@@ -464,42 +434,17 @@ public class EventServiceImpl implements EventService {
         String requestedOn = LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIME_PATTERN));
         newEndpointHitRequest.setTimestamp(requestedOn);
 
-        ResponseEntity<Object> postStat = statClient.post(newEndpointHitRequest);
+        statClient.post(newEndpointHitRequest);
 
         //------------------------------------------------------------
-//TODO TO TEST
+
         String start = event.getCreatedOn().minusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
         String end = LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
 
         ResponseEntity<Object> response = statClient.get(start, end, true, new String[]{requestURI});
-
-//        List<ViewStats> views = (List<ViewStats> ) response.getBody();
-//        ViewStats body = (ViewStats) response.getBody();
-//        Object object = response.getBody();
-//        ObjectMapper mapper = new ObjectMapper();
-//        Object view = mapper.convertValue(object, ViewStats.class);
-
         ArrayList<Object> objectsList = (ArrayList<Object>) response.getBody();
         Map<Object, Object> objectsMap = (Map<Object, Object>) objectsList.get(0);
         Integer hits = (Integer) objectsMap.get("hits");
-
-
-//        Integer hits = view.getHits();
-
-
-//        if (event.getViews() == null) {
-//            event.setViews(1);
-//        } else {
-//            event.setViews(event.getViews() + 1);
-//        }
-
-//        Integer hits = null;
-//        for (ViewStats view: views){
-//            if(view.getApp().equals("ewm-main-service") && view.getUri().equals(requestURI)){
-//                hits = view.getHits();
-//                break;
-//            }
-//        }
         event.setViews(hits);
         eventRepository.save(event);
 

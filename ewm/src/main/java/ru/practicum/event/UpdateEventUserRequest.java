@@ -11,28 +11,24 @@ import ru.practicum.location.LocationDto;
 @NoArgsConstructor
 public class UpdateEventUserRequest {
     //Новая аннотация
-//    @NotBlank
     @Length(max = 2000, min = 20)
     private String annotation;
 
     //Новая категория
-//    @NotNull
     private Integer category;
 
     //Новое описание
-//    @NotBlank
     @Length(max = 7000, min = 20)
     private String description;
 
     // Новые дата и время на которые намечено событие.
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
-//    @NotNull
+    //TODO: delete @FutureOrPresent and @DateTimeFormat
 //    @FutureOrPresent
 //    @DateTimeFormat(pattern = TIME_PATTERN)
     private String eventDate;
 
     //Широта и долгота места проведения события
-//    @NotNull
     private LocationDto location;
 
     //Новое значение флага о платности мероприятия
@@ -47,7 +43,6 @@ public class UpdateEventUserRequest {
     private StateAction stateAction;
 
     //Новый заголовок
-//    @NotBlank
     @Length(max = 120, min = 3)
     private String title;
 }

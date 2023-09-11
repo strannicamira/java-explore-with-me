@@ -4,9 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.event.EventShortDto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompilationMapper {
@@ -28,15 +26,4 @@ public class CompilationMapper {
         dto.setEvents(events);
         return dto;
     }
-
-//    public static List<CompilationDto> mapToCompilationDto(List<Compilation> compilations,
-//                                                           Map<Integer, List<EventShortDto>> eventDtos) {
-//        List<CompilationDto> compilationDtos = new ArrayList<>();
-//        for (Compilation compilation : compilations) {
-//            Integer compilationId = compilation.getId();
-//            compilationDtos.add(mapToCompilationDto(compilation, eventDtos.get(compilationId)));
-//        }
-//        return compilationDtos;
-//    }
-
 }

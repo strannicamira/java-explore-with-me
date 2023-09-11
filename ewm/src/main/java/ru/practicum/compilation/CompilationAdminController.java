@@ -3,7 +3,6 @@ package ru.practicum.compilation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilation.CompilationDto;
 
 import javax.validation.Valid;
 
@@ -23,7 +22,7 @@ public class CompilationAdminController {
 
     @PatchMapping(value = "/{compId}")
     public CompilationDto updateCompilationByAdmin(@Valid @RequestBody UpdateCompilationRequest dto,
-                                      @PathVariable(name = "compId") Integer compId) {
+                                                   @PathVariable(name = "compId") Integer compId) {
         return compilationService.updateCompilation(dto, compId);
     }
 

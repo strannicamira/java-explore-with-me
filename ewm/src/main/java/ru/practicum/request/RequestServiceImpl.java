@@ -31,10 +31,6 @@ public class RequestServiceImpl implements RequestService {
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
         log.info("[Log][Info] Create request for event with id {} by user with id {}", eventId, userId);
 
-
-//        if (userId == null || eventId == null) {
-//            throw new IllegalStateException("BAD REQUEST");
-//        }
         Request request = new Request();
         //TODO: @FutureOrPresent  - plusDays(1) just for test
         request.setCreated(LocalDateTime.now().plusDays(1));
@@ -50,21 +46,6 @@ public class RequestServiceImpl implements RequestService {
 
         if (requestModeration == false || participantLimit == 0) {
             request.setStatus(Status.CONFIRMED);
-
-
-
-//            Event updatedEvent = event;
-//            Integer confirmedRequests = updatedEvent.getConfirmedRequests();
-//            if (confirmedRequests == null) {
-//                updatedEvent.setConfirmedRequests(1);
-//            } else {
-//                updatedEvent.setConfirmedRequests(confirmedRequests + 1);
-//            }
-////            event.setConfirmedRequests(confirmedRequests + 1);
-//            //            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
-//            eventRepository.save(updatedEvent);
-
-
         } else {
             request.setStatus(Status.PENDING);
         }
@@ -78,7 +59,6 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestConflictException("Requester is initiator of event");
         }
 
-        //TODO: || or &&
         if (event.getPublishedOn() == null && event.getState() != State.PUBLISHED) {
             throw new RequestConflictException("Event is not published");
         }
@@ -87,37 +67,20 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestConflictException("Participant limit for event is equal confirmed requests");
         }
 
-//        List<Request> sentRequests = requestRepository.findAllByEventId(eventId);
-//        if (participantLimit != 0 && participantLimit == sentRequests.size()) {
-//            throw new RequestConflictException("Participant limit for event is equal sent requests");
-//        }
-
-//        if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() == event.getConfirmedRequests()
-//                || event.getParticipantLimit() == sentRequests.size())
-//        ) {
-//            throw new RequestConflictException("Participant limit for event is equal confirmed or sent requests");
-//        }
-
         Request savedRequest = requestRepository.save(request);
         ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
 
         if (requestModeration == false || participantLimit == 0) {
-
-
-//            Event updatedEvent = event;
             Integer confirmedRequests = event.getConfirmedRequests();
             if (confirmedRequests == null) {
                 event.setConfirmedRequests(1);
             } else {
                 event.setConfirmedRequests(confirmedRequests + 1);
             }
-//            event.setConfirmedRequests(confirmedRequests + 1);
-            //            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
             eventRepository.save(event);
         }
 
-
-            return dto;
+        return dto;
     }
 
     @Override
@@ -176,24 +139,22 @@ public class RequestServiceImpl implements RequestService {
         Event event = eventService.findEventById(eventId);
 
         List<Integer> requestIds = updateRequest.getRequestIds();
-//        BooleanExpression byId = QRequest.request.id.in(request.getRequestIds());
         List<Request> requests = requestRepository.findAllById(requestIds);
 
         for (Request request : requests) {
             if (request.getEvent().getInitiator().getId() != userId) {
                 throw new RequestConflictException("User is not initiator");
             }
+
             if (request.getEvent().getId() != eventId) {
                 throw new RequestConflictException("Event is not event requested");
             }
-//            if ((request.getEvent().getParticipantLimit() == 0 || request.getEvent().getRequestModeration() == false)
-//                    && status == Status.CONFIRMED) {
-//                throw new RequestException("Confirmation is not required");
-//            }
+
             if (request.getEvent().getParticipantLimit() == request.getEvent().getConfirmedRequests()
                     && status == Status.CONFIRMED) {
                 throw new RequestConflictException("Participant Limit is equal Confirmed Requests for event ");
             }
+
             if (request.getStatus() != Status.PENDING) {
                 throw new RequestConflictException("Request is not in status PENDING");
             }
@@ -207,7 +168,7 @@ public class RequestServiceImpl implements RequestService {
             } else {
                 event.setConfirmedRequests(confirmedRequests + 1);
             }
-//            eventService.updateEventByAdmin(EventMapper.mapToUpdateEventAdminRequest(event), eventId);
+            //TODO: create methods in event service
             eventRepository.save(event);
             ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
 
@@ -225,13 +186,11 @@ public class RequestServiceImpl implements RequestService {
                         requestRepository.save(request);
                     }
                 }
-
             }
             if (status == Status.REJECTED) {
                 result.getRejectedRequests().add(dto);
             }
         }
-
         return result;
     }
 }

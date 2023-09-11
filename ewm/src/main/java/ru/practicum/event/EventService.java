@@ -21,9 +21,6 @@ public interface EventService {
 
     List<EventFullDto> findEventFullDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
                                                 String rangeStart, String rangeEnd, Integer from, Integer size);
-//
-//    List<EventShortDto> findEventShortDtosByAdmin(Integer[] userIds, String[] stateNames, Integer[] categoryIds,
-//                                                  String rangeStart, String rangeEnd, Integer from, Integer size);
 
     List<EventShortDto> findEventShortDtosByAdmin(List<Integer> eventIds);
 

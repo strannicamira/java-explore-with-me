@@ -34,9 +34,7 @@ public enum Status {
         return getName();
     }
 
-    //    @JsonCreator
-    public static Status forValues(//@JsonProperty("id")
-                                   Integer id) {
+    public static Status forValues(Integer id) {
         for (Status status : Status.values()) {
             if (status.id == id) {
                 return status;
@@ -45,8 +43,7 @@ public enum Status {
         return null;
     }
 
-    public static Status forValues(//@JsonProperty("name")
-                                   String name) {
+    public static Status forValues(String name) {
         for (Status status : Status.values()) {
             if (name.equals(status.name)) {
                 return status;
@@ -56,8 +53,7 @@ public enum Status {
     }
 
 
-    public static List<Status> forValues(//@JsonProperty("name")
-                                         String[] names) {
+    public static List<Status> forValues(String[] names) {
         List<Status> statuses = new ArrayList<>();
         for (String name : names) {
             statuses.add(forValues(name));

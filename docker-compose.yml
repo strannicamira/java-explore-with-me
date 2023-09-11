@@ -8,10 +8,10 @@ services:
       - stats-db
     #      - ewm-service
     environment:
-#      - STATS_SERVER_PORT:9090
-#      - STATS_H2_DB_NAME=ewm_stats_h2_db
-#      - STATS_H2_USER=test
-#      - STATS_H2_PASSWORD=test
+      #      - STATS_SERVER_PORT:9090
+      #      - STATS_H2_DB_NAME=ewm_stats_h2_db
+      #      - STATS_H2_USER=test
+      #      - STATS_H2_PASSWORD=test
       - STATS_POSTGRES_DB_HOST=stats-db
       - STATS_POSTGRES_DB_PORT:5432
 
@@ -37,10 +37,10 @@ services:
     depends_on:
       - ewm-db
     environment:
-#      - EWM_SERVER_PORT:8080
-#      - EWM_H2_DB_NAME=ewm_h2_db
-#      - EWM_H2_USER=test
-#      - EWM_H2_PASSWORD=test
+      #      - EWM_SERVER_PORT:8080
+      #      - EWM_H2_DB_NAME=ewm_h2_db
+      #      - EWM_H2_USER=test
+      #      - EWM_H2_PASSWORD=test
       - EWM_POSTGRES_DB_HOST=ewm-db
       - EWM_POSTGRES_DB_PORT:5432
 

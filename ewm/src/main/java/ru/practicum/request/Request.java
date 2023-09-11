@@ -1,13 +1,10 @@
 package ru.practicum.request;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import ru.practicum.event.Event;
-import ru.practicum.event.State;
 import ru.practicum.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -26,6 +23,7 @@ public class Request {
 
     //Дата и время создания заявки
     //example: 2022-09-06T21:10:05.432
+    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @NotNull
 //    @FutureOrPresent
     //    @DateTimeFormat(pattern = TIME_PATTERN)

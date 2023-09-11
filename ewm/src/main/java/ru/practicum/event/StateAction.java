@@ -34,8 +34,7 @@ public enum StateAction {
     }
 
     //    @JsonCreator
-    public static StateAction forValues(//@JsonProperty("id")
-                                        Integer id) {
+    public static StateAction forValues(Integer id) {
         for (StateAction state : StateAction.values()) {
             if (state.id == id) {
                 return state;
@@ -44,8 +43,7 @@ public enum StateAction {
         return null;
     }
 
-    public static StateAction forValues(//@JsonProperty("name")
-                                        String name) {
+    public static StateAction forValues(String name) {
         for (StateAction state : StateAction.values()) {
             if (name.equals(state.name)) {
                 return state;
@@ -54,9 +52,7 @@ public enum StateAction {
         return null;
     }
 
-
-    public static List<StateAction> forValues(//@JsonProperty("name")
-                                              String[] names) {
+    public static List<StateAction> forValues(String[] names) {
         List<StateAction> states = new ArrayList<>();
         for (String name : names) {
             states.add(forValues(name));

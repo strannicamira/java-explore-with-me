@@ -8,7 +8,6 @@ import java.util.List;
 public enum State {
 
     PENDING(0, "PENDING"),
-
     PUBLISHED(1, "PUBLISHED"),
     CANCELED(2, "CANCELED");
     private final Integer id;
@@ -34,9 +33,7 @@ public enum State {
         return getName();
     }
 
-    //    @JsonCreator
-    public static State forValues(//@JsonProperty("id")
-                                  Integer id) {
+    public static State forValues(Integer id) {
         for (State state : State.values()) {
             if (state.id == id) {
                 return state;
@@ -45,8 +42,7 @@ public enum State {
         return null;
     }
 
-    public static State forValues(//@JsonProperty("name")
-                                  String name) {
+    public static State forValues(String name) {
         for (State state : State.values()) {
             if (name.equals(state.name)) {
                 return state;
@@ -56,8 +52,7 @@ public enum State {
     }
 
 
-    public static List<State> forValues(//@JsonProperty("name")
-                                        String[] names) {
+    public static List<State> forValues(String[] names) {
         List<State> states = new ArrayList<>();
         for (String name : names) {
             states.add(forValues(name));

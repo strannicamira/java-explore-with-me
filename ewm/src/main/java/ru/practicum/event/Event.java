@@ -31,20 +31,18 @@ public class Event {
 
     //id категории к которой относится событие*
     @NotNull
-//    @Column(name = "CATEGORY_ID")
-//    private Integer category;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
 
     //Количество одобренных заявок на участие в данном событии
     @Column(name = "CONFIRMED_REQUESTS")
-    private Integer confirmedRequests=0;
+    private Integer confirmedRequests = 0;
 
     //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull
 //    @FutureOrPresent
-    //    @DateTimeFormat(pattern = TIME_PATTERN)
+//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
 
@@ -57,9 +55,9 @@ public class Event {
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
-    //    @DateTimeFormat(pattern = TIME_PATTERN)
     @NotNull
     @FutureOrPresent
+//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "EVENT_DATE")
     private LocalDateTime eventDate;
 
@@ -75,13 +73,6 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
-
-//    @NotNull
-//    @Column(name = "LOCATION_LAT")
-//    private Float lat;
-//    @NotNull
-//    @Column(name = "LOCATION_LON")
-//    private Float lon;
 
     //    Нужно ли оплачивать участие в событии *(EventFullDto)
     @NotNull

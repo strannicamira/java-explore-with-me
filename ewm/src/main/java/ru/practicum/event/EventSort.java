@@ -8,7 +8,6 @@ import java.util.List;
 public enum EventSort {
 
     EVENT_DATE(0, "EVENT_DATE"),
-
     VIEWS(1, "VIEWS");
     private final Integer id;
     private final String name;
@@ -33,9 +32,7 @@ public enum EventSort {
         return getName();
     }
 
-    //    @JsonCreator
-    public static EventSort forValues(//@JsonProperty("id")
-                                      Integer id) {
+    public static EventSort forValues(Integer id) {
         for (EventSort state : EventSort.values()) {
             if (state.id == id) {
                 return state;
@@ -44,8 +41,7 @@ public enum EventSort {
         return null;
     }
 
-    public static EventSort forValues(//@JsonProperty("name")
-                                      String name) {
+    public static EventSort forValues(String name) {
         for (EventSort state : EventSort.values()) {
             if (state.name.equals(name)) {
                 return state;
@@ -54,9 +50,7 @@ public enum EventSort {
         return null;
     }
 
-
-    public static List<EventSort> forValues(//@JsonProperty("name")
-                                            String[] names) {
+    public static List<EventSort> forValues(String[] names) {
         List<EventSort> states = new ArrayList<>();
         for (String name : names) {
             states.add(forValues(name));

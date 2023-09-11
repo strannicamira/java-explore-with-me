@@ -32,6 +32,7 @@ public class NewEventRequest {
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
     @NotNull
+    //TODO: delete @FutureOrPresent and @DateTimeFormat
 //    @FutureOrPresent
 //    @DateTimeFormat(pattern = TIME_PATTERN)
     private String eventDate;
@@ -40,7 +41,7 @@ public class NewEventRequest {
     @NotNull
     private LocationDto location;
 
-    //    Нужно ли оплачивать участие в событии
+    //Нужно ли оплачивать участие в событии
     private Boolean paid;
 
     //Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
