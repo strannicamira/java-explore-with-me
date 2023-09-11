@@ -16,15 +16,6 @@ public class RequestPrivateController {
 
     private final RequestService requestService;
 
-    //POST
-    ///users/{userId}/requests
-    //Добавление запроса от текущего пользователя на участие в событии
-
-    //нельзя добавить повторный запрос (Ожидается код ошибки 409)
-    //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
-    //нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
-    //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-    //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto createRequest(@PathVariable(name = "userId") Integer userId, @RequestParam(name = "eventId") Integer eventId) {

@@ -6,7 +6,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-//Результат подтверждения/отклонения заявок на участие в событии
 @Data
 @AllArgsConstructor
 public class EventRequestStatusUpdateResult {

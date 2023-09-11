@@ -12,13 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class UpdateCompilationRequest {
 
-    //Список id событий подборки для полной замены текущего списка
     private List<Integer> events;
 
-    //Закреплена ли подборка на главной странице сайта
     private Boolean pinned;
 
-    //Заголовок подборки
     @Length(max = 50, min = 1)
     private String title;
 }

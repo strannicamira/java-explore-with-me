@@ -24,83 +24,61 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //Краткое описание события*
     @NotBlank
     @Length(max = 2000, min = 20)
     private String annotation;
 
-    //id категории к которой относится событие*
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
 
-    //Количество одобренных заявок на участие в данном событии
     @Column(name = "CONFIRMED_REQUESTS")
     private Integer confirmedRequests = 0;
 
-    //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
 
-    //Полное описание события*
     @NotBlank
     @Length(max = 7000, min = 20)
     private String description;
 
-    // Дата и время на которые намечено событие.*
-    // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
-    // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
-    // чем через два часа от текущего момента
     @NotNull
     @FutureOrPresent
     @Column(name = "EVENT_DATE")
     private LocalDateTime eventDate;
 
-    //Пользователь (краткая информация)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INITIATOR_ID")
     private User initiator;
 
-
-    //Широта и долгота места проведения события*
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
 
-    //Нужно ли оплачивать участие в событии *(EventFullDto)
     @NotNull
     private Boolean paid = false;
 
-    //Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
     @Column(name = "PARTICIPANT_LIMIT")
     private Integer participantLimit = 0;
 
-
-    //Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
     @FutureOrPresent
     @Column(name = "PUBLISHED_ON")
     private LocalDateTime publishedOn;
 
-    //Нужна ли пре-модерация заявок на участие.
-    // Если true, то все заявки будут ожидать подтверждения инициатором события.
-    // Если false - то будут подтверждаться автоматически.
     @Column(name = "REQUEST_MODERATION")
     private Boolean requestModeration = true;
 
-    //Список состояний жизненного цикла события
     @NotNull
     @Enumerated(EnumType.ORDINAL)
     private State state;
 
-    //Заголовок события*
     @NotBlank
     @Length(max = 120, min = 3)
     private String title;
 
-    //Количество просмотрев события
     private Integer views;
 }

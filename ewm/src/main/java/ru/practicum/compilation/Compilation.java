@@ -19,12 +19,9 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //Закреплена ли подборка на главной странице сайта
-    //default: false
     @NotNull
     private Boolean pinned = false;
 
-    //Заголовок подборки*
     @NotBlank
     @Length(max = 50, min = 1)
     private String title;

@@ -20,11 +20,9 @@ public class CompilationDto {
     @NotNull
     private Integer id;
 
-    //Закреплена ли подборка на главной странице сайта*
     @NotNull
     private Boolean pinned;
 
-    //Заголовок подборки*
     @NotBlank
     @Length(max = 50, min = 1)
     private String title;

@@ -57,12 +57,10 @@ public class EventServiceImpl implements EventService {
         String annotation = newEventRequest.getAnnotation();
         event.setAnnotation(annotation);
 
-        //category
         Integer categoryId = newEventRequest.getCategory();
         Category category = categoryService.findCategoryById(categoryId);
         event.setCategory(category);
 
-        //createdOn
         LocalDateTime createdOn = LocalDateTime.now();
         event.setCreatedOn(createdOn);
 
@@ -72,12 +70,10 @@ public class EventServiceImpl implements EventService {
         LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(newEventRequest.getEventDate()), DateTimeFormatter.ofPattern(TIME_PATTERN));
         event.setEventDate(eventDate);
 
-        //initiator
         List<User> initiatorUsers = userService.findUsersByIds(null, null, new Integer[]{userId});
         User initiator = initiatorUsers != null && !initiatorUsers.isEmpty() && initiatorUsers.size() >= 1 ? initiatorUsers.get(0) : null;
         event.setInitiator(initiator);
 
-        //location
         LocationDto locationDto = newEventRequest.getLocation();
         Location location = locationService.createLocation(locationDto);
         event.setLocation(location);
@@ -100,17 +96,14 @@ public class EventServiceImpl implements EventService {
         }
         event.setRequestModeration(requestModeration);
 
-        //initial state
         State state = State.PENDING;
         event.setState(state);
 
         String title = newEventRequest.getTitle();
         event.setTitle(title);
 
-        //save to DB as Event
         Event savedEvent = eventRepository.save(event);
 
-        //return for controller as EventFullDto
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);
         return eventFullDto;
     }
@@ -152,23 +145,18 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByPrivate(UpdateEventUserRequest request, Integer userId, Integer eventId) {
         log.info("Update event with id {} by user with id {}", eventId, userId);
 
-        //Event data to convert
-        //---------------------------------------------
-        //category
         Integer categoryId = request.getCategory();
         Category category = null;
         if (categoryId != null) {
             category = categoryService.findCategoryById(categoryId);
         }
 
-        //eventDate
         String sEventDate = request.getEventDate();
         LocalDateTime eventDate = null;
         if (sEventDate != null) {
             eventDate = LocalDateTime.parse(URLDecoder.decode(sEventDate), DateTimeFormatter.ofPattern(TIME_PATTERN));
         }
 
-        //location
         LocationDto locationDto = request.getLocation();
 
         StateAction stateAction = request.getStateAction();
@@ -182,8 +170,6 @@ public class EventServiceImpl implements EventService {
             publishedOn = LocalDateTime.now();
         }
 
-        //---------------------------------------------
-
         Event event = findEventById(userId, eventId);
         Event updatedEvent;
         Event savedEvent = null;
@@ -191,7 +177,6 @@ public class EventServiceImpl implements EventService {
             throw new EventConflictException("Event already published");
         }
 
-        //Стоимость отменённого события должна соответствовать стоимости события до отмены
         if (stateAction == StateAction.CANCEL_REVIEW || stateAction == StateAction.SEND_TO_REVIEW) {
             updatedEvent = event;
             updatedEvent.setState(state);
@@ -273,16 +258,12 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId) {
         log.info("Update event by Admin");
 
-        //Event data to convert
-        //---------------------------------------------
-        //category
         Integer categoryId = request.getCategory();
         Category category = null;
         if (categoryId != null) {
             category = categoryService.findCategoryById(categoryId);
         }
 
-        //eventDate
         String sEventDate = request.getEventDate();
         LocalDateTime eventDate = null;
         if (sEventDate != null) {
@@ -292,7 +273,6 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        //location
         LocationDto locationDto = request.getLocation();
 
         StateAction stateAction = request.getStateAction();
@@ -305,8 +285,6 @@ public class EventServiceImpl implements EventService {
         if (newEventState == State.PUBLISHED) {
             publishedOn = LocalDateTime.now().plusDays(1);
         }
-        //---------------------------------------------
-
 
         Event event = findEventById(eventId);
         Event updatedEvent = null;
@@ -399,12 +377,6 @@ public class EventServiceImpl implements EventService {
             foundEvents = eventRepository.findAll(page);
         }
 
-        //--------------------------------------
-        // Create NewEndpointHitRequest to post to statistics
-
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
-
         NewEndpointHitRequest newEndpointHitRequest = new NewEndpointHitRequest();
         newEndpointHitRequest.setApp("ewm-main-service");
         newEndpointHitRequest.setIp(request.getRemoteAddr());
@@ -415,8 +387,6 @@ public class EventServiceImpl implements EventService {
         newEndpointHitRequest.setTimestamp(requestedOn);
 
         statClient.post(newEndpointHitRequest);
-
-        //------------------------------------------------------------
 
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
         List<EventShortDto> eventFullDtos = EventMapper.mapToEventShortDto(eventsList);
@@ -433,12 +403,6 @@ public class EventServiceImpl implements EventService {
             throw new EventNotPublishedException("Event Not Published");
         }
 
-        //--------------------------------------
-        // Create NewEndpointHitRequest to post to statistics
-
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
-
         NewEndpointHitRequest newEndpointHitRequest = new NewEndpointHitRequest();
         newEndpointHitRequest.setApp("ewm-main-service");
         newEndpointHitRequest.setIp(request.getRemoteAddr());
@@ -450,7 +414,6 @@ public class EventServiceImpl implements EventService {
 
         statClient.post(newEndpointHitRequest);
 
-        //------------------------------------------------------------
 
         String start = event.getCreatedOn().minusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
         String end = LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));

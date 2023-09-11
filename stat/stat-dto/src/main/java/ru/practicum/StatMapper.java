@@ -64,7 +64,6 @@ public class StatMapper {
             viewStatsMap.put(view, hitsByIp);
         }
 
-        //TODO: use iterator
         for (Map.Entry<ViewStats, Map<String, Integer>> entry : viewStatsMap.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
             Integer sumHitsByIp = 0;
