@@ -35,7 +35,7 @@ public enum State {
 
     public static State forValues(Integer id) {
         for (State state : State.values()) {
-            if (state.id == id) {
+            if (state.id.equals(id)) {
                 return state;
             }
         }

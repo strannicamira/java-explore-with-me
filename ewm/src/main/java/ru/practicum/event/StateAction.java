@@ -36,7 +36,7 @@ public enum StateAction {
     //    @JsonCreator
     public static StateAction forValues(Integer id) {
         for (StateAction state : StateAction.values()) {
-            if (state.id == id) {
+            if (state.id.equals(id)) {
                 return state;
             }
         }

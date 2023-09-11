@@ -34,7 +34,7 @@ public enum EventSort {
 
     public static EventSort forValues(Integer id) {
         for (EventSort state : EventSort.values()) {
-            if (state.id == id) {
+            if (state.id.equals(id)) {
                 return state;
             }
         }

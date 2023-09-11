@@ -36,7 +36,7 @@ public enum Status {
 
     public static Status forValues(Integer id) {
         for (Status status : Status.values()) {
-            if (status.id == id) {
+            if (status.id.equals(id)) {
                 return status;
             }
         }

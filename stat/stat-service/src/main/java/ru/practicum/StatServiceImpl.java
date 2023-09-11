@@ -47,7 +47,7 @@ public class StatServiceImpl implements StatService {
 
         List<String> urisList = null;
         if (uris != null) {
-            urisList = Arrays.stream(uris).map(uri -> URLDecoder.decode(uri)).collect(Collectors.toList());
+            urisList = Arrays.stream(uris).map(URLDecoder::decode).collect(Collectors.toList());
         }
         List<ViewStats> views = getByUrisList(startLDT, endtLDT, unique, urisList);
         Collections.sort(views, Comparator.comparing(ViewStats::getHits).reversed());

@@ -55,7 +55,7 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestConflictException("Request already exists");
         }
 
-        if (event.getInitiator().getId() == userId) {
+        if (event.getInitiator().getId().equals(userId)) {
             throw new RequestConflictException("Requester is initiator of event");
         }
 
@@ -63,7 +63,7 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestConflictException("Event is not published");
         }
 
-        if (participantLimit != 0 && participantLimit == event.getConfirmedRequests()) {
+        if (participantLimit != 0 && participantLimit.equals(event.getConfirmedRequests())) {
             throw new RequestConflictException("Participant limit for event is equal confirmed requests");
         }
 
@@ -95,11 +95,11 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto updateRequest(Integer userId, Integer requestId) {
-        log.info("[Log][Info] Cancel request by user with id {} for request with id", userId, requestId);
+        log.info("[Log][Info] Cancel request by user with id {} for request with id {}", userId, requestId);
         User userById = userService.findUserById(userId);
 
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Request not found"));
-        if (request.getRequester().getId() != userId) {
+        if (!request.getRequester().getId().equals(userId)) {
             throw new RequestConflictException("User is not requester");
         }
         request.setStatus(Status.CANCELED);
@@ -113,7 +113,7 @@ public class RequestServiceImpl implements RequestService {
         User user = userService.findUserById(userId);
         Event event = eventService.findEventById(eventId);
 
-        if (event.getInitiator().getId() != userId) {
+        if (!event.getInitiator().getId().equals(userId)) {
             //TODO: no need?
             throw new RequestConflictException("User is not initiator of event gets requests");
         }
@@ -142,15 +142,15 @@ public class RequestServiceImpl implements RequestService {
         List<Request> requests = requestRepository.findAllById(requestIds);
 
         for (Request request : requests) {
-            if (request.getEvent().getInitiator().getId() != userId) {
+            if (!request.getEvent().getInitiator().getId().equals(userId)) {
                 throw new RequestConflictException("User is not initiator");
             }
 
-            if (request.getEvent().getId() != eventId) {
+            if (!request.getEvent().getId().equals(eventId)) {
                 throw new RequestConflictException("Event is not event requested");
             }
 
-            if (request.getEvent().getParticipantLimit() == request.getEvent().getConfirmedRequests()
+            if (request.getEvent().getParticipantLimit().equals(request.getEvent().getConfirmedRequests())
                     && status == Status.CONFIRMED) {
                 throw new RequestConflictException("Participant Limit is equal Confirmed Requests for event ");
             }
@@ -179,7 +179,7 @@ public class RequestServiceImpl implements RequestService {
                 // то все неподтверждённые заявки необходимо отклонить
                 Integer newConfirmedRequests = event.getConfirmedRequests();
                 Integer participantLimit = event.getParticipantLimit();
-                if (newConfirmedRequests == participantLimit) {
+                if (newConfirmedRequests.equals(participantLimit)) {
                     List<Request> unconfirmedRequests = requestRepository.findAllByStatus(Status.PENDING);
                     for (Request unconfirmedRequest : unconfirmedRequests) {
                         unconfirmedRequest.setStatus(Status.REJECTED);

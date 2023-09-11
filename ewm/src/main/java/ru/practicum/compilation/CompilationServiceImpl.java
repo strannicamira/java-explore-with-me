@@ -72,7 +72,8 @@ public class CompilationServiceImpl implements CompilationService {
         Integer compilationId = compilation.getId();
         List<EventCompilation> eventCompilationIds = eventCompilationRepository.findAllByCompilationId(compilationId);
         List<Integer> eventIds = eventCompilationIds.stream().map(EventCompilation::getEventId).collect(Collectors.toList());
-        if (request.getEvents() != null) {//TODO: add && !request.getEvents().isEmpty()
+        //TODO: add && !request.getEvents().isEmpty()
+        if (request.getEvents() != null) {
 
             for (Integer eventId : eventIds) {
                 EventCompilation eventCompilation = new EventCompilation();
