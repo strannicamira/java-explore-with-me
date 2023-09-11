@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.NewEndpointHitRequest;
 import ru.practicum.StatClient;
 import ru.practicum.category.Category;
+import ru.practicum.category.CategoryRepository;
 import ru.practicum.category.CategoryService;
 import ru.practicum.exceptionhandler.EventBadRequestException;
 import ru.practicum.exceptionhandler.EventConflictException;
@@ -46,6 +47,7 @@ public class EventServiceImpl implements EventService {
     private final UserService userService;
     private final LocationService locationService;
     private final StatClient statClient;
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional
@@ -58,7 +60,7 @@ public class EventServiceImpl implements EventService {
         event.setAnnotation(annotation);
 
         Integer categoryId = newEventRequest.getCategory();
-        Category category = categoryService.findCategoryById(categoryId);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Category not found"));
         event.setCategory(category);
 
         LocalDateTime createdOn = LocalDateTime.now();
@@ -148,7 +150,7 @@ public class EventServiceImpl implements EventService {
         Integer categoryId = request.getCategory();
         Category category = null;
         if (categoryId != null) {
-            category = categoryService.findCategoryById(categoryId);
+            category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Category not found"));
         }
 
         String sEventDate = request.getEventDate();
@@ -261,7 +263,7 @@ public class EventServiceImpl implements EventService {
         Integer categoryId = request.getCategory();
         Category category = null;
         if (categoryId != null) {
-            category = categoryService.findCategoryById(categoryId);
+            category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Category not found"));
         }
 
         String sEventDate = request.getEventDate();

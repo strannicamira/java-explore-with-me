@@ -7,8 +7,6 @@ public interface CategoryService {
 
     List<CategoryDto> findCategoryDtos(Integer from, Integer size);
 
-    Category findCategoryById(Integer id);
-
     CategoryDto findCategoryDtoById(Integer id);
 
     CategoryDto updateCategory(CategoryDto categoryDto, Integer id);
