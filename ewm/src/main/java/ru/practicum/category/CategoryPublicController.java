@@ -23,7 +23,6 @@ public class CategoryPublicController {
 
     @GetMapping(value = "/{catId}")
     public CategoryDto findCategoryById(@PathVariable(name = "catId") Integer id) {
-        //TODO: handle case for 400, try to use String instead Integer
         CategoryDto categoryDto = categoryService.findCategoryDtoById(id);
         return categoryDto;
     }

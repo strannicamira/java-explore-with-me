@@ -241,7 +241,6 @@ public class EventServiceImpl implements EventService {
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
 
         Iterable<Event> foundEvents = null;
-        //TODO: Warning:(245, 61) Method invocation 'and' may produce 'NullPointerException'
         if (byUserIds != null || byStates != null || byCategory != null || byStart != null || byEnd != null) {
             foundEvents = eventRepository.findAll(byUserIds.and(byStates).and(byCategory).and(byStart).and(byEnd), page);
         } else {
@@ -304,7 +303,6 @@ public class EventServiceImpl implements EventService {
 
         LocalDateTime publishedOn = null;
         if (newEventState == State.PUBLISHED) {
-            //TODO: @FutureOrPresent  - plusDays(1) just for test
             publishedOn = LocalDateTime.now().plusDays(1);
         }
         //---------------------------------------------
@@ -314,7 +312,6 @@ public class EventServiceImpl implements EventService {
         Event updatedEvent = null;
         Event savedEvent = null;
 
-        //TODO: refactor
         if (stateAction == StateAction.REJECT_EVENT && event.getState() == State.PUBLISHED) {
             throw new EventConflictException("Event already published. Cannot be canceled.");
         } else if (stateAction == StateAction.REJECT_EVENT) {
@@ -365,7 +362,6 @@ public class EventServiceImpl implements EventService {
 
         BooleanExpression byRange = null;
         LocalDateTime now = LocalDateTime.now();
-        //TODO: Warning:(374, 58) Argument 'URLDecoder.decode(rangeStart)' might be null
         if (rangeStart == null && rangeEnd == null) {
             BooleanExpression byNow = QEvent.event.eventDate.after(now);
             byRange = byNow;
@@ -386,7 +382,6 @@ public class EventServiceImpl implements EventService {
         }
 
         EventSort eventSort = EventSort.forValues(sort);
-        //TODO: Default value:SORT_BY_EVENT_DATE_ASC ???
         Sort pageSort = SORT_BY_EVENT_DATE_ASC;
         if (eventSort == EventSort.EVENT_DATE) {
             pageSort = SORT_BY_EVENT_DATE_ASC;
@@ -397,7 +392,6 @@ public class EventServiceImpl implements EventService {
 
         Pageable page = ServiceImplUtils.getPage(from, size, pageSort);
 
-        //TODO: Warning:(403, 63) Method invocation 'and' may produce 'NullPointerException'
         Iterable<Event> foundEvents = null;
         if (byPublished != null || byState != null || byText != null || byCategory != null || byRange != null || byLimit != null) {
             foundEvents = eventRepository.findAll(byPublished.and(byState).and(byText).and(byCategory).and(byPaid).and(byRange).and(byLimit), page);
@@ -424,7 +418,6 @@ public class EventServiceImpl implements EventService {
 
         //------------------------------------------------------------
 
-        //TODO: add to statistic
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
         List<EventShortDto> eventFullDtos = EventMapper.mapToEventShortDto(eventsList);
         return eventFullDtos;
@@ -464,7 +457,6 @@ public class EventServiceImpl implements EventService {
 
         ResponseEntity<Object> response = statClient.get(start, end, true, new String[]{requestURI});
         ArrayList<Object> objectsList = (ArrayList<Object>) response.getBody();
-        //TODO: Warning:(446, 76) Method invocation 'get' may produce 'NullPointerException'
         Map<Object, Object> objectsMap = (Map<Object, Object>) objectsList.get(0);
         Integer hits = (Integer) objectsMap.get("hits");
         event.setViews(hits);

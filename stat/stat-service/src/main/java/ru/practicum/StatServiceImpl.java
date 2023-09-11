@@ -56,13 +56,11 @@ public class StatServiceImpl implements StatService {
     }
 
     private List<ViewStats> getByUrisList(LocalDateTime start, LocalDateTime end, Boolean unique, List<String> uris) {
-        //TODO: use count() or countDistinct?
-        //NumberExpression<Long> longNumberExpression = QEndpointHitDto.endpointHitDto.uri.countDistinct();
         log.info("[Log][Info] Get list of hits for range from {} to {}", start, end);
 
         BooleanExpression byTimestamp = QEndpointHit.endpointHit.timestamp.between(start, end);
         BooleanExpression byUris = null;
-        if (uris != null) { //TODO: add && uris.size() >= 1 && !uris.get(0).equals("/events") for Postman collection 'Sprint 17 main_svc "Explore with me" API статистика'
+        if (uris != null) {
             byUris = QEndpointHit.endpointHit.uri.in(uris);
         }
         Iterable<EndpointHit> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris));
