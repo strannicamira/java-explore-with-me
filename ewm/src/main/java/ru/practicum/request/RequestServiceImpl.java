@@ -32,7 +32,7 @@ public class RequestServiceImpl implements RequestService {
         log.info("Create request for event with id {} by user with id {}", eventId, userId);
 
         Request request = new Request();
-        request.setCreated(LocalDateTime.now().plusDays(1));
+        request.setCreated(LocalDateTime.now().plusHours(2));
 
         User user = userService.findUserById(userId);
         request.setRequester(user);

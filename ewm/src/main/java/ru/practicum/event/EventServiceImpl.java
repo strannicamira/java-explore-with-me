@@ -283,7 +283,7 @@ public class EventServiceImpl implements EventService {
 
         LocalDateTime publishedOn = null;
         if (newEventState == State.PUBLISHED) {
-            publishedOn = LocalDateTime.now().plusDays(1);
+            publishedOn = LocalDateTime.now().plusHours(2);
         }
 
         Event event = findEventById(eventId);
@@ -416,7 +416,7 @@ public class EventServiceImpl implements EventService {
 
 
         String start = event.getCreatedOn().minusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
-        String end = LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
+        String end = LocalDateTime.now().plusHours(2).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
 
         ResponseEntity<Object> response = statClient.get(start, end, true, new String[]{requestURI});
         ArrayList<Object> objectsList = (ArrayList<Object>) response.getBody();
