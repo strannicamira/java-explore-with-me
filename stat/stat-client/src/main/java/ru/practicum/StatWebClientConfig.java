@@ -11,7 +11,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @Configuration
 //@AllArgsConstructor
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class StatWebClientConfig {
 
     @Value("${stat-server.url}")

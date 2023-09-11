@@ -36,13 +36,13 @@ public class UpdateEventAdminRequest {
     private LocationDto location;
 
     //Новое значение флага о платности мероприятия
-    private Boolean paid = false;
+    private Boolean paid ;
 
     //Новый лимит пользователей
     private Integer participantLimit;
 
     //Нужна ли пре-модерация заявок на участие
-    private Boolean requestModeration = true;
+    private Boolean requestModeration ;
 
     StateAction stateAction;
 

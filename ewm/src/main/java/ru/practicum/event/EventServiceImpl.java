@@ -1,15 +1,18 @@
 package ru.practicum.event;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.NewEndpointHitRequest;
 import ru.practicum.StatClient;
+import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.exceptionhandler.EventBadRequestException;
@@ -27,8 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.util.Constants.*;
@@ -415,12 +417,58 @@ public class EventServiceImpl implements EventService {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
 
-//        statClient.post(Integer userId, NewEndpointHitRequest newEndpointHitRequest);
+        NewEndpointHitRequest newEndpointHitRequest = new NewEndpointHitRequest();
+        newEndpointHitRequest.setApp("ewm-main-service");
+        newEndpointHitRequest.setIp(request.getRemoteAddr());
+        String requestURI = request.getRequestURI();
+        newEndpointHitRequest.setUri(requestURI);
 
+        String requestedOn = LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIME_PATTERN));
+        newEndpointHitRequest.setTimestamp(requestedOn);
 
+        ResponseEntity<Object> postStat = statClient.post(newEndpointHitRequest);
 
         //------------------------------------------------------------
+//TODO TO TEST
+        String start = event.getCreatedOn().minusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
+        String end = LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern(TIME_PATTERN));
+
+        ResponseEntity<Object> response = statClient.get(start, end, true, new String[]{requestURI});
+
+//        List<ViewStats> views = (List<ViewStats> ) response.getBody();
+//        ViewStats body = (ViewStats) response.getBody();
+//        Object object = response.getBody();
+//        ObjectMapper mapper = new ObjectMapper();
+//        Object view = mapper.convertValue(object, ViewStats.class);
+
+        ArrayList<Object> objectsList = (ArrayList<Object>) response.getBody();
+        Map<Object, Object> objectsMap = (Map<Object, Object>) objectsList.get(0);
+        Integer hits = (Integer) objectsMap.get("hits");
+
+
+//        Integer hits = view.getHits();
+
+
+//        if (event.getViews() == null) {
+//            event.setViews(1);
+//        } else {
+//            event.setViews(event.getViews() + 1);
+//        }
+
+//        Integer hits = null;
+//        for (ViewStats view: views){
+//            if(view.getApp().equals("ewm-main-service") && view.getUri().equals(requestURI)){
+//                hits = view.getHits();
+//                break;
+//            }
+//        }
+        event.setViews(hits);
+        eventRepository.save(event);
+
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
         return eventFullDto;
     }
 }
+
+
+

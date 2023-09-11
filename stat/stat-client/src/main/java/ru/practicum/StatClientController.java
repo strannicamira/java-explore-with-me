@@ -15,19 +15,18 @@ public class StatClientController {
 
     @PostMapping(path = "/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Object> post(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                       @Valid @RequestBody NewEndpointHitRequest newEndpointHitRequest) {
-        return statClient.post(userId, newEndpointHitRequest);
+    public ResponseEntity<Object> post(
+            @Valid @RequestBody NewEndpointHitRequest newEndpointHitRequest) {
+        return statClient.post(newEndpointHitRequest);
     }
 
     @GetMapping(path = "/stats")
-    public ResponseEntity<Object> getByUriArray(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                                @RequestParam(name = "start") String start,
-                                                @RequestParam(name = "end") String end,
-                                                @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
-                                                @RequestParam(name = "uris", required = false) String... uris
+    public ResponseEntity<Object> getByUriArray(
+            @RequestParam(name = "start") String start,
+            @RequestParam(name = "end") String end,
+            @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
+            @RequestParam(name = "uris", required = false) String... uris
     ) {
-        return statClient.get(userId, start, end, unique, uris);
+        return statClient.get(start, end, unique, uris);
     }
-
 }
