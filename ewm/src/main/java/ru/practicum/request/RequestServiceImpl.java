@@ -32,7 +32,6 @@ public class RequestServiceImpl implements RequestService {
         log.info("[Log][Info] Create request for event with id {} by user with id {}", eventId, userId);
 
         Request request = new Request();
-        //TODO: @FutureOrPresent  - plusDays(1) just for test
         request.setCreated(LocalDateTime.now().plusDays(1));
 
         User user = userService.findUserById(userId);
@@ -114,7 +113,6 @@ public class RequestServiceImpl implements RequestService {
         Event event = eventService.findEventById(eventId);
 
         if (!event.getInitiator().getId().equals(userId)) {
-            //TODO: no need?
             throw new RequestConflictException("User is not initiator of event gets requests");
         }
         List<Request> requests = requestRepository.findAllByEventId(eventId);
@@ -122,12 +120,6 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.mapToParticipationRequestDto(requests);
     }
 
-    //Изменение статуса (подтверждена, отменена) заявок на участие в событии текущего пользователя
-
-    //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-    //нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
-    //статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
-    //если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить
     @Override
     public EventRequestStatusUpdateResult updateEventRequest(EventRequestStatusUpdateRequest updateRequest,
                                                              Integer userId, Integer eventId) {
@@ -161,22 +153,18 @@ public class RequestServiceImpl implements RequestService {
 
             request.setStatus(status);
             Request savedRequest = requestRepository.save(request);
-            //TODO:
             Integer confirmedRequests = event.getConfirmedRequests();
             if (confirmedRequests == null) {
                 event.setConfirmedRequests(1);
             } else {
                 event.setConfirmedRequests(confirmedRequests + 1);
             }
-            //TODO: create methods in event service
             eventRepository.save(event);
             ParticipationRequestDto dto = RequestMapper.mapToParticipationRequestDto(savedRequest);
 
             if (status == Status.CONFIRMED) {
                 List<ParticipationRequestDto> result1 = result.getConfirmedRequests();
                 result1.add(dto);
-                //если при подтверждении данной заявки, лимит заявок для события исчерпан,
-                // то все неподтверждённые заявки необходимо отклонить
                 Integer newConfirmedRequests = event.getConfirmedRequests();
                 Integer participantLimit = event.getParticipantLimit();
                 if (newConfirmedRequests.equals(participantLimit)) {

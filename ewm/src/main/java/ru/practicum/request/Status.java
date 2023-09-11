@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: rename to EventRequestStatus or smth like this
 public enum Status {
     PENDING(0, "PENDING"),
     REJECTED(1, "REJECTED"),

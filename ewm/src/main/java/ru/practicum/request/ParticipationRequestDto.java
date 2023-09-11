@@ -19,7 +19,6 @@ public class ParticipationRequestDto {
 
     //Дата и время создания заявки
     //example: 2022-09-06T21:10:05.432
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @FutureOrPresent
     @DateTimeFormat(pattern = TIME_PATTERN)
     private String created;

@@ -69,12 +69,6 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategoryById(Integer id) {
         log.info("[Log][Info] Delete category by id {}", id);
         Category category = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
-        //TODO: 409 Существуют события, связанные с категорией
-//        List<Event> events = eventRepository.findAllByCategory(category);
-//        if(!events.isEmpty()){
-//            throw new EventFoundException("Categories found");
-//        }
         categoryRepository.deleteById(id);
     }
-
 }

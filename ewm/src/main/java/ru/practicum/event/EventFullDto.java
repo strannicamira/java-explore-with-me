@@ -32,7 +32,6 @@ public class EventFullDto {
     private Integer confirmedRequests;
 
     //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @NotNull
     @FutureOrPresent
     @DateTimeFormat(pattern = TIME_PATTERN)
@@ -47,7 +46,6 @@ public class EventFullDto {
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @NotNull
     @FutureOrPresent
     @DateTimeFormat(pattern = TIME_PATTERN)
@@ -65,7 +63,7 @@ public class EventFullDto {
     @NotNull
     private LocationDto location;
 
-    //    Нужно ли оплачивать участие в событии*
+    //Нужно ли оплачивать участие в событии*
     private Boolean paid = false;
 
     //Ограничение на количество участников.

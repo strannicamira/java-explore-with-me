@@ -23,9 +23,6 @@ public class UpdateEventUserRequest {
 
     // Новые дата и время на которые намечено событие.
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
-//    @FutureOrPresent
-//    @DateTimeFormat(pattern = TIME_PATTERN)
     private String eventDate;
 
     //Широта и долгота места проведения события

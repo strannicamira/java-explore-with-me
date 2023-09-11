@@ -41,8 +41,6 @@ public class Event {
 
     //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull
-//    @FutureOrPresent
-//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "CREATED_ON")
     private LocalDateTime createdOn;
 
@@ -57,7 +55,6 @@ public class Event {
     // чем через два часа от текущего момента
     @NotNull
     @FutureOrPresent
-//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "EVENT_DATE")
     private LocalDateTime eventDate;
 
@@ -74,7 +71,7 @@ public class Event {
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
 
-    //    Нужно ли оплачивать участие в событии *(EventFullDto)
+    //Нужно ли оплачивать участие в событии *(EventFullDto)
     @NotNull
     private Boolean paid = false;
 
@@ -85,7 +82,6 @@ public class Event {
 
     //Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
     @FutureOrPresent
-//    @DateTimeFormat(pattern = TIME_PATTERN)
     @Column(name = "PUBLISHED_ON")
     private LocalDateTime publishedOn;
 

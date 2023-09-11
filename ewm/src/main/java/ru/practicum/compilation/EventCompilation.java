@@ -16,13 +16,10 @@ public class EventCompilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @NotNull
-//    @Id
     @Column(name = "EVENT_ID")
     private Integer eventId;
     @NotNull
-//    @Id
     @Column(name = "COMPILATION_ID")
     private Integer compilationId;
 }

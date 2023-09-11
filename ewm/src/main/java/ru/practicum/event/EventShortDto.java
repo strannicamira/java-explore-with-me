@@ -34,7 +34,6 @@ public class EventShortDto {
     // Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @NotNull
     @FutureOrPresent
     @DateTimeFormat(pattern = TIME_PATTERN)

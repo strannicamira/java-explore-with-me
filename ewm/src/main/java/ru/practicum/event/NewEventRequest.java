@@ -32,9 +32,6 @@ public class NewEventRequest {
     // Обратите внимание: дата и время на которые намечено событие не может быть раньше,
     // чем через два часа от текущего момента
     @NotNull
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
-//    @FutureOrPresent
-//    @DateTimeFormat(pattern = TIME_PATTERN)
     private String eventDate;
 
     //Широта и долгота места проведения события*

@@ -23,19 +23,14 @@ public class Request {
 
     //Дата и время создания заявки
     //example: 2022-09-06T21:10:05.432
-    //TODO: delete @FutureOrPresent and @DateTimeFormat
     @NotNull
-//    @FutureOrPresent
-    //    @DateTimeFormat(pattern = TIME_PATTERN)
     private LocalDateTime created;
-
 
     //Идентификатор события
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EVENT_ID")
     private Event event;
-
 
     //Идентификатор пользователя, отправившего заявку
     @NotNull
