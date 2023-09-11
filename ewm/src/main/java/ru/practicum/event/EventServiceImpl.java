@@ -1,6 +1,5 @@
 package ru.practicum.event;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.NewEndpointHitRequest;
 import ru.practicum.StatClient;
-import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.exceptionhandler.EventBadRequestException;
@@ -30,7 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.practicum.util.Constants.*;
@@ -51,27 +52,64 @@ public class EventServiceImpl implements EventService {
     public EventFullDto createEventByPrivate(NewEventRequest newEventRequest, Integer userId) {
         log.info("[Log][Info] Create event");
 
+        Event event = new Event();
+
+        String annotation = newEventRequest.getAnnotation();
+        event.setAnnotation(annotation);
+
         //category
         Integer categoryId = newEventRequest.getCategory();
         Category category = categoryService.findCategoryById(categoryId);
+        event.setCategory(category);
 
         //createdOn
         LocalDateTime createdOn = LocalDateTime.now();
+        event.setCreatedOn(createdOn);
+
+        String description = newEventRequest.getDescription();
+        event.setDescription(description);
+
+        LocalDateTime eventDate = LocalDateTime.parse(URLDecoder.decode(newEventRequest.getEventDate()), DateTimeFormatter.ofPattern(TIME_PATTERN));
+        event.setEventDate(eventDate);
 
         //initiator
         List<User> initiatorUsers = userService.findUsersByIds(null, null, new Integer[]{userId});
         User initiator = initiatorUsers != null && !initiatorUsers.isEmpty() && initiatorUsers.size() >= 1 ? initiatorUsers.get(0) : null;
+        event.setInitiator(initiator);
 
         //location
         LocationDto locationDto = newEventRequest.getLocation();
         Location location = locationService.createLocation(locationDto);
+        event.setLocation(location);
+
+        Boolean paid = newEventRequest.getPaid();
+        if (paid == null) {
+            paid = false;
+        }
+        event.setPaid(paid);
+
+        Integer participantLimit = newEventRequest.getParticipantLimit();
+        if (participantLimit == null) {
+            participantLimit = 0;
+        }
+        event.setParticipantLimit(participantLimit);
+
+        Boolean requestModeration = newEventRequest.getRequestModeration();
+        if (requestModeration == null) {
+            requestModeration = true;
+        }
+        event.setRequestModeration(requestModeration);
 
         //initial state
         State state = State.PENDING;
-        //save to DB as Event
+        event.setState(state);
 
-        Event entity = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location, state);
-        Event savedEvent = eventRepository.save(entity);
+        String title = newEventRequest.getTitle();
+        event.setTitle(title);
+
+        //save to DB as Event
+//        Event event = EventMapper.mapToEvent(newEventRequest, category, createdOn, initiator, location, state);
+        Event savedEvent = eventRepository.save(event);
 
         //return for controller as EventFullDto
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(savedEvent);

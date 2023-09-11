@@ -41,7 +41,7 @@ public class NewEventRequest {
     private LocationDto location;
 
     //    Нужно ли оплачивать участие в событии
-    private Boolean paid = false;
+    private Boolean paid;
 
     //Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
     private Integer participantLimit;
