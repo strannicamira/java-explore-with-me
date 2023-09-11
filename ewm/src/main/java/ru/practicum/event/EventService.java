@@ -26,7 +26,7 @@ public interface EventService {
 
     EventFullDto updateEventByAdmin(UpdateEventAdminRequest request, Integer eventId);
 
-    List<EventShortDto> findEventsByPublic(String text, Integer[] categoryIds, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
+    List<EventShortDto> findEventsByPublic(HttpServletRequest request, String text, Integer[] categoryIds, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
 
     EventFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId);
 }

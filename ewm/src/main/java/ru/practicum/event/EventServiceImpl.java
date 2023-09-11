@@ -336,7 +336,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> findEventsByPublic(String text, Integer[] categoryIds, Boolean paid,
+    public List<EventShortDto> findEventsByPublic(HttpServletRequest request, String text, Integer[] categoryIds, Boolean paid,
                                                   String rangeStart, String rangeEnd,
                                                   Boolean onlyAvailable,
                                                   String sort, Integer from, Integer size) {
@@ -405,6 +405,25 @@ public class EventServiceImpl implements EventService {
             foundEvents = eventRepository.findAll(page);
         }
 
+        //--------------------------------------
+        // Create NewEndpointHitRequest to post to statistics
+
+        log.info("client ip: {}", request.getRemoteAddr());
+        log.info("endpoint path: {}", request.getRequestURI());
+
+        NewEndpointHitRequest newEndpointHitRequest = new NewEndpointHitRequest();
+        newEndpointHitRequest.setApp("ewm-main-service");
+        newEndpointHitRequest.setIp(request.getRemoteAddr());
+        String requestURI = request.getRequestURI();
+        newEndpointHitRequest.setUri(requestURI);
+
+        String requestedOn = LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIME_PATTERN));
+        newEndpointHitRequest.setTimestamp(requestedOn);
+
+        statClient.post(newEndpointHitRequest);
+
+        //------------------------------------------------------------
+
         //TODO: add to statistic
         List<Event> eventsList = ServiceImplUtils.mapToList(foundEvents);
         List<EventShortDto> eventFullDtos = EventMapper.mapToEventShortDto(eventsList);
@@ -422,6 +441,8 @@ public class EventServiceImpl implements EventService {
         }
 
         //--------------------------------------
+        // Create NewEndpointHitRequest to post to statistics
+
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
 

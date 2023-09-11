@@ -67,6 +67,7 @@ public class StatServiceImpl implements StatService {
         }
         Iterable<EndpointHit> endpointHitsDtos = statRepository.findAll(byTimestamp.and(byUris));
 
-        return StatMapper.mapToViewStats(endpointHitsDtos, unique);
+        List<ViewStats> viewStats = StatMapper.mapToViewStats(endpointHitsDtos, unique);
+        return viewStats;
     }
 }
