@@ -77,19 +77,19 @@
 									"const source = JSON.parse(pm.request.body.raw);\r",
 									"const target = pm.response.json();\r",
 									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
+									"pm.test(\"Комментарий должен содержать поля: id, text, author, created\", function () {\r",
 									"    pm.expect(target).to.have.property('id');\r",
 									"    pm.expect(target).to.have.property('text');\r",
 									"    pm.expect(target).to.have.property('author');\r",
 									"    pm.expect(target).to.have.property('created');\r",
 									"});\r",
 									"\r",
+									"\r",
 									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 									"    pm.expect(target.id).to.not.be.null;\r",
 									"    pm.expect(target.text).to.be.a(\"string\");\r",
 									"    pm.expect(target.author).to.be.an(\"string\");\r",
 									"    pm.expect(target.created).to.be.an(\"string\");\r",
-									"\r",
 									"    pm.expect(source.text).to.equal(target.text, 'текст должен соответствовать указанному при создании');\r",
 									"});"
 								],
@@ -145,7 +145,7 @@
 					"response": []
 				},
 				{
-					"name": "Получение подборки событий по её id",
+					"name": "Получение комментария по id",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -158,9 +158,17 @@
 									"    try {\r",
 									"        const user = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        const compilation = await api.addCompilation(rnd.getCompilation());\r",
-									"        pm.collectionVariables.set('response', compilation);\r",
-									"        pm.collectionVariables.set('compid', compilation.id);\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        event = await api.publishEvent(event.id);\r",
+									"\r",
+									"        const submittedUser = await api.addUser(rnd.getUser());\r",
+									"        const comment = await api.addComment(rnd.getComment(), event.id, submittedUser.id);\r",
+									"        const foundedComment = await api.findComment(comment.id);\r",
+									"\r",
+									"        pm.collectionVariables.set('eventId', event.id);\r",
+									"        pm.collectionVariables.set('commentId', comment.id);\r",
+									"        pm.collectionVariables.set('response', comment);\r",
+									"\r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -198,18 +206,26 @@
 									"const source = pm.collectionVariables.get('response');\r",
 									"const target = pm.response.json();\r",
 									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
-									"pm.expect(target).to.have.property('id');\r",
-									"pm.expect(target).to.have.property('title');\r",
-									"pm.expect(target).to.have.property('pinned');\r",
-									"pm.expect(target).to.have.property('events');\r",
+									"pm.test(\"Комментарий должен содержать поля: id, text, author, created\", function () {\r",
+									"    pm.expect(target).to.have.property('id');\r",
+									"    pm.expect(target).to.have.property('text');\r",
+									"    pm.expect(target).to.have.property('author');\r",
+									"    pm.expect(target).to.have.property('created');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Типы данных в ответе должны соответствовать данным в запросе\", function () {\r",
+									"    pm.expect(target.id).to.not.be.null;\r",
+									"    pm.expect(target.text).to.be.a(\"string\");\r",
+									"    pm.expect(target.author).to.be.an(\"string\");\r",
+									"    pm.expect(target.created).to.be.an(\"string\");\r",
+									"\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(source.id).equal(target.id, 'Идентификатор подборки должен соответствовать идентификатору подборки добавленной ранее');\r",
-									"    pm.expect(source.title).equal(target.title, 'Название подборки должно соответствовать названию подборки добавленной ранее');\r",
-									"    pm.expect(source.pinned).equal(target.pinned, 'Закреплённость подборки должна соответствовать закреплённости подборки добавленной ранее');\r",
-									"    pm.expect(source.events.join()).equal(target.events.join(), 'События подборки должны соответствовать событиям подборки добавленной ранее');\r",
+									"    pm.expect(source.id).to.equal(target.id, 'Идентификатор должен соответствовать указанному при создании');\r",
+									"    pm.expect(source.text).to.equal(target.text, 'Текст должен соответствовать указанному при создании');\r",
+									"    pm.expect(source.author).to.equal(target.author, 'Пользователь должен соответствовать указанному при создании');\r",
+									"    pm.expect(source.created).to.equal(target.created, 'Дата должен соответствовать указанному при создании');\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -225,19 +241,18 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/compilations/:compId",
+							"raw": "{{baseUrl}}/comments/:commentId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"compilations",
-								":compId"
+								"comments",
+								":commentId"
 							],
 							"variable": [
 								{
-									"key": "compId",
-									"value": "{{compid}}",
-									"description": "(Required) id подборки"
+									"key": "commentId",
+									"value": "{{commentId}}"
 								}
 							]
 						}
@@ -256,6 +271,21 @@
 									"    const rnd = new RandomUtils();\r",
 									"\r",
 									"    try {\r",
+									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const category = await api.addCategory(rnd.getCategory());\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        event = await api.publishEvent(event.id);\r",
+									"\r",
+									"        const submittedUser = await api.addUser(rnd.getUser());\r",
+									"        const comment = await api.addComment(rnd.getComment(), event.id, submittedUser.id);\r",
+									"        const foundedComment = await api.findComment(comment.id);\r",
+									"\r",
+									"        pm.collectionVariables.set('eventId', event.id);\r",
+									"        pm.collectionVariables.set('commentId', comment.id);\r",
+									"        pm.collectionVariables.set('response', foundedComment);\r",
+									"\r",
+									"\r",
+									"\r",
 									"        const user = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        let newComp = rnd.getCompilation();\r",
@@ -897,10 +927,6 @@
 		{
 			"key": "userId",
 			"value": "1"
-		},
-		{
-			"key": "commentid",
-			"value": ""
 		},
 		{
 			"key": "commentId",

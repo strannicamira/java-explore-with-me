@@ -89,6 +89,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponseDto updateCommentByUserId(Integer userId, Integer commentId, CommentRequestDto request) {
         User user = userService.findUserById(userId);
+        //TODO: or replace by findCommentResponseDtoById
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
 
         if (!user.getId().equals(comment.getAuthor().getId())) {
