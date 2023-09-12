@@ -12,7 +12,7 @@
   ],
   "tags": [
     {
-      "name": "Private: Comments",
+      "name": "!Private: Comments",
       "description": "API для работы с комментариями"
     },
     {
