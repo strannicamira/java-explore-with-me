@@ -14,8 +14,8 @@ public class CommentPublicController {
     private final CommentService commentService;
 
     @GetMapping
-    public List<CommentResponseDto> findCommentsByEventIdByPublic(
-            @RequestParam(name = "eventId") Integer eventId,
+    public List<CommentResponseDto> findCommentsByPublic(
+            @RequestParam(name = "eventId", required = false) Integer eventId,
             @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
         List<CommentResponseDto> commentDto = commentService.findCommentResponseDtos(eventId, from, size);

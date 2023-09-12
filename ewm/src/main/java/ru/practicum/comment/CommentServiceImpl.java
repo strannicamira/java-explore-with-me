@@ -2,6 +2,7 @@ package ru.practicum.comment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.Event;
@@ -52,13 +53,20 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponseDto> findCommentResponseDtos(Integer eventId, Integer from, Integer size) {
         log.info("Search comments by event with id {}", eventId);
 
-        eventService.findEventById(eventId);
 
         Pageable page = ServiceImplUtils.getPage(from, size, SORT_BY_ID_ASC);
 
         List<CommentResponseDto> commentDtos = new ArrayList<>();
         List<Comment> foundComments = new ArrayList<>();
-        foundComments = commentRepository.findAllByEventId(eventId, page);
+        if (eventId != null) {
+            eventService.findEventById(eventId);
+            foundComments = commentRepository.findAllByEventId(eventId, page);
+
+        } else {
+            Page<Comment> comments = commentRepository.findAll(page);
+            foundComments = ServiceImplUtils.mapToList(comments);
+        }
+
         commentDtos = CommentMapper.mapToCommentResponseDto(foundComments);
         return commentDtos;
     }

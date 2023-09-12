@@ -463,11 +463,13 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": "{{uid}}"
+									"value": "{{uid}}",
+									"description": "(Required) id пользователя"
 								},
 								{
 									"key": "commentId",
-									"value": "{{commentId}}"
+									"value": "{{commentId}}",
+									"description": "(Required) id комментария"
 								}
 							]
 						}
@@ -475,7 +477,7 @@
 					"response": []
 				},
 				{
-					"name": "Удаление подборки",
+					"name": "Удаление комментария",
 					"event": [
 						{
 							"listen": "test",
@@ -493,16 +495,16 @@
 									"\r",
 									"let body\r",
 									"const req = {\r",
-									"                url: \"http://localhost:8080/compilations?from=0&size=1000\" + pm.collectionVariables.get(\"uid\"),\r",
+									"                url: \"http://localhost:8080/comments?from=0&size=1000\", //&eventId=\" + pm.collectionVariables.get(\"eventId\")\r",
 									"                method: \"GET\",\r",
 									"                body: body == null ? \"\" : JSON.stringify(body),\r",
 									"                header: { \"Content-Type\": \"application/json\" },\r",
 									"            };\r",
 									"pm.sendRequest(req, (error, response) => {\r",
-									"    pm.test(\"Подборка должна быть удалена после выполнения запроса\", function(){\r",
+									"    pm.test(\"Комментарий должен быть удален после выполнения запроса\", function(){\r",
 									"        response.json().forEach(element => {\r",
-									"            if(element.id == pm.collectionVariables.get('compid')){\r",
-									"                throw new Error(\"Подборка все еще находится в списке существующих\");\r",
+									"            if(element.id == pm.collectionVariables.get('commentId')){\r",
+									"                throw new Error(\"Комментарий все еще находится в списке существующих\");\r",
 									"            }\r",
 									"        })\r",
 									"    });\r",
@@ -523,10 +525,16 @@
 									"    try {\r",
 									"        const user = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        const compilation = await api.addCompilation(rnd.getCompilation());\r",
-									"        const foundedCompilation = await api.findCompilation(compilation.id);\r",
-									"        pm.collectionVariables.set('compid', compilation.id);\r",
-									"        pm.collectionVariables.set('response', foundedCompilation);\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        event = await api.publishEvent(event.id);\r",
+									"\r",
+									"        const submittedUser = await api.addUser(rnd.getUser());\r",
+									"        const comment = await api.addComment(rnd.getComment(), event.id, submittedUser.id);\r",
+									"        const foundedComment = await api.findComment(comment.id);\r",
+									"\r",
+									"        pm.collectionVariables.set('eventId', event.id);\r",
+									"        pm.collectionVariables.set('commentId', comment.id);\r",
+									"        pm.collectionVariables.set('response', foundedComment);\r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -561,20 +569,20 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/admin/compilations/:compId",
+							"raw": "{{baseUrl}}/admin/comments/:commentId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"admin",
-								"compilations",
-								":compId"
+								"comments",
+								":commentId"
 							],
 							"variable": [
 								{
-									"key": "compId",
-									"value": "{{compid}}",
-									"description": "(Required) id подборки"
+									"key": "commentId",
+									"value": "{{commentId}}",
+									"description": "(Required) id комментария"
 								}
 							]
 						}
@@ -892,6 +900,14 @@
 		},
 		{
 			"key": "commentid",
+			"value": ""
+		},
+		{
+			"key": "commentId",
+			"value": "1"
+		},
+		{
+			"key": "eventId",
 			"value": ""
 		}
 	]
