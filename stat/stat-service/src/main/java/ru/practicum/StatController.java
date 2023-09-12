@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "https://editor-next.swagger.io")
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
@@ -15,13 +16,13 @@ public class StatController {
 
     @PostMapping(path = "/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public EndpointHitDto post(@Valid @RequestBody EndpointHit endpointHit) {
-        return statService.post(endpointHit);
+    public EndpointHit post(@Valid @RequestBody NewEndpointHitRequest newEndpointHitRequest) {
+        return statService.post(newEndpointHitRequest);
     }
 
     @GetMapping(path = "/stats")
-    public List<ViewStats> getByUriArray(@RequestParam(name = "start", required = true) String start,
-                                         @RequestParam(name = "end", required = true) String end,
+    public List<ViewStats> getByUriArray(@RequestParam(name = "start") String start,
+                                         @RequestParam(name = "end") String end,
                                          @RequestParam(name = "unique", required = false, defaultValue = "false") Boolean unique,
                                          @RequestParam(name = "uris", required = false) String... uris
     ) {

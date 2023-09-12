@@ -16,6 +16,7 @@
         <module>stat/stat-service</module>
         <module>stat/stat-client</module>
         <module>stat/stat-dto</module>
+        <module>ewm</module>
     </modules>
 
     <groupId>ru.practicum</groupId>
@@ -70,6 +71,12 @@
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
             <version>5.0.0</version>
+        </dependency>
+        <!--        swagger-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.15</version>
         </dependency>
     </dependencies>
 
