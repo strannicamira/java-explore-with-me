@@ -413,10 +413,13 @@
 									"\r",
 									"        const submittedUser = await api.addUser(rnd.getUser());\r",
 									"        const comment = await api.addComment(rnd.getComment(), event.id, submittedUser.id);\r",
+									"\r",
+									"\r",
 									"        const foundedComment = await api.findComment(comment.id);\r",
 									"\r",
+									"\r",
 									"        pm.collectionVariables.set('uid', submittedUser.id);\r",
-									"        pm.collectionVariables.set('commentid', comment.id);\r",
+									"        pm.collectionVariables.set('commentId', comment.id);\r",
 									"        pm.collectionVariables.set('response', foundedComment);\r",
 									"\r",
 									"        pm.request.body.update({\r",
@@ -937,12 +940,20 @@
 			"value": "1"
 		},
 		{
-			"key": "commentId",
+			"key": "eventId",
+			"value": ""
+		},
+		{
+			"key": "commentid",
+			"value": ""
+		},
+		{
+			"key": "commId",
 			"value": "1"
 		},
 		{
-			"key": "eventId",
-			"value": ""
+			"key": "commentId",
+			"value": "1"
 		}
 	]
 }
