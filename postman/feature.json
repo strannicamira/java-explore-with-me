@@ -163,7 +163,7 @@
 									"\r",
 									"        const submittedUser = await api.addUser(rnd.getUser());\r",
 									"        const comment = await api.addComment(rnd.getComment(), event.id, submittedUser.id);\r",
-									"        const foundedComment = await api.findComment(comment.id);\r",
+									"        //const foundedComment = await api.findComment(comment.id);\r",
 									"\r",
 									"        pm.collectionVariables.set('eventId', event.id);\r",
 									"        pm.collectionVariables.set('commentId', comment.id);\r",
@@ -260,7 +260,7 @@
 					"response": []
 				},
 				{
-					"name": "Получение подборок событий",
+					"name": "Получение списка комментариев",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -275,23 +275,24 @@
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
 									"        event = await api.publishEvent(event.id);\r",
-									"\r",
 									"        const submittedUser = await api.addUser(rnd.getUser());\r",
-									"        const comment = await api.addComment(rnd.getComment(), event.id, submittedUser.id);\r",
-									"        const foundedComment = await api.findComment(comment.id);\r",
+									"\r",
+									"        let newCommment = rnd.getComment();\r",
+									"        newCommment['eventId'] = event.id;\r",
+									"\r",
+									"\r",
+									"        pm.request.removeQueryParams(['eventId']);\r",
+									"        pm.request.addQueryParams([`eventId=` + event.id]);\r",
+									"\r",
+									"\r",
+									"\r",
+									"        const comment = await api.addComment(newCommment, event.id, submittedUser.id);\r",
+									"        //const foundedComment = await api.findComment(comment.id);\r",
 									"\r",
 									"        pm.collectionVariables.set('eventId', event.id);\r",
 									"        pm.collectionVariables.set('commentId', comment.id);\r",
-									"        pm.collectionVariables.set('response', foundedComment);\r",
-									"\r",
-									"\r",
-									"\r",
-									"        const user = await api.addUser(rnd.getUser());\r",
-									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        let newComp = rnd.getCompilation();\r",
-									"        newComp['pinned'] = true;\r",
-									"        const compilation = await api.addCompilation(newComp);\r",
-									"        pm.collectionVariables.set('response', compilation);\r",
+									"        pm.collectionVariables.set('response', comment);\r",
+									"        \r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -331,18 +332,26 @@
 									"let founded;\r",
 									"target.forEach(function(element){if (element.id == source.id) founded = element});\r",
 									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
-									"pm.expect(target[0]).to.have.property('id');\r",
-									"pm.expect(target[0]).to.have.property('title');\r",
-									"pm.expect(target[0]).to.have.property('pinned');\r",
-									"pm.expect(target[0]).to.have.property('events');\r",
+									"pm.test(\"Комментарий должен содержать поля: id, text, author, created\", function () {\r",
+									"    pm.expect(target[0]).to.have.property('id');\r",
+									"    pm.expect(target[0]).to.have.property('text');\r",
+									"    pm.expect(target[0]).to.have.property('author');\r",
+									"    pm.expect(target[0]).to.have.property('created');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Типы данных в ответе должны соответствовать данным в запросе\", function () {\r",
+									"    pm.expect(founded.id).to.not.be.null;\r",
+									"    pm.expect(founded.text).to.be.a(\"string\");\r",
+									"    pm.expect(founded.author).to.be.an(\"string\");\r",
+									"    pm.expect(founded.created).to.be.an(\"string\");\r",
+									"\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(source.id).equal(founded.id, 'Идентификатор подборки должен соответствовать идентификатору подборки добавленной ранее');\r",
-									"    pm.expect(source.title).equal(founded.title, 'Название подборки должно соответствовать названию подборки добавленной ранее');\r",
-									"    pm.expect(source.pinned).equal(founded.pinned, 'Закрепленность подборки должна соответствовать закрепленности подборки добавленной ранее');\r",
-									"    pm.expect(source.events.join()).equal(founded.events.join(), 'События подборки должны соответствовать событиям подборки добавленной ранее');\r",
+									"    pm.expect(source.id).to.equal(founded.id, 'Идентификатор должен соответствовать указанному при создании');\r",
+									"    pm.expect(source.text).to.equal(founded.text, 'Текст должен соответствовать указанному при создании');\r",
+									"    pm.expect(source.author).to.equal(founded.author, 'Пользователь должен соответствовать указанному при создании');\r",
+									"    pm.expect(source.created).to.equal(founded.created, 'Дата должен соответствовать указанному при создании');\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -358,18 +367,17 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/compilations?pinned=true&from=0&size=1000",
+							"raw": "{{baseUrl}}/comments?eventId=1&from=0&size=1000",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"compilations"
+								"comments"
 							],
 							"query": [
 								{
-									"key": "pinned",
-									"value": "true",
-									"description": "искать только закрепленные/не закрепленные подборки"
+									"key": "eventId",
+									"value": "1"
 								},
 								{
 									"key": "from",
