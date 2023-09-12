@@ -79,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponseDto updateCommentByUserId(Integer userId, Integer commentId, CommentRequestDto request) {
+    public CommentResponseDto updateCommentByUserId(Integer userId, Integer commentId, CommentRequestDto commentRequestDto) {
         User user = userService.findUserById(userId);
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
 
@@ -87,8 +87,8 @@ public class CommentServiceImpl implements CommentService {
             throw new CommentConflictException("User is not comment author");
         }
 
-        if (!request.getText().isBlank()) {
-            comment.setText(request.getText());
+        if (!commentRequestDto.getText().isBlank()) {
+            comment.setText(commentRequestDto.getText());
         }
 
         Comment savedComment = commentRepository.save(comment);

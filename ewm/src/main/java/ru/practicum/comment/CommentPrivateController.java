@@ -27,7 +27,7 @@ public class CommentPrivateController {
     public CommentResponseDto updateComment(
             @Valid @NotNull @PathVariable(name = "userId") Integer userId,
             @Valid @NotNull @PathVariable(name = "commentId") Integer commentId,
-            @Valid @RequestBody CommentRequestDto request) {
-        return commentService.updateCommentByUserId(userId, commentId, request);
+            @Valid @RequestBody CommentRequestDto commentRequestDto) {
+        return commentService.updateCommentByUserId(userId, commentId, commentRequestDto);
     }
 }
