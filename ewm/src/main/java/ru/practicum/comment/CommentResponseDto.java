@@ -17,7 +17,6 @@ import static ru.practicum.util.Constants.TIME_PATTERN;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentResponseDto {
-    //    @ToStringExclude
     @NotNull
     private Integer id;
     @NotBlank

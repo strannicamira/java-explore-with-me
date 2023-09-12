@@ -78,18 +78,9 @@ public class CommentServiceImpl implements CommentService {
         return commentResponseDto;
     }
 
-//    @Override
-//    public List<CommentResponseDto> findCommentByUserId(Integer userId) {
-//        userService.findUserById(userId);
-//        List<Comment> comments = commentRepository.findAllByAuthorId(userId);
-//        List<CommentResponseDto>  dtos = CommentMapper.mapToCommentResponseDto(comments);
-//        return dtos;
-//    }
-
     @Override
     public CommentResponseDto updateCommentByUserId(Integer userId, Integer commentId, CommentRequestDto request) {
         User user = userService.findUserById(userId);
-        //TODO: or replace by findCommentResponseDtoById
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
 
         if (!user.getId().equals(comment.getAuthor().getId())) {
@@ -108,7 +99,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteCommentByAdmin(Integer commentId) {
-        //TODO: or replace by findCommentResponseDtoById
         log.info("Delete comment by id {}", commentId);
         commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
         commentRepository.deleteById(commentId);

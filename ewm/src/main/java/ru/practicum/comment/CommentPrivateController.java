@@ -23,11 +23,6 @@ public class CommentPrivateController {
         return commentService.createCommentByUserId(userId, eventId, commentRequestDto);
     }
 
-//    @GetMapping
-//    public List<CommentResponseDto> findComments(@Valid @NotNull @PathVariable(name = "userId") Integer userId) {
-//        return commentService.findCommentByUserId(userId);
-//    }
-
     @PatchMapping(value = "/{commentId}")
     public CommentResponseDto updateComment(
             @Valid @NotNull @PathVariable(name = "userId") Integer userId,

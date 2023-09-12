@@ -52,7 +52,6 @@ public class EventServiceImpl implements EventService {
     private final LocationService locationService;
     private final StatClient statClient;
     private final CategoryRepository categoryRepository;
-    //    private final CommentService commentService;
     private final CommentRepository commentRepository;
 
     @Override
@@ -435,8 +434,6 @@ public class EventServiceImpl implements EventService {
 
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
 
-        //TODO: to break the cycle automatically by setting spring.main.allow-circular-references to true
-//        List<CommentResponseDto> commentResponseDtos = commentService.findCommentResponseDtos(eventId, null, null);
         List<Comment> comments = commentRepository.findAllByEventId(eventId);
         List<CommentResponseDto> commentResponseDtos = CommentMapper.mapToCommentResponseDto(comments);
         EventWithCommentsFullDto eventWithCommentsFullDto = EventMapper.mapToEventWithCommentsFullDto(eventFullDto, commentResponseDtos);

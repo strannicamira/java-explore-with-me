@@ -9,8 +9,6 @@ public interface CommentService {
 
     CommentResponseDto findCommentResponseDtoById(Integer commentId);
 
-//    List<CommentResponseDto> findCommentByUserId(Integer userId);
-
     CommentResponseDto updateCommentByUserId(Integer userId, Integer commentId, CommentRequestDto request);
 
     void deleteCommentByAdmin(Integer commentId);
