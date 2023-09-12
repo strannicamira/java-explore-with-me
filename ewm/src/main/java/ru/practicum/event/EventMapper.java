@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryMapper;
+import ru.practicum.comment.CommentResponseDto;
 import ru.practicum.location.LocationDto;
 import ru.practicum.location.LocationMapper;
 import ru.practicum.user.UserMapper;
@@ -143,4 +144,25 @@ public class EventMapper {
         return state;
     }
 
+    public static EventWithCommentsFullDto mapToEventWithCommentsFullDto(EventFullDto eventFullDto, List<CommentResponseDto> commentResponseDtos) {
+        EventWithCommentsFullDto fullDtoCommitments = new EventWithCommentsFullDto();
+        fullDtoCommitments.setId(eventFullDto.getId());
+        fullDtoCommitments.setAnnotation(eventFullDto.getAnnotation());
+        fullDtoCommitments.setCategory(eventFullDto.getCategory());
+        fullDtoCommitments.setConfirmedRequests(eventFullDto.getConfirmedRequests());
+        fullDtoCommitments.setCreatedOn(eventFullDto.getCreatedOn());
+        fullDtoCommitments.setDescription(eventFullDto.getDescription());
+        fullDtoCommitments.setEventDate(eventFullDto.getEventDate());
+        fullDtoCommitments.setInitiator(eventFullDto.getInitiator());
+        fullDtoCommitments.setLocation(eventFullDto.getLocation());
+        fullDtoCommitments.setPaid(eventFullDto.getPaid());
+        fullDtoCommitments.setParticipantLimit(eventFullDto.getParticipantLimit());
+        fullDtoCommitments.setPublishedOn(eventFullDto.getPublishedOn());
+        fullDtoCommitments.setRequestModeration(eventFullDto.getRequestModeration());
+        fullDtoCommitments.setState(eventFullDto.getState());
+        fullDtoCommitments.setTitle(eventFullDto.getTitle());
+        fullDtoCommitments.setViews(eventFullDto.getViews());
+        fullDtoCommitments.setComments(commentResponseDtos);
+        return fullDtoCommitments;
+    }
 }

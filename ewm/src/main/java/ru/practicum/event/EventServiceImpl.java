@@ -14,6 +14,10 @@ import ru.practicum.StatClient;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryRepository;
 import ru.practicum.category.CategoryService;
+import ru.practicum.comment.Comment;
+import ru.practicum.comment.CommentMapper;
+import ru.practicum.comment.CommentRepository;
+import ru.practicum.comment.CommentResponseDto;
 import ru.practicum.exceptionhandler.EventBadRequestException;
 import ru.practicum.exceptionhandler.EventConflictException;
 import ru.practicum.exceptionhandler.EventNotPublishedException;
@@ -48,6 +52,8 @@ public class EventServiceImpl implements EventService {
     private final LocationService locationService;
     private final StatClient statClient;
     private final CategoryRepository categoryRepository;
+    //    private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -396,7 +402,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId) {
+    public EventWithCommentsFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId) {
         log.info("Search events by  id {}", eventId);
 
         Event event = findEventById(eventId);
@@ -428,7 +434,14 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(event);
 
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
-        return eventFullDto;
+
+        //TODO: to break the cycle automatically by setting spring.main.allow-circular-references to true
+//        List<CommentResponseDto> commentResponseDtos = commentService.findCommentResponseDtos(eventId, null, null);
+        List<Comment> comments = commentRepository.findAllByEventId(eventId);
+        List<CommentResponseDto> commentResponseDtos = CommentMapper.mapToCommentResponseDto(comments);
+        EventWithCommentsFullDto eventWithCommentsFullDto = EventMapper.mapToEventWithCommentsFullDto(eventFullDto, commentResponseDtos);
+
+        return eventWithCommentsFullDto;
     }
 }
 
