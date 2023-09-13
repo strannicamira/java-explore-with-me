@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventService;
 import ru.practicum.exceptionhandler.CommentConflictException;
@@ -29,6 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private final EventService eventService;
 
     @Override
+    @Transactional
     public CommentResponseDto createCommentByUserId(Integer userId, Integer eventId, CommentRequestDto commentRequestDto) {
         log.info("Create comment by user id {} for event id {}", userId, eventId);
         User userById = userService.findUserById(userId);
@@ -79,6 +81,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentResponseDto updateCommentByUserId(Integer userId, Integer commentId, CommentRequestDto commentRequestDto) {
         User user = userService.findUserById(userId);
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
@@ -98,6 +101,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteCommentByAdmin(Integer commentId) {
         log.info("Delete comment by id {}", commentId);
         commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
