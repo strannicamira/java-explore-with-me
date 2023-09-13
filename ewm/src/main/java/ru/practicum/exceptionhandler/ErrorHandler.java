@@ -58,7 +58,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleRequestExceptionHelper(final RequestConflictException e) {
+    public ErrorResponse handleRequestConflictExceptionHelper(final RequestConflictException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleCommentConflictExceptionHelper(final CommentConflictException e) {
         return new ErrorResponse(e.getMessage());
     }
 

@@ -18,7 +18,8 @@ public class RequestPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto createRequest(@PathVariable(name = "userId") Integer userId, @RequestParam(name = "eventId") Integer eventId) {
+    public ParticipationRequestDto createRequest(@PathVariable(name = "userId") Integer userId,
+                                                 @RequestParam(name = "eventId") Integer eventId) {
         return requestService.createRequest(userId, eventId);
     }
 

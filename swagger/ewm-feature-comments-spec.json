@@ -1,0 +1,326 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "EWM Comments feature API",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9090",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Private: Comments",
+      "description": "API для работы с комментариями"
+    },
+    {
+      "description": "Публичный API для работы с комментариями событий",
+      "name": "Public: Comments"
+    },
+    {
+      "description": "Закрытый API для работы с комментариями событий",
+      "name": "Admin: Comments"
+    }
+  ],
+  "paths": {
+    "/events/{eventId}/comment": {
+      "post": {
+        "tags": [
+          "Private: Comments"
+        ],
+        "summary": "Сохранение информации о том, что к эндпоинту был запрос",
+        "description": "Отзыв относится к одному событию, а вот событие может иметь много комментариев\n- Текс не должен быть пуст, иначе возвращается статус код 400",
+        "operationId": "postComment",
+        "requestBody": {
+          "description": "данные запроса",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            },
+            "description": "Комментарий сохранен"
+          },
+          "400": {
+            "description": "Запрос составлен некорректно"
+          },
+          "404": {
+            "description": "комментария не найдена или недоступна"
+          },
+          "409": {
+            "description": "Некорректные данные"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Private: Comments"
+        ],
+        "summary": "Обновление комментария",
+        "description": "Обновление комментария\n- Текс не должен быть пуст, иначе возвращается статус код 400\n- Пользователь должен быть автором, иначе возвращается статус код 409",
+        "operationId": "updateComment",
+        "requestBody": {
+          "description": "данные запроса",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            },
+            "description": "Комментарий сохранен"
+          },
+          "400": {
+            "description": "Запрос составлен некорректно"
+          },
+          "404": {
+            "description": "комментария не найдена или недоступна"
+          },
+          "409": {
+            "description": "Некорректные данные"
+          }
+        }
+      }},
+    "/comments": {
+        "get": {
+          "description": "В случае, если по заданным фильтрам не найдено ни одного комментария, возвращает пустой список",
+          "operationId": "getComments",
+          "parameters": [
+            {
+              "description": "количество комментарий, которые нужно пропустить для формирования текущего набора",
+              "in": "query",
+              "name": "from",
+              "required": false,
+              "schema": {
+                "minimum": 0,
+                "type": "integer",
+                "format": "int32",
+                "default": 0
+              }
+            },
+            {
+              "description": "количество комментарий в наборе",
+              "in": "query",
+              "name": "size",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "format": "int32",
+                "default": 10
+              }
+            },
+            {
+              "description": "Идентификатор события",
+              "in": "query",
+              "name": "eventId",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CommentResponseDto"
+                    }
+                  }
+                }
+              },
+              "description": "Комментарии найдены"
+            },
+            "400": {
+              "description": "Запрос составлен некорректно"
+            },
+            "404": {
+              "description": "комментария не найдена или недоступна"
+            },
+            "409": {
+              "description": "Некорректные данные"
+            }
+          },
+          "summary": "Получение комментариев",
+          "tags": [
+            "Public: Comments"
+          ]
+        }
+      },
+    "/comments/{commentId}": {
+        "get": {
+          "description": "В случае, если события с заданным id не найдено, возвращает статус код 404",
+          "operationId": "getComment",
+          "parameters": [
+            {
+              "description": "id комментарии",
+              "in": "path",
+              "name": "commentId",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CommentResponseDto"
+                  }
+                }
+              },
+              "description": "Комментарий найден"
+            },
+            "400": {
+              "description": "Запрос составлен некорректно"
+            },
+            "404": {
+              "description": "комментария не найдена или недоступна"
+            }
+          },
+          "summary": "Получение информации о комментарии по её идентификатору",
+          "tags": [
+            "Public: Comments"
+          ]
+        },
+        "delete": {
+          "description": "В случае, если события с заданным id не найдено, возвращает статус код 404",
+          "operationId": "deleteComment",
+          "parameters": [
+            {
+              "description": "id комментарии",
+              "in": "path",
+              "name": "commentId",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CommentResponseDto"
+                  }
+                }
+              },
+              "description": "комментарий удален"
+            },
+            "400": {
+              "description": "Запрос составлен некорректно"
+            },
+            "404": {
+              "description": "комментария не найдена или недоступна"
+            },
+            "409": {
+              "description": "Некорректные данные"
+            }
+          },
+          "summary": "Удаление информации о комментарии по её идентификатору",
+          "tags": [
+            "Admin: Comments"
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "CommentRequestDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Идентификатор комментария",
+              "format": "int64",
+              "example": 1
+            },
+            "text": {
+              "type": "string",
+              "description": "Содержимое комментария",
+              "example": "Содержимое комментария"
+            },
+            "item": {
+              "type": "string",
+              "description": "Событие, к которому относится комментарий;",
+              "example": "Событие"
+            },
+            "authorName": {
+              "type": "string",
+              "description": "Автор комментария",
+              "example": "Автор комментария"
+            },
+            "created": {
+              "type": "string",
+              "description": "Дата и время, когда был совершен запрос к эндпоинту (в формате \"yyyy-MM-dd HH:mm:ss\")",
+              "example": "2022-09-06 11:00:23"
+            }
+          }
+        },
+        "CommentResponseDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Идентификатор комментария",
+              "format": "int64",
+              "example": 1
+            },
+            "text": {
+              "type": "string",
+              "description": "Содержимое комментария",
+              "example": "Содержимое комментария"
+            },
+            "item": {
+              "type": "string",
+              "description": "Событие, к которому относится комментарий;",
+              "example": "Событие"
+            },
+            "authorName": {
+              "type": "string",
+              "description": "Автор комментария",
+              "example": "Автор комментария"
+            },
+            "created": {
+              "type": "string",
+              "description": "Дата и время, когда был совершен запрос к эндпоинту (в формате \"yyyy-MM-dd HH:mm:ss\")",
+              "example": "2022-09-06 11:00:23"
+            }
+          }
+        }
+      }
+    }
+  }

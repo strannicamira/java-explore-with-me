@@ -28,5 +28,5 @@ public interface EventService {
 
     List<EventShortDto> findEventsByPublic(HttpServletRequest request, String text, Integer[] categoryIds, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
 
-    EventFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId);
+    EventWithCommentsFullDto findEventByIdByPublic(HttpServletRequest request, Integer eventId);
 }

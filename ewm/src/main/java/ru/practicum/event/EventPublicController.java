@@ -34,8 +34,8 @@ public class EventPublicController {
     }
 
     @GetMapping(value = "/{id}")
-    public EventFullDto findEventByIdByPublic(HttpServletRequest request,
-                                              @PathVariable(name = "id") Integer eventId) {
+    public EventWithCommentsFullDto findEventByIdByPublic(HttpServletRequest request,
+                                                          @PathVariable(name = "id") Integer eventId) {
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
         return eventService.findEventByIdByPublic(request, eventId);
